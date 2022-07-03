@@ -1,9 +1,17 @@
 {% extends "main_template.html" %}
-{% block head %}
-    <form method="POST" action="">
-        <label>Nome:</label>
-        <input type="text" id="name"><br>
-        <label>Cognome:</label>
-        <input type="text" id="surname"><br>
+{% block body %}
+    <form method="POST" action="/login">
+        {{ form.hidden_tag() }}
+        {{ form.name.label }} {{ form.name(size=20) }}
+        <input type="submit" value="Go">
+
+        {% if form.name.errors %}
+            <ul class="errors">
+                {% for error in form.name.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </form>
+
 {% endblock %}
