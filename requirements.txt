@@ -1,3 +1,6 @@
-Flask==2.0.3
+Flask~=2.1.2
 Flask-WTF==1.0.1
 Jinja2==3.1.1
+Werkzeug~=2.1.2
+WTForms~=3.0.1
+email_validator==1.2.1

@@ -1,17 +1,31 @@
 {% extends "main_template.html" %}
+{%  block head %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login.css') }}">
+{% endblock head %}
 {% block body %}
-    <form method="POST" action="/login">
-        {{ form.hidden_tag() }}
-        {{ form.name.label }} {{ form.name(size=20) }}
-        <input type="submit" value="Go">
-
-        {% if form.name.errors %}
-            <ul class="errors">
-                {% for error in form.name.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+    <div class="debug center" id="main_div">
+    <form method="POST" action="/login" id="login_form">
+        <table class="debug center center_vertical">
+            {{ form.hidden_tag() }}
+            {% for value in form.get_attribute() %}
+                <tr>
+                    {% if value.errors %}
+                        <th></th>
+                        <th>
+                        <p class="error">
+                            {% for error in value.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </p>
+                        </th>
+                        </tr>
+                        <tr>
+                    {% endif %}
+                    <th>{{ value.label }}</th>
+                    <th>{{ value(size=20) }}</th>
+                </tr>
+            {% endfor %}
+        </table>
     </form>
-
-{% endblock %}
+    </div>
+{% endblock body %}

@@ -3,9 +3,9 @@
 
 from flask import Flask, render_template, redirect, url_for, flash
 import os
-from flask_wtf import FlaskForm
-from wtforms import StringField
-from wtforms.validators import DataRequired
+from werkzeug.exceptions import HTTPException
+
+from form import LoginForm
 
 app = Flask(__name__)
 
@@ -13,27 +13,29 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '9c986a8dac94804409f30ecf62c2ce22'
 
 
-class MyForm(FlaskForm):
-    name = StringField('name', validators=[DataRequired()])
-
-
 @app.route('/')
 def hello_world():
-    return render_template("hello_page.html")
+    return render_template("hello_page.html", title='Home')
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = MyForm()
+    form = LoginForm()
     if form.validate_on_submit():
-        flash(f'Ciao "{form.name.data}"', 'success')
+        flash(f'Ciao "{form.nome.data}"', 'success')
         return redirect(url_for('success'))
-    return render_template('user_login.html', form=form)
+    return render_template('user_login.html', title='Login', form=form)
 
 
 @app.route('/success')
 def success():
-    return render_template("user_login_succeded.html")
+    return render_template("user_login_succeded.html", title='Success')
+
+
+@app.errorhandler(HTTPException)
+def errorhandler(e):
+    print(e.code + e.name + e.description)
+    return e  # Da completare
 
 
 if __name__ == '__main__':

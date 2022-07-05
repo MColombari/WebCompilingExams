@@ -2,6 +2,12 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
+    {% if title %}
+        <title> {{ title }} </title>
+    {% else %}
+        <title> Esame </title>
+    {% endif %}
+
     {% block head %}
     {% endblock %}
 </head>
