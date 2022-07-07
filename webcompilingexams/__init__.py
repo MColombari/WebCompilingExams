@@ -9,6 +9,4 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.db'  # Il database verr√
 db = SQLAlchemy(app)  # Funziona come Room.
 login_manager = LoginManager(app)
 
-
 from webcompilingexams import routes
-

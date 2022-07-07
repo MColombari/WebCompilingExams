@@ -2,7 +2,6 @@ from werkzeug.exceptions import HTTPException
 from webcompilingexams import app, db
 from webcompilingexams.form import LoginForm
 from flask import render_template, redirect, url_for, flash
-from flask_login import login_user
 
 from webcompilingexams.models import User
 
