@@ -12,4 +12,4 @@ RUN apt-get -y install python3-pip
 COPY requirements.txt /app
 RUN pip install -r requirements.txt
 
-CMD python3 app.py
+CMD python3 run.py
