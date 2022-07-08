@@ -1,4 +1,8 @@
 {% extends "main_template.html" %}
 {% block body %}
     <h1>Success!</h1>
+
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+    {% endif %}
 {% endblock %}
