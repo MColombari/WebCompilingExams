@@ -1,0 +1,28 @@
+.debug{
+    border: 1px solid dodgerblue;
+}
+
+.center_text{
+    text-align: center;
+}
+
+#left_div{
+    position: relative;
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 30%;
+    height: 50px;
+}
+
+#popup_div{
+    position: absolute;
+    width: 30%;
+    height: 50px;
+    top: -50px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10px;
+    background-color: #b3ffb3;
+}

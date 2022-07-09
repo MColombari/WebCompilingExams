@@ -2,6 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main_template.css') }}">
     {% if title %}
         <title> {{ title }} </title>
     {% else %}
@@ -12,14 +13,56 @@
     {% endblock %}
 </head>
 <body>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                {{ message }}
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    {% block body %}
-    {% endblock %}
+	<div class="debug internal_div center_text" id="left_div">
+		<p>Esame Programmazione ad Oggetti</p>
+	</div>
+	{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			<div class="center_text" id="popup_div">
+				<p>
+					{% for category, message in messages %}
+						{{ message }}
+					{% endfor %}
+				</p>
+			</div>
+			<script>
+				var popup = document.getElementById("popup_div"),
+					position = -50,
+					speed = 5,
+					acceleration = 0.95,
+					millis = 20,
+					time_to_hold = 5000,
+					id_in = setInterval(div_in, millis),
+					id_out;
+
+				function div_in(){
+                    if (position >= 10) {
+                        clearInterval(id_in);
+                        setTimeout(div_out_caller, time_to_hold);
+					}
+                    speed = speed * acceleration;
+                    position = position + speed;
+					popup.style.top = position + 'px';
+				}
+
+                function div_out_caller(){
+                    id_out = setInterval(div_out, millis);
+					speed = 1;
+                    acceleration = 1.05;
+				}
+
+                function div_out(){
+                    if (position < -50) {
+                        clearInterval(id_out);
+					}
+                    speed = speed * acceleration;
+                    position = position - speed;
+					popup.style.top = position + 'px';
+				}
+		</script>
+		{% endif %}
+	{% endwith %}
+	{% block body %}
+	{% endblock %}
 </body>
 </html>
