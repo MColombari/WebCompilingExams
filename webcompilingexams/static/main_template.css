@@ -6,6 +6,14 @@
     text-align: center;
 }
 
+.flash-success{
+    background-color: #b3ffb3;
+}
+
+.flash-danger{
+    background-color: #ffb3b3;
+}
+
 #left_div{
     position: relative;
     margin-top: 10px;
@@ -23,6 +31,6 @@
     right: 0;
     margin-left: auto;
     margin-right: auto;
+    color: black;
     border-radius: 10px;
-    background-color: #b3ffb3;
 }

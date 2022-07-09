@@ -18,24 +18,24 @@
 	</div>
 	{% with messages = get_flashed_messages(with_categories=true) %}
 		{% if messages %}
-			<div class="center_text" id="popup_div">
-				<p>
-					{% for category, message in messages %}
+			{% for category, message in messages %}
+				<div class="center_text flash-{{ category }}" id="popup_div">
+					<p>
 						{{ message }}
-					{% endfor %}
-				</p>
-			</div>
+					</p>
+				</div>
+			{% endfor %}
 			<script>
-				var popup = document.getElementById("popup_div"),
-					position = -50,
-					speed = 5,
-					acceleration = 0.95,
-					millis = 20,
-					time_to_hold = 5000,
-					id_in = setInterval(div_in, millis),
-					id_out;
+                let popup = document.getElementById("popup_div"),
+                    position = -50,
+                    speed = 5,
+                    acceleration = 0.95,
+                    millis = 20,
+                    time_to_hold = 5000,
+                    id_in = setInterval(div_in, millis),
+                    id_out;
 
-				function div_in(){
+                function div_in(){
                     if (position >= 10) {
                         clearInterval(id_in);
                         setTimeout(div_out_caller, time_to_hold);
