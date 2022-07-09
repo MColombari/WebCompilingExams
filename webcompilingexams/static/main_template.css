@@ -4,6 +4,7 @@
 
 .center_text{
     text-align: center;
+    vertical-align: center;
 }
 
 .flash-success{
@@ -15,22 +16,35 @@
 }
 
 #left_div{
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 18pt;
     position: relative;
-    margin-top: 10px;
-    margin-left: 10px;
-    width: 30%;
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 35%;
     height: 50px;
+    vertical-align: middle;
 }
 
 #popup_div{
     position: absolute;
     width: 30%;
-    height: 50px;
+    min-height: 40px;
     top: -50px;
     left: 0;
     right: 0;
     margin-left: auto;
     margin-right: auto;
+    padding-right: 15px;
+    padding-left: 15px;
     color: black;
     border-radius: 10px;
+}
+
+#bar_div{
+    border-bottom: 2px outset lightgray;
+    position: relative;
+    width: auto;
+    margin-right: 0;
+    height: 50px;
 }

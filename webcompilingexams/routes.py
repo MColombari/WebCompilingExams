@@ -15,7 +15,7 @@ def hello_world():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        flash(f'Utente già loggato', 'success')
+        flash('Utente già loggato', 'success')
         return redirect(url_for('success'))
     form = LoginForm()
     if form.validate_on_submit():
@@ -26,7 +26,7 @@ def login():
         login_user(user, True)
         next_page = request.args.get('next')
 
-        flash(f'User inserito con successo\n{user}"', 'success')
+        flash(f'User inserito con successo: "{user}"', 'success')
         if next_page:
             return redirect(next_page)  # Vai alla pagina a cui è cerrcato di andare senza il login.
         return redirect(url_for('success'))

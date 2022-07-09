@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main_template.css') }}">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@500&display=swap" rel="stylesheet">
     {% if title %}
         <title> {{ title }} </title>
     {% else %}
@@ -13,18 +16,16 @@
     {% endblock %}
 </head>
 <body>
-	<div class="debug internal_div center_text" id="left_div">
-		<p>Esame Programmazione ad Oggetti</p>
+	<div id="bar_div">
+		<div id="left_div">
+			<p>Esame Programmazione ad Oggetti</p>
+		</div>
 	</div>
 	{% with messages = get_flashed_messages(with_categories=true) %}
 		{% if messages %}
-			{% for category, message in messages %}
-				<div class="center_text flash-{{ category }}" id="popup_div">
-					<p>
-						{{ message }}
-					</p>
-				</div>
-			{% endfor %}
+			<div class="center_text flash-{{ messages[0][0] }}" id="popup_div">
+				<p> {{ messages[0][1] }} </p>
+			</div>
 			<script>
                 let popup = document.getElementById("popup_div"),
                     position = -50,
@@ -33,7 +34,8 @@
                     millis = 20,
                     time_to_hold = 5000,
                     id_in = setInterval(div_in, millis),
-                    id_out;
+                    id_out,
+					div_height = popup.clientHeight + 10;
 
                 function div_in(){
                     if (position >= 10) {
@@ -52,14 +54,14 @@
 				}
 
                 function div_out(){
-                    if (position < -50) {
+                    if (position < -div_height) {
                         clearInterval(id_out);
 					}
                     speed = speed * acceleration;
                     position = position - speed;
 					popup.style.top = position + 'px';
 				}
-		</script>
+			</script>
 		{% endif %}
 	{% endwith %}
 	{% block body %}
