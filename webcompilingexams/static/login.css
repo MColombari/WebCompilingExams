@@ -4,6 +4,7 @@
 
 .error{
     font-size: 8pt;
+    text-align: center;
     color: red;
 }
 
@@ -18,28 +19,27 @@
     margin-bottom: auto;
 }
 
-body{
-    background-color: black;
-    color: white;
-}
-
 #main_div{
     margin-top: 10%;
 }
 
 #login_form{
-    width: 400px;
+    width: fit-content;
     height: fit-content;
-    border: 5px solid white;
-    text-align: center;
+    border: 2px solid #7f7f7f;
+    text-align: left;
     border-radius: 25px;
-    padding: 30px;
+    padding: 30px 80px;
+}
+
+#login_form_table{
+    width: 300px;
+    height: fit-content;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11pt;
 }
 
 input{
-    text-align: center;
-    color: white;
-    background-color: black;
-    border: 1px solid white;
+    border: 1px solid #7f7f7f;
     border-radius: 5px;
 }

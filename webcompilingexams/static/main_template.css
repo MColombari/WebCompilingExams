@@ -15,12 +15,26 @@
     background-color: #ffb3b3;
 }
 
+.bottom_bar_divs{
+    position: relative;
+    height: fit-content;
+    width: 32%;
+    margin: auto;
+    display: inline-block;
+    
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 9pt;
+    color: white;
+    
+}
+
 #left_div{
     font-family: 'Albert Sans', sans-serif;
     font-size: 18pt;
     position: relative;
     margin-top: 0;
     margin-bottom: 0;
+    margin-left: 15px;
     width: 35%;
     height: 50px;
     vertical-align: middle;
@@ -39,6 +53,8 @@
     padding-left: 15px;
     color: black;
     border-radius: 10px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11pt;
 }
 
 #bar_div{
@@ -47,4 +63,16 @@
     width: auto;
     margin-right: 0;
     height: 50px;
+}
+
+#bottom_bar_div{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    
+    text-align: center;
+    height: 15pt;
+    
+    background-color: #602877;
 }

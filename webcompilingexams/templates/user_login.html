@@ -1,11 +1,21 @@
 {% extends "main_template.html" %}
 {%  block head %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login.css') }}">
+	<script>
+		function show_confirm(){
+            return confirm('Confermi i seguenti dati?\n'
+				+ "Email: '" +  document.getElementById('email').value + "'\n"
+				+ "Nome: '" +  document.getElementById('nome').value + "'\n"
+				+ "Congome: '" +  document.getElementById('cognome').value + "'\n"
+				+ "Matricola: '" +  document.getElementById('matricola').value + "'"
+			);
+		}
+	</script>
 {% endblock head %}
 {% block body %}
-    <div class="debug center" id="main_div">
-    <form method="POST" action="/login" id="login_form">
-        <table class="debug center center_vertical">
+    <div class="center" id="main_div">
+    <form method="POST" action="/login" id="login_form" onsubmit="return show_confirm()">
+        <table class="center center_vertical" id="login_form_table">
             {{ form.hidden_tag() }}
             {% for value in form.get_attribute() %}
                 <tr>
@@ -22,7 +32,7 @@
                         <tr>
                     {% endif %}
                     <th>{{ value.label }}</th>
-                    <th>{{ value(size=20) }}</th>
+                    <th style="text-align: center" id='th-{{ value.label }}'>{{ value(size=20) }}</th>
                 </tr>
             {% endfor %}
         </table>
