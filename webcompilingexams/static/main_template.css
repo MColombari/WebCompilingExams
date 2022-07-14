@@ -1,3 +1,8 @@
+body{
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 9pt;
+}
+
 .debug{
     border: 1px solid dodgerblue;
 }
@@ -22,14 +27,11 @@
     margin: auto;
     display: inline-block;
     
-    font-family: 'Albert Sans', sans-serif;
-    font-size: 9pt;
     color: white;
     
 }
 
 #left_div{
-    font-family: 'Albert Sans', sans-serif;
     font-size: 18pt;
     position: relative;
     margin-top: 0;
@@ -53,7 +55,7 @@
     padding-left: 15px;
     color: black;
     border-radius: 10px;
-    font-family: 'Albert Sans', sans-serif;
+    
     font-size: 11pt;
 }
 
@@ -75,4 +77,21 @@
     height: 15pt;
     
     background-color: #602877;
+}
+
+/* Only for pages where the user is authenticated. */
+#user_information{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: fit-content;
+    height: fit-content;
+    
+    padding: 10px 50px;
+    text-align: left;
+    
+    border: 2px solid #7f7f7f;
+    background-color: white;
+    font-size: 11pt;
+    
 }

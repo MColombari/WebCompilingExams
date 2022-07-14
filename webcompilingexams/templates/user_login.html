@@ -14,7 +14,7 @@
 {% endblock head %}
 {% block body %}
     <div class="center" id="main_div">
-    <form method="POST" action="/login" id="login_form" onsubmit="return show_confirm()">
+    <form method="POST" action="{{ url_for('login') }}" id="login_form" onsubmit="return show_confirm()">
         <table class="center center_vertical" id="login_form_table">
             {{ form.hidden_tag() }}
             {% for value in form.get_attribute() %}

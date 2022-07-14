@@ -8,19 +8,18 @@ from webcompilingexams.models import User
 
 from datetime import datetime
 
-
 DATE = str(datetime.today().strftime('%Y / %m / %d'))
 
 
-@app.route('/')
-def hello_world():
-    return render_template("hello_page.html", title='Home',
-                           bottom_bar_left=DATE,
-                           bottom_bar_center='Pagina di benvenuto',
-                           bottom_bar_right='Non ancora registrato')
+# @app.route('/')
+# def hello_world():
+#    return render_template("hello_page.html", title='Home',
+#                           bottom_bar_left=DATE,
+#                           bottom_bar_center='Pagina di benvenuto',
+#                           bottom_bar_right='Non ancora registrato')
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         flash('Utente già registrato', 'success')
@@ -57,13 +56,11 @@ def success():
 
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
-    return render_template("hello_page.html", title='Logout',
-                           bottom_bar_left=DATE,
-                           bottom_bar_center='Pagina di benvenuto',
-                           bottom_bar_right='Utente disconnesso'
-                           )
+    flash('User scollegato con successo', 'success')
+    return redirect(url_for('login'))
 
 
 @app.errorhandler(HTTPException)

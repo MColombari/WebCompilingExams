@@ -2,7 +2,26 @@
 {% block body %}
     <h1>Success!</h1>
 
-    {% if current_user.is_authenticated %}
-        <a href="{{ url_for('logout') }}">Logout</a>
-    {% endif %}
+	<div id="user_information">
+		<table style="margin: 0 auto;">
+			<tr>
+				<th style="font-weight: bold">Matricola:</th>
+				<th style="font-weight: normal">{{ current_user.id }}</th>
+			</tr>
+			<tr>
+				<th style="font-weight: bold">Email:</th>
+				<th style="font-weight: normal">{{ current_user.email }}</th>
+			</tr>
+			<tr>
+				<th style="font-weight: bold">Nome:</th>
+				<th style="font-weight: normal">{{ current_user.name }}</th>
+			</tr>
+			<tr>
+				<th style="font-weight: bold">Congnome:</th>
+				<th style="font-weight: normal">{{ current_user.surname }}</th>
+			</tr>
+		</table>
+	</div>
+
+	<a href="{{ url_for('logout') }}">Logout</a>
 {% endblock %}
