@@ -3,11 +3,11 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='user_registration.css') }}">
 	<script>
 		function show_confirm(){
-            return confirm('Confermi i seguenti dati?\n'
-				+ "Email: '" +  document.getElementById('email').value + "'\n"
-				+ "Nome: '" +  document.getElementById('nome').value + "'\n"
-				+ "Congome: '" +  document.getElementById('cognome').value + "'\n"
-				+ "Matricola: '" +  document.getElementById('matricola').value + "'"
+            return confirm('Confermi i seguenti dati?\n\n'
+				+ "Matricola:\t'" +  document.getElementById('matricola').value + "'\n"
+				+ "Email:\t\t'" +  document.getElementById('email').value + "'\n"
+				+ "Nome:\t\t'" +  document.getElementById('nome').value + "'\n"
+				+ "Congome:\t'" +  document.getElementById('cognome').value + "'"
 			);
 		}
 	</script>

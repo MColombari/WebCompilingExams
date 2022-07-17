@@ -2,7 +2,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.exceptions import HTTPException
 from webcompilingexams import app, db
 from webcompilingexams.form import LoginForm
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash
 
 from webcompilingexams.models import User
 
@@ -21,7 +21,6 @@ DATE = str(datetime.today().strftime('%Y / %m / %d'))
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/registration', methods=['GET', 'POST'])
-@app.route('/login', methods=['GET', 'POST'])
 def registration():
     if current_user.is_authenticated:
         if current_user.exam_started:
@@ -37,11 +36,14 @@ def registration():
         db.session.add(user)
         db.session.commit()
         login_user(user, True)
-        next_page = request.args.get('next')
+
+        # next_page = request.args.get('next')
 
         flash('User inserito con successo', 'success')
-        if next_page:
-            return redirect(next_page)  # Vai alla pagina a cui ha cercato di andare precedentemente senza il login.
+
+        # if next_page:
+        #     return redirect(next_page)  # Vai alla pagina a cui ha cercato di andare precedentemente senza il login.
+
         return redirect(url_for('start_exam'))
 
     return render_template('user_registration.html', title='Registration', form=form,

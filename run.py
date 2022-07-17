@@ -1,5 +1,6 @@
 # "docker build -t web_app ."
 # "docker run -p 5000:5000 -v $(pwd):/app web_app"
+
 from webcompilingexams import app
 import os
 
