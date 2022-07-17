@@ -20,38 +20,71 @@ DATE = str(datetime.today().strftime('%Y / %m / %d'))
 
 
 @app.route('/', methods=['GET', 'POST'])
-def login():
+@app.route('/registration', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
+def registration():
     if current_user.is_authenticated:
-        flash('Utente già registrato', 'success')
-        return redirect(url_for('success'))
+        if current_user.exam_started:
+            flash('L\'esame è in corso, non è possibile registrarsi nuovamente', 'danger')
+            return redirect(url_for('exam'))
+        flash('Utente già registrato', 'warning')
+        return redirect(url_for('start_exam'))
+
     form = LoginForm()
     if form.validate_on_submit():
         user = User(id=int(form.matricola.data), name=form.nome.data, surname=form.cognome.data,
-                    email=form.email.data)
+                    email=form.email.data, exam_started=False, exam_finished=False)
         db.session.add(user)
         db.session.commit()
         login_user(user, True)
         next_page = request.args.get('next')
 
-        flash(f'User inserito con successo: "{user}"', 'success')
+        flash('User inserito con successo', 'success')
         if next_page:
             return redirect(next_page)  # Vai alla pagina a cui ha cercato di andare precedentemente senza il login.
-        return redirect(url_for('success'))
+        return redirect(url_for('start_exam'))
 
-    return render_template('user_login.html', title='Login', form=form,
+    return render_template('user_registration.html', title='Registration', form=form,
                            bottom_bar_left=DATE,
                            bottom_bar_center='Registrazione',
                            bottom_bar_right='Attesa registrazione'
                            )
 
 
-@app.route('/success')
+@app.route('/start')
 @login_required
-def success():
-    return render_template("user_login_succeded.html", title='Success',
+def start_exam():
+    if current_user.exam_started:
+        flash('L\'esame è giè iniziato', 'danger')
+        return redirect(url_for('exam'))
+
+    return render_template("start_exam.html", title='Start',
                            bottom_bar_left=DATE,
-                           bottom_bar_center='Successo',
-                           bottom_bar_right='Registrazione avvenuta con successo'
+                           bottom_bar_center='Inizio esame',
+                           bottom_bar_right='In attesa dell\' inizio dell\'esame'
+                           )
+
+
+@app.route('/starting')
+@login_required
+def starting_exam():
+    if current_user.exam_started:
+        flash('L\'esame è giè iniziato', 'danger')
+        return redirect(url_for('exam'))
+
+    current_user.exam_started = True
+    db.session.commit()
+
+    return redirect(url_for('exam'))
+
+
+@app.route('/exam')
+@login_required
+def exam():
+    return render_template("exam.html", title='Esame',
+                           bottom_bar_left=DATE,
+                           bottom_bar_center='Esame',
+                           bottom_bar_right='Esame in svolgimento'
                            )
 
 
@@ -59,8 +92,11 @@ def success():
 @login_required
 def logout():
     logout_user()
+    current_user.exam_started = True
+    db.session.commit()
+
     flash('User scollegato con successo', 'success')
-    return redirect(url_for('login'))
+    return redirect(url_for('registration'))
 
 
 @app.errorhandler(HTTPException)

@@ -1,0 +1,36 @@
+.center{
+    margin: auto;
+}
+
+.button_1{
+    font-size: 11pt;
+    padding: 15px;
+    border-radius: 10px;
+    border: 0px solid;
+}
+
+.column_table{
+    display: inline-block;
+    padding: 5px 15px;
+}
+
+#center_div{
+    width: fit-content;
+    height: fit-content;
+    border: 2px solid #7f7f7f;
+    border-radius: 25px;
+    padding: 30px 80px;
+    
+    font-size: 11pt;
+    font-weight: lighter;
+    
+    margin-top: 10%;
+}
+
+#start_exam_button{
+    background-color: #b3d1ff;
+}
+
+#logout_button{
+    background-color: #ffb3b3;
+}

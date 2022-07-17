@@ -16,6 +16,10 @@ body{
     background-color: #b3ffb3;
 }
 
+.flash-warning{
+    background-color: #ffe0b3;
+}
+
 .flash-danger{
     background-color: #ffb3b3;
 }
@@ -24,15 +28,15 @@ body{
     position: relative;
     height: fit-content;
     width: 32%;
-    margin: auto;
+    margin: 0 auto;
     display: inline-block;
     
     color: white;
-    
 }
 
 #left_div{
     font-size: 18pt;
+    font-weight: normal;
     position: relative;
     margin-top: 0;
     margin-bottom: 0;
@@ -74,7 +78,9 @@ body{
     left: 0;
     
     text-align: center;
-    height: 15pt;
+    height: fit-content;
+    
+    padding: 3px 0;
     
     background-color: #602877;
 }
