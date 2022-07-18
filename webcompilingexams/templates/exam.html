@@ -1,7 +1,8 @@
 {% extends "main_template.html" %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='exam.css') }}">
+{% endblock %}
 {% block body %}
-    <h1>exam.html</h1>
-
 	<div id="user_information">
 		<table style="margin: 0 auto;">
 			<tr>
@@ -23,5 +24,24 @@
 		</table>
 	</div>
 
-	<a href="{{ url_for('logout') }}">Logout</a>
+	<div class="debug" id="information_div">
+		<div class="debug information_divs">
+			Domanda 1/10
+		</div>
+		<div class="debug information_divs">
+			Verificata: Si
+		</div>
+	</div>
+	<div class="debug" id="question_content_div">
+		<div class="debug" id="output_compiler_div">
+			output compilatore
+		</div>
+		<div class="debug" id="input_compiler_div">
+			input utente
+		</div>
+	</div>
+	<div class="debug" id="navigation_bar_div">
+		Navigation bar
+	</div>
+
 {% endblock %}

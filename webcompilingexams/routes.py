@@ -4,6 +4,7 @@ from webcompilingexams import app, db
 from webcompilingexams.form import LoginForm
 from flask import render_template, redirect, url_for, flash
 
+from webcompilingexams.load_question import DebugLoadQuestion
 from webcompilingexams.models import User
 
 from datetime import datetime
@@ -73,6 +74,10 @@ def starting_exam():
     if current_user.exam_started:
         flash('L\'esame è giè iniziato', 'danger')
         return redirect(url_for('exam'))
+
+    questions = DebugLoadQuestion(current_user).load()
+    for q in questions:
+        db.session.add(q)
 
     current_user.exam_started = True
     db.session.commit()
