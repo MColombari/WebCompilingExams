@@ -26,22 +26,33 @@
 
 	<div class="debug" id="information_div">
 		<div class="debug information_divs">
-			Domanda 1/10
+			Domanda {{ index + 1 }} / {{ questions_number }}
 		</div>
 		<div class="debug information_divs">
-			Verificata: Si
+			{{ question.test_output }}
 		</div>
 	</div>
 	<div class="debug" id="question_content_div">
 		<div class="debug" id="output_compiler_div">
-			output compilatore
+			{{ question.compiler_output }}
 		</div>
-		<div class="debug" id="input_compiler_div">
-			input utente
+		<div class="debug" id="input_text_div">
+			<div class="debug" id="text_question_div">
+				{{ question.text }}
+			</div>
+			<div class="debug" id="input_user_div">
+				{{ question.answer }}
+			</div>
 		</div>
 	</div>
 	<div class="debug" id="navigation_bar_div">
-		Navigation bar
+		<a style="display: inline-block;" href="{{ url_for('exam') }}?index={{ index - 1 }}">
+			<button>Indietro</button>
+		</a>
+		<a style="display: inline-block;" href="{{ url_for('exam') }}?index={{ index + 1 }}">
+			<button>Avanti</button>
+		</a>
+		{{ index }}
 	</div>
 
 {% endblock %}

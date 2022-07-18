@@ -2,7 +2,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.exceptions import HTTPException
 from webcompilingexams import app, db
 from webcompilingexams.form import LoginForm
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request
 
 from webcompilingexams.load_question import DebugLoadQuestion
 from webcompilingexams.models import User
@@ -88,10 +88,21 @@ def starting_exam():
 @app.route('/exam')
 @login_required
 def exam():
+    next_question = request.args.get('index')
+    if (not next_question) or int(next_question) < 0:
+        next_question = 0
+    elif int(next_question) >= len(current_user.questions):
+        next_question = len(current_user.questions) - 1
+    else:
+        next_question = int(next_question)
+
     return render_template("exam.html", title='Esame',
                            bottom_bar_left=DATE,
                            bottom_bar_center='Esame',
-                           bottom_bar_right='Esame in svolgimento'
+                           bottom_bar_right='Esame in svolgimento',
+                           question=current_user.questions[next_question],
+                           questions_number=len(current_user.questions),
+                           index = next_question
                            )
 
 

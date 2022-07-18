@@ -24,15 +24,28 @@
 }
 
 #output_compiler_div{
-	width: 25%;
-	height: 90%;
+	position: relative;
+	top: 0;
 	display: inline-block;
+	width: 20%;
+	height: 90%;
+	margin-right: 30px;
+	margin-top: 0;
 }
 
-#input_compiler_div{
+#input_text_div{
+	display: inline-block;
 	width: 73%;
 	height: 90%;
-	display: inline-block;
+	padding: 15px;
+}
+
+#text_question_div{
+	height: 20%;
+}
+
+#input_user_div{
+	height: 60%;
 }
 
 #navigation_bar_div{
