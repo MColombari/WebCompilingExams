@@ -20,32 +20,35 @@
 #question_content_div{
 	margin: 10px 20px;
 	height: 500px;
-	padding: 5px;
-}
-
-#output_compiler_div{
-	position: relative;
-	top: 0;
-	display: inline-block;
-	width: 20%;
-	height: 90%;
-	margin-right: 30px;
-	margin-top: 0;
-}
-
-#input_text_div{
-	display: inline-block;
-	width: 73%;
-	height: 90%;
-	padding: 15px;
+	padding: 10px;
 }
 
 #text_question_div{
-	height: 20%;
+	margin-bottom: 10px;
+	height: fit-content;
+	padding: 5px;
+	text-align: center;
+}
+
+#output_compiler_div{
+	display: inline-block;
+	width: 20%;
+	height: 90%;
 }
 
 #input_user_div{
-	height: 60%;
+	display: inline-block;
+	width: 74%;
+	height: 90%;
+	margin-left: 4%;
+}
+
+#text{
+	display: flex;
+	height: 97%;
+	width: 90%;
+	
+	margin: 0 auto;
 }
 
 #navigation_bar_div{

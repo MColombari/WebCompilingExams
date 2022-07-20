@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length, ValidationError
 
 from webcompilingexams.models import User
@@ -40,3 +40,7 @@ class LoginForm(FlaskForm):
 
     def get_attribute(self):
         return [self.email, self.nome, self.cognome, self.matricola, self.submit]
+
+
+class QuestionForm(FlaskForm):
+    text = TextAreaField('Answer')

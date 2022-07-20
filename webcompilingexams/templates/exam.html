@@ -23,36 +23,34 @@
 			</tr>
 		</table>
 	</div>
-
-	<div class="debug" id="information_div">
-		<div class="debug information_divs">
-			Domanda {{ index + 1 }} / {{ questions_number }}
+	<form method="POST" action="{{ url_for('exam') }}">
+		<div class="debug" id="information_div">
+			<div class="debug information_divs">
+				Domanda {{ index + 1 }} / {{ questions_number }}
+			</div>
+			<div class="debug information_divs">
+				{{ question.test_output }}
+			</div>
 		</div>
-		<div class="debug information_divs">
-			{{ question.test_output }}
-		</div>
-	</div>
-	<div class="debug" id="question_content_div">
-		<div class="debug" id="output_compiler_div">
-			{{ question.compiler_output }}
-		</div>
-		<div class="debug" id="input_text_div">
+		<div class="debug" id="question_content_div">
 			<div class="debug" id="text_question_div">
 				{{ question.text }}
 			</div>
+			<div class="debug" id="output_compiler_div">
+				{{ question.compiler_output }}
+			</div>
 			<div class="debug" id="input_user_div">
-				{{ question.answer }}
+				{{ form.text }}
 			</div>
 		</div>
-	</div>
-	<div class="debug" id="navigation_bar_div">
-		<a style="display: inline-block;" href="{{ url_for('exam') }}?index={{ index - 1 }}">
-			<button>Indietro</button>
-		</a>
-		<a style="display: inline-block;" href="{{ url_for('exam') }}?index={{ index + 1 }}">
-			<button>Avanti</button>
-		</a>
-		{{ index }}
-	</div>
-
+		<div class="debug" id="navigation_bar_div">
+			{% if index > 0 %}
+				<input type="submit" value="Indietro" name="sub"/>
+			{% endif %}
+			{% if index + 1 < questions_number %}
+        		<input type="submit" value="Avanti" name="add" />
+			{% endif %}
+			{{ index }}
+		</div>
+	</form>
 {% endblock %}

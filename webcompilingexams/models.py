@@ -18,6 +18,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String, unique=True, nullable=False)
     exam_started = db.Column(db.Boolean, unique=False)
     exam_finished = db.Column(db.Boolean, unique=False)
+    index_question = db.Column(db.Integer, unique=False)
     questions = db.relationship('Question', backref='user', lazy=True)
 
     def __repr__(self):
