@@ -7,6 +7,27 @@
 	display: inline-block;
 }
 
+.function_divs{
+	display: inline-block;
+	margin: 0 10px;
+}
+
+.navigation_divs{
+	display: inline-block;
+	width: calc(93% / 3);
+	margin: 0 1%;
+	text-align: center;
+}
+
+.navigation_button{
+	width: 150px;
+	border-radius: 5px;
+	border: 0 solid;
+	padding: 5px;
+	font-size: 9pt;
+	font-weight: bold;
+}
+
 #information_div{
 	width: 70%;
 	height: fit-content;
@@ -19,31 +40,36 @@
 
 #question_content_div{
 	margin: 10px 20px;
-	height: 500px;
+	min-height: 500px;
+	height: fit-content;
 	padding: 10px;
+	
+	font-size: 11pt;
 }
 
 #text_question_div{
 	margin-bottom: 10px;
+	font-size: 13pt;
 	height: fit-content;
-	padding: 5px;
+	padding: 10px;
 	text-align: center;
 }
 
 #output_compiler_div{
 	display: inline-block;
 	width: 20%;
-	height: 90%;
+	height: 300px;
 }
 
 #input_user_div{
 	display: inline-block;
 	width: 74%;
-	height: 90%;
+	height: 300px;
 	margin-left: 4%;
 }
 
 #text{
+	font-size: 11pt;
 	display: flex;
 	height: 97%;
 	width: 90%;
@@ -51,6 +77,15 @@
 	margin: 0 auto;
 }
 
+#function_management_div{
+	min-width: 30%;
+	width: fit-content;
+	margin: 10px auto;
+	text-align: center;
+	padding: 10px;
+}
+
 #navigation_bar_div{
 	margin: 10px 20px;
+	height: fit-content;
 }

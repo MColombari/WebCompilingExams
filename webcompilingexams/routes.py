@@ -115,6 +115,10 @@ def exam():
             db.session.commit()
             return redirect(url_for('exam'))
 
+        if request.form.get('end') == 'Termina esame':
+            flash('Logout eseguito con successo', 'success')
+            return redirect(url_for('logout'))
+
     current_question = None
     for q in current_user.questions:
         if q.number == index_current_question:

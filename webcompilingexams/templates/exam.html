@@ -1,6 +1,11 @@
 {% extends "main_template.html" %}
 {% block head %}
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='exam.css') }}">
+	<script>
+		function confirmation(){
+            return confirm('Sicuro di voler teminare l\'esame?')
+		}
+	</script>
 {% endblock %}
 {% block body %}
 	<div id="user_information">
@@ -42,15 +47,32 @@
 			<div class="debug" id="input_user_div">
 				{{ form.text }}
 			</div>
+			<div class="debug" id="function_management_div">
+				<div class="debug function_divs">
+					<img src="{{ url_for('static', filename="icon/checked-checkbox-50.png") }}" alt="Image not found"/><br>
+					<p>Compila</p>
+				</div>
+				<div class="debug function_divs">
+					<img src="{{ url_for('static', filename="icon/test-passed-50.png") }}" alt="Image not found"/><br>
+					<p>Testa</p>
+				</div>
+			</div>
 		</div>
 		<div class="debug" id="navigation_bar_div">
-			{% if index > 0 %}
-				<input type="submit" value="Indietro" name="sub"/>
-			{% endif %}
-			{% if index + 1 < questions_number %}
-        		<input type="submit" value="Avanti" name="add" />
-			{% endif %}
-			{{ index }}
+			<div class="debug navigation_divs" id="navigation_bar_left_div">
+				{% if index > 0 %}
+					<input class="navigation_button" type="submit" value="Indietro" name="sub"/>
+				{% endif %}
+			</div>
+			<div class="debug navigation_divs" id="navigation_bar_center_div">
+				<input class="navigation_button" type="submit" value="Termina esame" name="end"
+					   style="background-color: #ff4d4d" onclick="return confirmation()"/>
+			</div>
+			<div class="debug navigation_divs" id="navigation_bar_right_div">
+				{% if index + 1 < questions_number %}
+					<input class="navigation_button" type="submit" value="Avanti" name="add" />
+				{% endif %}
+			</div>
 		</div>
 	</form>
 {% endblock %}

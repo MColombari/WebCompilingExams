@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -12,5 +14,8 @@ login_manager.login_view = 'registration'  # Pagina a cui vado nel caso in cui l
 # senza aver fatto l'accesso.
 login_manager.login_message = 'Per eccedere a questa pagina è encessario registrarsi'  # Messaggio mostrato.
 login_manager.login_message_category = 'danger'  # Categoria del popup flash.
+
+ICON_FOLDER = os.path.join('static', 'icon')
+app.config['UPLOAD_FOLDER'] = ICON_FOLDER
 
 from webcompilingexams import routes
