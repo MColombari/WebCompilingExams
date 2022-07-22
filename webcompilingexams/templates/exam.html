@@ -29,46 +29,47 @@
 		</table>
 	</div>
 	<form method="POST" action="{{ url_for('exam') }}">
-		<div class="debug" id="information_div">
-			<div class="debug information_divs">
+		<div id="information_div">
+			<div class="information_divs">
 				Domanda {{ index + 1 }} / {{ questions_number }}
 			</div>
-			<div class="debug information_divs">
+			<div class="information_divs">
 				{{ question.test_output }}
 			</div>
 		</div>
-		<div class="debug" id="question_content_div">
-			<div class="debug" id="text_question_div">
-				{{ question.text }}
+		<div id="question_content_div">
+			<div id="text_question_div">
+				{{ question.text }}<br><br><br><br><br><br><br><br><br><br><br>
 			</div>
-			<div class="debug" id="output_compiler_div">
+			<div id="output_compiler_div">
+				<p style="font-weight: bold; text-align: center; margin: 10px auto;">Output terminale</p>
 				{{ question.compiler_output }}
 			</div>
-			<div class="debug" id="input_user_div">
+			<div id="input_user_div">
 				{{ form.text }}
 			</div>
-			<div class="debug" id="function_management_div">
-				<div class="debug function_divs">
+			<div id="function_management_div">
+				<div class="function_divs">
 					<img src="{{ url_for('static', filename="icon/checked-checkbox-50.png") }}" alt="Image not found"/><br>
 					<p>Compila</p>
 				</div>
-				<div class="debug function_divs">
+				<div class="function_divs">
 					<img src="{{ url_for('static', filename="icon/test-passed-50.png") }}" alt="Image not found"/><br>
 					<p>Testa</p>
 				</div>
 			</div>
 		</div>
-		<div class="debug" id="navigation_bar_div">
-			<div class="debug navigation_divs" id="navigation_bar_left_div">
+		<div id="navigation_bar_div">
+			<div class="navigation_divs" id="navigation_bar_left_div">
 				{% if index > 0 %}
 					<input class="navigation_button" type="submit" value="Indietro" name="sub"/>
 				{% endif %}
 			</div>
-			<div class="debug navigation_divs" id="navigation_bar_center_div">
+			<div class="navigation_divs" id="navigation_bar_center_div">
 				<input class="navigation_button" type="submit" value="Termina esame" name="end"
 					   style="background-color: #ff4d4d" onclick="return confirmation()"/>
 			</div>
-			<div class="debug navigation_divs" id="navigation_bar_right_div">
+			<div class="navigation_divs" id="navigation_bar_right_div">
 				{% if index + 1 < questions_number %}
 					<input class="navigation_button" type="submit" value="Avanti" name="add" />
 				{% endif %}
