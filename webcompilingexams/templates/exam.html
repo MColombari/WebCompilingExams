@@ -29,35 +29,53 @@
 		</table>
 	</div>
 	<form method="POST" action="{{ url_for('exam') }}">
-		<div id="information_div">
-			<div class="information_divs">
+		<div class="debug" id="information_div">
+			<div class="debug information_divs">
 				Domanda {{ index + 1 }} / {{ questions_number }}
 			</div>
-			<div class="information_divs">
+			<div class="debug information_divs">
 				{{ question.test_output }}
 			</div>
 		</div>
-		<div id="question_content_div">
+		<div class="debug" id="question_content_div">
 			<div id="text_question_div">
-				{{ question.text }}<br><br><br><br><br><br><br><br><br><br><br>
+				<p style="padding: 0; margin: 0 auto; font-weight: bold;">Domanda</p>
+				{{ question.text }} <!-- <br><br><br><br><br><br><br><br><br> -->
 			</div>
-			<div id="output_compiler_div">
+
+			{% if question.type == 0 or question.type == 1 %} <!-- Compile question Java and Python -->
+				<div id="output_compiler_div">
 				<p style="font-weight: bold; text-align: center; margin: 10px auto;">Output terminale</p>
 				{{ question.compiler_output }}
 			</div>
-			<div id="input_user_div">
-				{{ form.text }}
-			</div>
-			<div id="function_management_div">
-				<div class="function_divs">
+				<div id="input_user_div">
+					{{ form.text }}
+				</div>
+				<div id="function_management_div">
+				<div class="debug function_divs" style="margin-bottom: 0;">
 					<img src="{{ url_for('static', filename="icon/checked-checkbox-50.png") }}" alt="Image not found"/><br>
-					<p>Compila</p>
+					<p style="margin-bottom: 0; padding-bottom: 0;">Compila</p>
 				</div>
 				<div class="function_divs">
 					<img src="{{ url_for('static', filename="icon/test-passed-50.png") }}" alt="Image not found"/><br>
 					<p>Testa</p>
 				</div>
 			</div>
+
+			{% elif question.type == 2 %} <!-- Multiple choice question -->
+				<div class="debug" style="display: block;" id="input_user_div">
+					{{ form.multiple_field }}
+					{% for p in preselected %}
+						{{ p }}
+					{% endfor %}
+				</div>
+			{% elif question.type == 3 %} <!-- Open question -->
+				<div style="display: block;" id="input_user_div">
+					{{ form.text }}
+				</div>
+			{% else %}
+				<div>Error</div>
+			{% endif %}
 		</div>
 		<div id="navigation_bar_div">
 			<div class="navigation_divs" id="navigation_bar_left_div">

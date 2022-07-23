@@ -31,9 +31,16 @@ class Question(db.Model):
     number = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Integer, nullable=False)
     text = db.Column(db.String, nullable=False)
+    options = db.Column(db.String, nullable=False)
     answer = db.Column(db.String, nullable=False)
     compiler_output = db.Column(db.String, nullable=False)
     test_output = db.Column(db.String, nullable=False)
+
+    # Tipi:
+    #       0 - Compilation Java.
+    #       1 - Compilation Python.
+    #       2 - Multiple choice question.
+    #       3 - Open question.
 
     def __repr__(self):
         return f"Question('{self.user_id}', '{self.number}', '{self.type}', '{self.text}', '{self.answer}', " \

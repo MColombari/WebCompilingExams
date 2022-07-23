@@ -102,7 +102,10 @@ def exam():
     if request.method == 'POST':
         for q in current_user.questions:
             if q.number == index_current_question:
-                q.answer = str(form.text.data)
+                if q.type == 2:
+                    q.answer = '\n'.join([str(i) for i in form.multiple_field.data])
+                else:
+                    q.answer = str(form.text.data)
                 db.session.commit()
 
         if request.form.get('sub') == 'Indietro':
@@ -124,13 +127,19 @@ def exam():
         if q.number == index_current_question:
             current_question = q
 
-    form.text.data = current_question.answer
+    if current_question.type == 2:
+        options = current_question.options.split('\n')
+        form.multiple_field.choices = [(i, options[i]) for i in range(len(options))]
+    else:
+        form.text.data = current_question.answer
+
     return render_template("exam.html", title='Esame',
                            bottom_bar_left=DATE,
                            bottom_bar_center='Esame',
                            bottom_bar_right='Esame in svolgimento',
                            question=current_question,
                            questions_number=len(current_user.questions),
+                           preselected=current_question.answer.split('\n'),
                            index=index_current_question,
                            form=form
                            )

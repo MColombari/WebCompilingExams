@@ -41,6 +41,7 @@ body{
     margin-top: 0;
     margin-bottom: 0;
     margin-left: 15px;
+    min-width: 400px;
     width: 35%;
     height: 50px;
     vertical-align: middle;
@@ -100,4 +101,5 @@ body{
     background-color: white;
     font-size: 11pt;
     
+    z-index: 10;
 }
