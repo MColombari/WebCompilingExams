@@ -37,10 +37,10 @@ class Question(db.Model):
     test_output = db.Column(db.String, nullable=False)
 
     # Tipi:
-    #       0 - Compilation Java.
-    #       1 - Compilation Python.
-    #       2 - Multiple choice question.
-    #       3 - Open question.
+    #       0 - Open question.
+    #       1 - Multiple choice question.
+    #       2 - Compilation Java.
+    #       3 - Compilation Python.
 
     def __repr__(self):
         return f"Question('{self.user_id}', '{self.number}', '{self.type}', '{self.text}', '{self.answer}', " \

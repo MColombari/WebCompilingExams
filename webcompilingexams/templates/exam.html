@@ -47,10 +47,28 @@
 		<div class="debug" id="question_content_div">
 			<div id="text_question_div">
 				<p style="padding: 0; margin: 0 auto; font-weight: bold;">Domanda</p>
-				{{ question.text }} <!-- <br><br><br><br><br><br><br><br><br> -->
+				{{ question.text }} <!-- <br><br><br><br><br><br><br><br> -->
 			</div>
 
-			{% if question.type == 0 or question.type == 1 %} <!-- Compile question Java and Python -->
+			{% if question.type == 0 %} <!-- Open question -->
+				<div style="display: block; margin-bottom: 40px;" id="input_user_div">
+					{{ form.text }}
+				</div>
+			{% elif question.type == 1 %} <!-- Multiple choice question -->
+				<div class="debug" style="	display: block;
+											height: fit-content;
+											margin-bottom: 30px;"
+					 id="input_user_div">
+					{% for q in form.multiple_field_data %}
+						<!-- <button class="debug" id="{{ q[0] }}" onclick="click(this)">{{ q[1] }}</button> -->
+						{% if q[0] in preselected %}
+							<input class="multiple_answer answer_selected" type="submit" value="{{ q[1] }}" name="{{ q[0] }}">
+						{% else %}
+							<input class="multiple_answer answer_not_selected" type="submit" value="{{ q[1] }}" name="{{ q[0] }}">
+						{% endif %}
+					{% endfor %}
+				</div>
+			{% elif question.type >= 2 %} <!-- Code question -->
 				<div id="output_compiler_div">
 					<p style="font-weight: bold; text-align: center; margin: 10px auto;">Output terminale</p>
 					{{ question.compiler_output }}
@@ -68,27 +86,6 @@
 						<p>Testa</p>
 					</div>
 				</div>
-
-			{% elif question.type == 2 %} <!-- Multiple choice question -->
-				<div class="debug" style="display: block;" id="input_user_div">
-					{% for q in form.multiple_field_data %}
-						<!-- <button class="debug" id="{{ q[0] }}" onclick="click(this)">{{ q[1] }}</button> -->
-						{% if q[0] in preselected %}
-							<input class="multiple_answer answer_selected" type="submit" value="{{ q[1] }}" name="{{ q[0] }}">
-						{% else %}
-							<input class="multiple_answer answer_not_selected" type="submit" value="{{ q[1] }}" name="{{ q[0] }}">
-						{% endif %}
-					{% endfor %}
-					{% for p in preselected %}
-						{{ p }}
-					{% endfor %}
-				</div>
-			{% elif question.type == 3 %} <!-- Open question -->
-				<div style="display: block;" id="input_user_div">
-					{{ form.text }}
-				</div>
-			{% else %}
-				<div>Error</div>
 			{% endif %}
 		</div>
 		<div id="navigation_bar_div">

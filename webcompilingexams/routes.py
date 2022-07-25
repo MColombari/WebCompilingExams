@@ -105,7 +105,7 @@ def exam():
 
     form = QuestionForm()
     if request.method == 'POST':
-        if current_question.type != 2:
+        if current_question.type != 1:
             current_question.answer = str(form.text.data)
             db.session.commit()
         else:
@@ -137,7 +137,7 @@ def exam():
             flash('Logout eseguito con successo', 'success')
             return redirect(url_for('logout'))
 
-    if current_question.type == 2:
+    if current_question.type == 1:
         options = current_question.options.split(CHARACTER_SEPARATOR)
         form.multiple_field_data = [ (str(i), options[i]) for i in range(len(options))]
     else:
