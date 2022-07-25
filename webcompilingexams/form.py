@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, SelectMultipleField
+from wtforms import StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length, ValidationError
 
 from webcompilingexams.models import User
@@ -44,4 +44,5 @@ class LoginForm(FlaskForm):
 
 class QuestionForm(FlaskForm):
     text = TextAreaField('Answer')
-    multiple_field = SelectMultipleField('multiple_field', coerce=int)
+    multiple_field_data = []  # Possible choice.
+    multiple_field_selection = []  # Selected choice.

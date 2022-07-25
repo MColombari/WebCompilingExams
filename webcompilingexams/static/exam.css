@@ -1,3 +1,22 @@
+option{
+	height: 100px;
+	text-align: center;
+	margin: 20px 40px;
+	
+	font-family: 'Albert Sans', sans-serif;
+    font-size: 90pt;
+}
+
+select{
+	width:300px;
+	height: 200px;
+	padding: 20px;
+}
+
+select option {
+  	background-color: purple;
+	margin: 50px;
+}
 
 .information_divs{
 	position: relative;
@@ -12,6 +31,26 @@
 	display: inline-block;
 	vertical-align:top;
 	margin: 0 10px;
+}
+
+.multiple_answer{
+	font-family: 'Albert Sans', sans-serif;
+    font-size: 11pt;
+	display: block;
+	width: calc(95% - 5px);
+	height: fit-content;
+	background-color: white;
+	padding: 10px 30px;
+	margin: 15px auto;
+	border-radius: 5px;
+}
+
+.answer_selected{
+	border: 2px solid blue;
+}
+
+.answer_not_selected{
+	border: 1px solid #7f7f7f;
 }
 
 .navigation_divs{
@@ -92,11 +131,6 @@
 	margin: auto;
 	border: 1px solid #7f7f7f;
 	border-radius: 10px;
-}
-
-#multiple_field{
-	width:300px;
-	height: 200px;
 }
 
 #function_management_div{

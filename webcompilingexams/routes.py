@@ -10,7 +10,7 @@ from webcompilingexams.models import User
 from datetime import datetime
 
 DATE = str(datetime.today().strftime('%Y / %m / %d'))
-
+CHARACTER_SEPARATOR = '\n'
 
 # @app.route('/')
 # def hello_world():
@@ -98,14 +98,29 @@ def exam():
         current_user.index_question = index_current_question
         db.session.commit()
 
+    current_question = None
+    for q in current_user.questions:
+        if q.number == index_current_question:
+            current_question = q
+
     form = QuestionForm()
     if request.method == 'POST':
-        for q in current_user.questions:
-            if q.number == index_current_question:
-                if q.type == 2:
-                    q.answer = '\n'.join([str(i) for i in form.multiple_field.data])
+        if current_question.type != 2:
+            current_question.answer = str(form.text.data)
+            db.session.commit()
+        else:
+            # This could happen after a selection of a multiple choice question.
+            answer_selected = None
+            options = current_question.options.split(CHARACTER_SEPARATOR)
+            for i in range(len(options)):
+                if request.form.get(str(i)) == str(options[i]):
+                    answer_selected = i
+            if answer_selected is not None:
+                if str(answer_selected) in current_question.answer:
+                    current_question.answer = current_question.answer.replace(f'{CHARACTER_SEPARATOR}{answer_selected}',
+                                                                              '')
                 else:
-                    q.answer = str(form.text.data)
+                    current_question.answer += f'{CHARACTER_SEPARATOR}{answer_selected}'
                 db.session.commit()
 
         if request.form.get('sub') == 'Indietro':
@@ -122,14 +137,9 @@ def exam():
             flash('Logout eseguito con successo', 'success')
             return redirect(url_for('logout'))
 
-    current_question = None
-    for q in current_user.questions:
-        if q.number == index_current_question:
-            current_question = q
-
     if current_question.type == 2:
-        options = current_question.options.split('\n')
-        form.multiple_field.choices = [(i, options[i]) for i in range(len(options))]
+        options = current_question.options.split(CHARACTER_SEPARATOR)
+        form.multiple_field_data = [ (str(i), options[i]) for i in range(len(options))]
     else:
         form.text.data = current_question.answer
 
@@ -139,7 +149,7 @@ def exam():
                            bottom_bar_right='Esame in svolgimento',
                            question=current_question,
                            questions_number=len(current_user.questions),
-                           preselected=current_question.answer.split('\n'),
+                           preselected=current_question.answer.split(CHARACTER_SEPARATOR),
                            index=index_current_question,
                            form=form
                            )

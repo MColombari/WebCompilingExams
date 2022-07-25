@@ -6,6 +6,13 @@
             return confirm('Sicuro di voler teminare l\'esame?')
 		}
 	</script>
+	<script>
+        function click(){
+            window.alert(this.id)
+            {% set value %}this.id{% endset %}
+            {{ form.multiple_field_selection.append(value) }}
+		}
+	</script>
 {% endblock %}
 {% block body %}
 	<div id="user_information">
@@ -45,26 +52,33 @@
 
 			{% if question.type == 0 or question.type == 1 %} <!-- Compile question Java and Python -->
 				<div id="output_compiler_div">
-				<p style="font-weight: bold; text-align: center; margin: 10px auto;">Output terminale</p>
-				{{ question.compiler_output }}
-			</div>
+					<p style="font-weight: bold; text-align: center; margin: 10px auto;">Output terminale</p>
+					{{ question.compiler_output }}
+				</div>
 				<div id="input_user_div">
 					{{ form.text }}
 				</div>
 				<div id="function_management_div">
-				<div class="debug function_divs" style="margin-bottom: 0;">
-					<img src="{{ url_for('static', filename="icon/checked-checkbox-50.png") }}" alt="Image not found"/><br>
-					<p style="margin-bottom: 0; padding-bottom: 0;">Compila</p>
+					<div class="debug function_divs" style="margin-bottom: 0;">
+						<img src="{{ url_for('static', filename="icon/checked-checkbox-50.png") }}" alt="Image not found"/><br>
+						<p style="margin-bottom: 0; padding-bottom: 0;">Compila</p>
+					</div>
+					<div class="function_divs">
+						<img src="{{ url_for('static', filename="icon/test-passed-50.png") }}" alt="Image not found"/><br>
+						<p>Testa</p>
+					</div>
 				</div>
-				<div class="function_divs">
-					<img src="{{ url_for('static', filename="icon/test-passed-50.png") }}" alt="Image not found"/><br>
-					<p>Testa</p>
-				</div>
-			</div>
 
 			{% elif question.type == 2 %} <!-- Multiple choice question -->
 				<div class="debug" style="display: block;" id="input_user_div">
-					{{ form.multiple_field }}
+					{% for q in form.multiple_field_data %}
+						<!-- <button class="debug" id="{{ q[0] }}" onclick="click(this)">{{ q[1] }}</button> -->
+						{% if q[0] in preselected %}
+							<input class="multiple_answer answer_selected" type="submit" value="{{ q[1] }}" name="{{ q[0] }}">
+						{% else %}
+							<input class="multiple_answer answer_not_selected" type="submit" value="{{ q[1] }}" name="{{ q[0] }}">
+						{% endif %}
+					{% endfor %}
 					{% for p in preselected %}
 						{{ p }}
 					{% endfor %}
