@@ -3,6 +3,10 @@ body{
     font-size: 9pt;
 }
 
+a{
+    text-decoration: none;
+}
+
 .debug{
     border: 1px solid dodgerblue;
 }

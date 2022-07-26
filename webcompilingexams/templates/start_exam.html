@@ -4,22 +4,21 @@
 {% endblock %}
 {% block body %}
 	<div class="center" id="center_div">
-		<table>
-			<tr>
-				<th><p style="font-weight: 400">Informazioni varia da definire...</p></th>
-			</tr>
-			<tr>
-				<th class="column_table">
-					<a href="{{ url_for('logout') }}">
-						<button class="button_1" id="logout_button" onclick="">Logout</button>
-					</a>
-				</th>
-				<th class="column_table">
-					<a href="{{ url_for('starting_exam') }}">
-						<button class="button_1" id="start_exam_button">Iniza esame</button>
-					</a>
-				</th>
-			</tr>
+		<table class="debug" id="information_table">
+			{% for k in exam_information.keys() %}
+				<tr>
+					<th class="debug table_column" style="font-weight: bold;">{{ k }}:</th>
+					<th class="debug table_column" style="font-weight: normal">{{ exam_information[k] }}</th>
+				</tr>
+			{% endfor %}
 		</table>
+		<div class="debug" id="button_div">
+			<a href="{{ url_for('logout') }}">
+				<button class="button_1" id="logout_button">Logout</button>
+			</a>
+			<a href="{{ url_for('starting_exam') }}">
+				<button class="button_1" id="start_exam_button">Iniza esame</button>
+			</a>
+		</div>
     </div>
 {% endblock %}

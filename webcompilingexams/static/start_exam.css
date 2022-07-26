@@ -2,16 +2,19 @@
     margin: auto;
 }
 
-.button_1{
-    font-size: 11pt;
-    padding: 15px;
-    border-radius: 10px;
-    border: 0 solid;
+.table_column{
+    width: calc(100% / 2);
+    margin: 0;
+    padding: 5px 20px;
+    text-align: left;
 }
 
-.column_table{
-    display: inline-block;
-    padding: 5px 15px;
+.button_1 {
+    font-size: 11pt;
+    padding: 15px;
+    margin: 0 10px;
+    border-radius: 10px;
+    border: 0 solid;
 }
 
 #center_div{
@@ -25,6 +28,18 @@
     font-weight: lighter;
     
     margin-top: 10%;
+    margin-bottom: calc(10% + 20px);
+}
+
+#information_table{
+    padding: 0;
+}
+
+#button_div{
+    width: fit-content;
+    height: fit-content;
+    margin: 30px auto 0;
+    text-align: center;
 }
 
 #start_exam_button{

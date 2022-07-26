@@ -4,6 +4,7 @@ from webcompilingexams import app, db
 from webcompilingexams.form import LoginForm, QuestionForm
 from flask import render_template, redirect, url_for, flash, request
 
+from webcompilingexams.load_exam_information import DebugExamInformation
 from webcompilingexams.load_question import DebugLoadQuestion
 from webcompilingexams.models import User
 
@@ -61,10 +62,12 @@ def start_exam():
         flash('L\'esame è giè iniziato', 'danger')
         return redirect(url_for('exam'))
 
+    information = DebugExamInformation().load()
     return render_template("start_exam.html", title='Start',
                            bottom_bar_left=DATE,
                            bottom_bar_center='Inizio esame',
-                           bottom_bar_right='In attesa dell\' inizio dell\'esame'
+                           bottom_bar_right='In attesa dell\' inizio dell\'esame',
+                           exam_information=information
                            )
 
 
