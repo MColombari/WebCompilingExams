@@ -126,6 +126,14 @@ def exam():
                     current_question.answer += f'{CHARACTER_SEPARATOR}{answer_selected}'
                 db.session.commit()
 
+        if request.form.get('compile') == 'True':
+            flash('Inizio compilazione', 'warning')
+            return redirect(url_for('exam'))
+
+        if request.form.get('test') == 'True':
+            flash('Inizio test', 'warning')
+            return redirect(url_for('exam'))
+
         if request.form.get('sub') == 'Indietro':
             current_user.index_question = index_current_question - 1
             db.session.commit()

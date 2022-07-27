@@ -35,6 +35,8 @@ class Question(db.Model):
     answer = db.Column(db.String, nullable=False)
     compiler_output = db.Column(db.String, nullable=False)
     test_output = db.Column(db.String, nullable=False)
+    test_output_summary = db.Column(db.String, nullable=False)
+    test_output_icon = db.Column(db.String, nullable=False)
 
     # Tipi:
     #       0 - Open question.
