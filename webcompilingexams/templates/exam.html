@@ -36,13 +36,17 @@
 		</table>
 	</div>
 	<form method="POST" action="{{ url_for('exam') }}">
-		<div class="" id="information_div">
-			<div class="information_divs">
+		<div class="debug" id="information_div">
+			<div class="debug information_divs">
 				Domanda {{ index + 1 }} / {{ questions_number }}
 			</div>
-			<div class="information_divs">
-				{{ question.test_output_summary }}
-				<img class="compiler_output_icon" src="{{ question.test_output_icon }}" alt="Image not found" />
+			<div class="debug information_divs">
+				<!-- {{ question.test_output_summary }}
+				<img class="compiler_output_icon" src="{{ question.test_output_icon }}" alt="Image not found" /> -->
+				{{ QUESTION_TYPE.get(question.type) }}
+			</div>
+			<div class="debug information_divs">
+				<input id="recap_answer_button" type="submit" name="recap" value="Revisione domande">
 			</div>
 		</div>
 		<div class="debug" id="question_content_div">

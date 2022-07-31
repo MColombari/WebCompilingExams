@@ -1,6 +1,6 @@
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.exceptions import HTTPException
-from webcompilingexams import app, db
+from webcompilingexams import app, db, QUESTION_TYPE
 from webcompilingexams.form import LoginForm, QuestionForm
 from flask import render_template, redirect, url_for, flash, request
 
@@ -12,6 +12,7 @@ from datetime import datetime
 
 DATE = str(datetime.today().strftime('%Y / %m / %d'))
 CHARACTER_SEPARATOR = '\n'
+
 
 # @app.route('/')
 # def hello_world():
@@ -134,6 +135,9 @@ def exam():
             flash('Inizio test', 'warning')
             return redirect(url_for('exam'))
 
+        if request.form.get('recap') == 'Revisione domande':
+            return redirect(url_for('recap'))
+
         if request.form.get('sub') == 'Indietro':
             current_user.index_question = index_current_question - 1
             db.session.commit()
@@ -150,7 +154,7 @@ def exam():
 
     if current_question.type == 1:
         options = current_question.options.split(CHARACTER_SEPARATOR)
-        form.multiple_field_data = [ (str(i), options[i]) for i in range(len(options))]
+        form.multiple_field_data = [(str(i), options[i]) for i in range(len(options))]
     else:
         form.text.data = current_question.answer
 
@@ -162,8 +166,19 @@ def exam():
                            questions_number=len(current_user.questions),
                            preselected=current_question.answer.split(CHARACTER_SEPARATOR),
                            index=index_current_question,
-                           form=form
+                           form=form,
+                           QUESTION_TYPE=QUESTION_TYPE
                            )
+
+
+@app.route('/recap')
+@login_required
+def recap():
+    if not current_user.exam_started:
+        flash('L\'esame non è stato iniziato', 'danger')
+        return redirect(url_for('start_exam'))
+    return render_template('recap.html',
+                           sorted_questions=sorted(current_user.questions, key=lambda q: q.number))
 
 
 @app.route('/logout')

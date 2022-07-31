@@ -1,6 +1,7 @@
 body{
     font-family: 'Albert Sans', sans-serif;
     font-size: 9pt;
+    color: black;
 }
 
 a{
@@ -96,6 +97,7 @@ a{
     top: 0;
     right: 0;
     width: fit-content;
+    max-width: 30%;
     height: fit-content;
     
     padding: 10px 50px;

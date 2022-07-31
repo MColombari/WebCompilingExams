@@ -1,0 +1,40 @@
+{% extends "main_template.html" %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='recap.css') }}">
+{% endblock %}
+{% block body %}
+	<div id="user_information">
+		<table style="margin: 0 auto;">
+			<tr>
+				<th style="font-weight: bold">Matricola:</th>
+				<th style="font-weight: normal">{{ current_user.id }}</th>
+			</tr>
+			<tr>
+				<th style="font-weight: bold">Email:</th>
+				<th style="font-weight: normal">{{ current_user.email }}</th>
+			</tr>
+			<tr>
+				<th style="font-weight: bold">Nome:</th>
+				<th style="font-weight: normal">{{ current_user.name }}</th>
+			</tr>
+			<tr>
+				<th style="font-weight: bold">Congnome:</th>
+				<th style="font-weight: normal">{{ current_user.surname }}</th>
+			</tr>
+		</table>
+	</div>
+    <div class="debug" id="main_div">
+		{% for q in sorted_questions %}
+			<div class="questions">
+				<div class="debug question_content">
+					<p style="font-weight: bold; margin: 0; padding: 0;">{{ q.number + 1 }}</p>
+				</div>
+				<div class="debug question_content">
+					{{ q.test_output_summary }}
+					<img class="compiler_output_icon" src="{{ q.test_output_icon }}" alt="Image not found" />
+				</div>
+				<div class="debug question_content"></div>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}

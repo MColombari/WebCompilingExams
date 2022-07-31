@@ -1,0 +1,31 @@
+.questions{
+	padding: 10px 50px;
+	margin: 20px 0;
+	border: 2px solid #7f7f7f;
+	border-radius: 10px;
+	text-align: center;
+	font-size: 11pt;
+}
+
+.question_content{
+	display: inline-block;
+	vertical-align: top;
+	margin: 0 10px;
+	height: fit-content;
+	max-width: calc(((100% - 100px) / 2) - 20px);
+}
+
+.compiler_output_icon{
+	display: inline-block;
+	vertical-align:top;
+	height: 15px;
+	width: 15px;
+	margin-left: 5px;
+}
+
+#main_div{
+	position: relative;
+	height: fit-content;
+	width: 60%;
+	margin: 50px auto 70px;
+}

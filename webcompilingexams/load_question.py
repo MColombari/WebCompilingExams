@@ -22,7 +22,7 @@ class DebugLoadQuestion:
             Question(user_id=self.user.id, number=2, type=1, text='Domanda 3', options="a\nb\nc\nd",
                      answer='', compiler_output='Output Compilatore 3',
                      test_output='NaN',
-                     test_output_summary='Nessun test eseguito',
+                     test_output_summary='Nessun test previsto',
                      test_output_icon=url_for('static', filename="icon/question-mark-64.png")),
             Question(user_id=self.user.id, number=3, type=1, text='Domanda 3.1', options="a",
                      answer='', compiler_output='Output Compilatore 3.1',

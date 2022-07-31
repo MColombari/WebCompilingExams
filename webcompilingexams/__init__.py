@@ -18,4 +18,7 @@ login_manager.login_message_category = 'danger'  # Categoria del popup flash.
 ICON_FOLDER = os.path.join('static', 'icon')
 app.config['UPLOAD_FOLDER'] = ICON_FOLDER
 
+QUESTION_TYPE = {0: 'Domanda a risposta aperta', 1: 'Domanda a risposta multipla',
+                 2: 'Programmazione Java', 3: 'Programmazione Python'}
+
 from webcompilingexams import routes
