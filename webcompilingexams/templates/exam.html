@@ -98,19 +98,22 @@
 				</div>
 			{% endif %}
 		</div>
-		<div id="navigation_bar_div">
-			<div class="navigation_divs" id="navigation_bar_left_div">
+		<div class="debug" id="navigation_bar_div">
+			<div class="debug navigation_divs" id="navigation_bar_left_div">
 				{% if index > 0 %}
-					<input class="navigation_button" type="submit" value="Indietro" name="sub"/>
+					<input class="" type="image" value="Indietro" name="sub"
+						style="transform: rotate(180deg);"
+						src="{{ url_for('static', filename="icon/arrow-24.png") }}" alt="Image not found"/>
 				{% endif %}
 			</div>
-			<div class="navigation_divs" id="navigation_bar_center_div">
+			<div class="debug navigation_divs" id="navigation_bar_center_div">
 				<input class="navigation_button" type="submit" value="Termina esame" name="end"
-					   style="background-color: #ff4d4d" onclick="return confirmation()"/>
+					   style="background-color: #ffb3b3;" onclick="return confirmation()"/>
 			</div>
-			<div class="navigation_divs" id="navigation_bar_right_div">
+			<div class="debug navigation_divs" id="navigation_bar_right_div">
 				{% if index + 1 < questions_number %}
-					<input class="navigation_button" type="submit" value="Avanti" name="add" />
+					<input class="" type="image" value="Avanti" name="add"
+						src="{{ url_for('static', filename="icon/arrow-24.png") }}" alt="Image not found"/>
 				{% endif %}
 			</div>
 		</div>

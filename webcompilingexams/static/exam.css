@@ -44,7 +44,7 @@
 
 .navigation_divs{
 	display: inline-block;
-	vertical-align:top;
+	vertical-align: middle;
 	width: calc(93% / 3);
 	margin: 0 1%;
 	text-align: center;
