@@ -109,6 +109,7 @@ def exam():
 
     form = QuestionForm()
     if request.method == 'POST':
+        # Save answer.
         if current_question.type != 1:
             current_question.answer = str(form.text.data)
             db.session.commit()
@@ -126,6 +127,16 @@ def exam():
                 else:
                     current_question.answer += f'{CHARACTER_SEPARATOR}{answer_selected}'
                 db.session.commit()
+
+        # Update answer summary.
+        if current_question.type <= 1:
+            if current_question.answer != '':
+                current_question.test_output_summary = 'Risposta fornita'
+                current_question.test_output_icon = url_for('static', filename="icon/check-mark-48.png")
+            else:
+                current_question.test_output_summary = 'Nessuna risposta fornita'
+                current_question.test_output_icon = url_for('static', filename="icon/cross-mark-48.png")
+            db.session.commit()
 
         if request.form.get('compile') == 'True':
             flash('Inizio compilazione', 'warning')
@@ -177,7 +188,10 @@ def recap():
     if not current_user.exam_started:
         flash('L\'esame non è stato iniziato', 'danger')
         return redirect(url_for('start_exam'))
-    return render_template('recap.html',
+    return render_template('recap.html', title='Recap Esame',
+                           bottom_bar_left=DATE,
+                           bottom_bar_center='Esame',
+                           bottom_bar_right='Revisione domande',
                            sorted_questions=sorted(current_user.questions, key=lambda q: q.number))
 
 
