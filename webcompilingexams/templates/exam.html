@@ -6,13 +6,6 @@
             return confirm('Sicuro di voler teminare l\'esame?')
 		}
 	</script>
-	<script>
-        function click(){
-            window.alert(this.id)
-            {% set value %}this.id{% endset %}
-            {{ form.multiple_field_selection.append(value) }}
-		}
-	</script>
 {% endblock %}
 {% block body %}
 	<div id="user_information">

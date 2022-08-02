@@ -16,9 +16,10 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String, nullable=False)
     surname = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
-    exam_started = db.Column(db.Boolean, unique=False)
-    exam_finished = db.Column(db.Boolean, unique=False)
-    index_question = db.Column(db.Integer, unique=False)
+    exam_started = db.Column(db.Boolean, unique=False, default=False)
+    exam_finished = db.Column(db.Boolean, unique=False, default=False)
+    index_question = db.Column(db.Integer, unique=False, default=0)
+    is_running = db.Column(db.Boolean, unique=False, default=False)
     questions = db.relationship('Question', backref='user', lazy=True)
 
     def __repr__(self):

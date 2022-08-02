@@ -10,9 +10,10 @@ from webcompilingexams.models import User
 
 from datetime import datetime
 
+from webcompilingexams.run_program import RunManager
+
 DATE = str(datetime.today().strftime('%Y / %m / %d'))
 CHARACTER_SEPARATOR = '\n'
-
 
 # @app.route('/')
 # def hello_world():
@@ -83,6 +84,8 @@ def starting_exam():
     for q in questions:
         db.session.add(q)
 
+    RunManager.create_directory(current_user.id)
+
     current_user.exam_started = True
     db.session.commit()
 
@@ -92,6 +95,10 @@ def starting_exam():
 @app.route('/exam', methods=['GET', 'POST'])
 @login_required
 def exam():
+    if not current_user.exam_started:
+        flash('L\'esame non è ancora stato iniziato', 'warning')
+        return redirect(url_for('start_exam'))
+
     index_current_question = current_user.index_question
     if index_current_question < 0:
         index_current_question = 0
@@ -139,7 +146,11 @@ def exam():
             db.session.commit()
 
         if request.form.get('compile') == 'True':
-            flash('Inizio compilazione', 'warning')
+            if current_user.is_running:
+                flash('Attendere il termina del\'esecuzione corrente')
+            else:
+                run_manager = RunManager(current_user, current_question)
+                run_manager.compile()
             return redirect(url_for('exam'))
 
         if request.form.get('test') == 'True':
@@ -198,9 +209,14 @@ def recap():
 @app.route('/logout')
 @login_required
 def logout():
-    logout_user()
-    current_user.exam_started = True
+    if not current_user.exam_started:
+        flash('L\'esame non è ancora stato iniziato', 'warning')
+        return redirect(url_for('start_exam'))
+
+    current_user.exam_finished = True
     db.session.commit()
+
+    logout_user()
 
     flash('User scollegato con successo', 'success')
     return redirect(url_for('registration'))
