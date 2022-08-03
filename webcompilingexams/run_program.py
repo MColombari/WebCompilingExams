@@ -1,8 +1,8 @@
 import os
 import subprocess
 import threading
-from flask import flash, redirect, url_for
-from webcompilingexams import db, app
+from flask import flash
+from webcompilingexams import db
 
 
 class RunManager:
@@ -22,12 +22,26 @@ class RunManager:
         self.user.is_running = True
         db.session.commit()
 
+        PATH = f'/app/student_exam/u{self.user.id}'
+
         if self.question.type == 2:
-            t = JavaCompileRun(self.question.answer, self.question.user_id, self)
+            with open(PATH + '/RunningFile.java', 'w') as f:
+                f.write("public class RunningFile{\n"
+                        f"   {self.question.answer}\n"
+                        "}")
+            # '-proc:only' suppress .class file generation.
+            # '-Xlint:none' suppress warning due to a warning generated using '-proc:only'.
+            t = CompileRun(['javac', '-proc:only', '-Xlint:none', PATH + '/RunningFile.java'], self)
             t.start()
             t.join()
+
         elif self.question.type == 3:
-            pass
+            with open(PATH + '/RunningFile.py', 'w') as f:
+                f.write(self.question.answer)
+
+            t = CompileRun(['python3', PATH + '/RunningFile.py'], self)
+            t.start()
+            t.join()
 
         if self.terminal_output:
             self.question.compiler_output = self.terminal_output
@@ -45,33 +59,22 @@ class RunManager:
         pass
 
 
-class JavaCompileRun(threading.Thread):
-    def __init__(self, program, user_id, run_manager):
+class CompileRun(threading.Thread):
+    def __init__(self, command, run_manager):
         threading.Thread.__init__(self)
-        self.program = program
-        self.user_id = user_id
+        self.command = command
         self.run_manager = run_manager
 
     def run(self):
-        PATH = f'/app/student_exam/u{self.user_id}'
         flash_type = 'success'
-
-        with open(PATH + '/RunningFile.java', 'w') as f:
-            f.write("public class RunningFile{\n"
-                    "   public static void main(String[] args){}\n"
-                    f"   {self.program}\n"
-                    "}\n")
-
         try:
-            process = subprocess.run(['java', PATH + '/RunningFile.java'], capture_output=True, encoding="utf-8",
+
+            process = subprocess.run(self.command, capture_output=True, encoding="utf-8",
                                      timeout=5)
             if process.stderr == '':
                 self.run_manager.terminal_output = "Il compilatore non ha trovato nessun errore."
             else:
                 self.run_manager.terminal_output = process.stderr
-
-            with open(PATH + '/compuler_out.txt', 'w') as f:
-                f.write(f'stdout:\n{process.stdout}\nstderr:\n{process.stderr}')
         except subprocess.TimeoutExpired as e:
             self.run_manager.terminal_output = f'La compilazione ha richiesto più di 5 secondi\n{e}'
             flash_type = 'warning'
