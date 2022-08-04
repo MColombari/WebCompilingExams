@@ -33,6 +33,12 @@
 					{{ q.test_output_summary }}
 					<img class="compiler_output_icon" src="{{ q.test_output_icon }}" alt="Image not found" />
 				</div>
+				<div class="debug question_content">
+					<a href="{{ url_for('exam') }}?index={{ q.number }}">
+						<img class="compiler_output_icon" src="{{ url_for('static', filename="icon/eye-60.png") }}"
+						alt="Image not found" />
+					</a>
+				</div>
 			</div>
 		{% endfor %}
 		<div class="debug" id="back_to_exam_div">

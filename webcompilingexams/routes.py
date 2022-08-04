@@ -1,26 +1,17 @@
+from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.exceptions import HTTPException
-from webcompilingexams import app, db, QUESTION_TYPE
-from webcompilingexams.form import LoginForm, QuestionForm
-from flask import render_template, redirect, url_for, flash, request
+from datetime import datetime
 
+from webcompilingexams import app, db, QUESTION_TYPE
+from webcompilingexams.form import RegistrationForm, QuestionForm
 from webcompilingexams.load_exam_information import DebugExamInformation
 from webcompilingexams.load_question import DebugLoadQuestion
 from webcompilingexams.models import User
-
-from datetime import datetime
-
 from webcompilingexams.run_program import RunManager
 
 DATE = str(datetime.today().strftime('%Y / %m / %d'))
 CHARACTER_SEPARATOR = '\n'
-
-# @app.route('/')
-# def hello_world():
-#    return render_template("hello_page.html", title='Home',
-#                           bottom_bar_left=DATE,
-#                           bottom_bar_center='Pagina di benvenuto',
-#                           bottom_bar_right='Non ancora registrato')
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -28,22 +19,22 @@ CHARACTER_SEPARATOR = '\n'
 def registration():
     if current_user.is_authenticated:
         if current_user.exam_started:
-            flash('L\'esame è in corso, non è possibile registrarsi nuovamente', 'danger')
+            flash('L\'esame è in corso di svolgimento', 'warning')
             return redirect(url_for('exam'))
-        flash('Utente già registrato', 'warning')
+        flash('L\'utente è già registrato', 'warning')
         return redirect(url_for('start_exam'))
 
-    form = LoginForm()
+    form = RegistrationForm()
     if form.validate_on_submit():
         user = User(id=int(form.matricola.data), name=form.nome.data, surname=form.cognome.data,
-                    email=form.email.data, exam_started=False, exam_finished=False, index_question=0)
+                    email=form.email.data)
         db.session.add(user)
         db.session.commit()
         login_user(user, True)
 
         # next_page = request.args.get('next')
 
-        flash('User inserito con successo', 'success')
+        flash('Registrazione utente completata', 'success')
 
         # if next_page:
         #     return redirect(next_page)  # Vai alla pagina a cui ha cercato di andare precedentemente senza il login.
@@ -61,13 +52,13 @@ def registration():
 @login_required
 def start_exam():
     if current_user.exam_started:
-        flash('L\'esame è giè iniziato', 'danger')
+        flash('L\'esame è in corso di svolgimento', 'warning')
         return redirect(url_for('exam'))
 
     information = DebugExamInformation().load()
     return render_template("start_exam.html", title='Start',
                            bottom_bar_left=DATE,
-                           bottom_bar_center='Inizio esame',
+                           bottom_bar_center='Waiting room',
                            bottom_bar_right='In attesa dell\' inizio dell\'esame',
                            exam_information=information
                            )
@@ -77,7 +68,7 @@ def start_exam():
 @login_required
 def starting_exam():
     if current_user.exam_started:
-        flash('L\'esame è giè iniziato', 'danger')
+        flash('L\'esame è in corso di svolgimento', 'warning')
         return redirect(url_for('exam'))
 
     questions = DebugLoadQuestion(current_user).load()
@@ -96,10 +87,15 @@ def starting_exam():
 @login_required
 def exam():
     if not current_user.exam_started:
-        flash('L\'esame non è ancora stato iniziato', 'warning')
+        flash('Per accedere alla pagina è necessario avviare l\'esame', 'warning')
         return redirect(url_for('start_exam'))
 
-    index_current_question = current_user.index_question
+    index = request.args.get('index')
+    if index:
+        current_user.index_question = index
+        db.session.commit()
+
+    index_current_question = int(current_user.index_question)
     if index_current_question < 0:
         index_current_question = 0
     elif index_current_question >= len(current_user.questions):
@@ -109,10 +105,7 @@ def exam():
         current_user.index_question = index_current_question
         db.session.commit()
 
-    current_question = None
-    for q in current_user.questions:
-        if q.number == index_current_question:
-            current_question = q
+    current_question = next((q for q in current_user.questions if q.number == index_current_question))
 
     form = QuestionForm()
     if request.method == 'POST':
@@ -129,9 +122,11 @@ def exam():
                     answer_selected = i
             if answer_selected is not None:
                 if str(answer_selected) in current_question.answer:
+                    # Remove selected question.
                     current_question.answer = current_question.answer.replace(f'{CHARACTER_SEPARATOR}{answer_selected}',
                                                                               '')
                 else:
+                    # Add selected question.
                     current_question.answer += f'{CHARACTER_SEPARATOR}{answer_selected}'
                 db.session.commit()
 
@@ -145,6 +140,7 @@ def exam():
                 current_question.test_output_icon = url_for('static', filename="icon/cross-mark-48.png")
             db.session.commit()
 
+        # Other button pressed.
         if request.form.get('compile') == 'True':
             if current_user.is_running:
                 flash('Attendere il termina del\'esecuzione corrente')
@@ -155,6 +151,7 @@ def exam():
 
         if request.form.get('test') == 'True':
             flash('Inizio test', 'warning')
+            pass
             return redirect(url_for('exam'))
 
         if request.form.get('recap') == 'Revisione domande':
@@ -171,9 +168,9 @@ def exam():
             return redirect(url_for('exam'))
 
         if request.form.get('end') == 'Termina esame':
-            flash('Logout eseguito con successo', 'success')
             return redirect(url_for('logout'))
 
+    # Render "exam.html" page.
     if current_question.type == 1:
         options = current_question.options.split(CHARACTER_SEPARATOR)
         form.multiple_field_data = [(str(i), options[i]) for i in range(len(options))]
@@ -197,11 +194,11 @@ def exam():
 @login_required
 def recap():
     if not current_user.exam_started:
-        flash('L\'esame non è stato iniziato', 'danger')
+        flash('Per accedere alla pagina è necessario avviare l\'esame', 'warning')
         return redirect(url_for('start_exam'))
     return render_template('recap.html', title='Recap Esame',
                            bottom_bar_left=DATE,
-                           bottom_bar_center='Esame',
+                           bottom_bar_center='Recap',
                            bottom_bar_right='Revisione domande',
                            sorted_questions=sorted(current_user.questions, key=lambda q: q.number))
 
@@ -209,16 +206,15 @@ def recap():
 @app.route('/logout')
 @login_required
 def logout():
-    if not current_user.exam_started:
-        flash('L\'esame non è ancora stato iniziato', 'warning')
-        return redirect(url_for('start_exam'))
+    if current_user.exam_started:
+        pass  # Salve user data.
 
     current_user.exam_finished = True
     db.session.commit()
 
     logout_user()
 
-    flash('User scollegato con successo', 'success')
+    flash('Logout eseguito con successo', 'success')
     return redirect(url_for('registration'))
 
 

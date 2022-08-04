@@ -27,7 +27,7 @@ def validate_ID():
     return _validate
 
 
-class LoginForm(FlaskForm):
+class RegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(message='Campo dati obbligatorio'),
                                              Email(message='Email non valida'),
                                              validate_email()])
