@@ -3,15 +3,15 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.exceptions import HTTPException
 from datetime import datetime
 
-from webcompilingexams import app, db, QUESTION_TYPE
+from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR
 from webcompilingexams.form import RegistrationForm, QuestionForm
 from webcompilingexams.load_exam_information import DebugExamInformation
 from webcompilingexams.load_question import DebugLoadQuestion
 from webcompilingexams.models import User
 from webcompilingexams.run_program import RunManager
+from webcompilingexams.save_user_data import SaveUserData
 
 DATE = str(datetime.today().strftime('%Y / %m / %d'))
-CHARACTER_SEPARATOR = '\n'
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -211,6 +211,8 @@ def logout():
 
     current_user.exam_finished = True
     db.session.commit()
+
+    SaveUserData(current_user).save()
 
     logout_user()
 

@@ -23,8 +23,7 @@ class User(db.Model, UserMixin):
     questions = db.relationship('Question', backref='user', lazy=True)
 
     def __repr__(self):
-        return f"User('{self.id}', '{self.name}', '{self.surname}', '{self.email}', '{self.exam_started}', " \
-               f"'{self.exam_finished}')"
+        return f"User('{self.id}', '{self.name}', '{self.surname}', '{self.email}')"
 
 
 class Question(db.Model):
@@ -46,5 +45,5 @@ class Question(db.Model):
     #       3 - Compilation Python.
 
     def __repr__(self):
-        return f"Question('{self.user_id}', '{self.number}', '{self.type}', '{self.text}', '{self.answer}', " \
-               f"'{self.compiler_output}', '{self.test_output}')"
+        return f"Question('{self.user_id}', '{self.number}', '{self.type}', '{self.text}', '{self.options}'," \
+               f"'{self.answer}', '{self.compiler_output}', '{self.test_output}')"

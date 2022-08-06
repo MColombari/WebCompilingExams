@@ -2,7 +2,7 @@
 {% block head %}
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='exam.css') }}">
 	<script>
-		function confirmation(){
+        function confirmation(){
             return confirm('Sicuro di voler teminare l\'esame?')
 		}
 	</script>
@@ -66,11 +66,19 @@
 			{% elif question.type >= 2 %} <!-- Code question -->
 				<div id="output_compiler_div">
 					<p style="font-weight: bold; text-align: center; margin: 10px auto;">Output terminale</p>
-					{{ question.compiler_output }}
+					{% if question.compiler_output == '' %}
+						Nessun output.
+					{% else %}
+						{{ question.compiler_output }}
+					{% endif %}
 				</div>
 				<div id="output_test_div">
 					<p style="font-weight: bold; text-align: center; margin: 10px auto;">Test</p>
-					{{ question.test_output }}
+					{% if question.test_output == '' %}
+						Nessun output dai test.
+					{% else %}
+						{{ question.test_output }}
+					{% endif %}
 				</div>
 				<div id="input_user_div">
 					{{ form.text }}
