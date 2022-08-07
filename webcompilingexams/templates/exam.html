@@ -1,6 +1,31 @@
 {% extends "main_template.html" %}
 {% block head %}
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='exam.css') }}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script>
+		$(document).ready(function(){
+		  $("textarea").keydown(function(e) {
+              if (e.keyCode === 9) { // tab was pressed
+                  // get caret position/selection
+                  let start = this.selectionStart;
+                  let end = this.selectionEnd;
+
+                  let $this = $(this);
+
+                  // set textarea value to: text before caret + tab + text after caret
+                  $this.val($this.val().substring(0, start)
+                      + "\t"
+                      + $this.val().substring(end));
+
+                  // put caret at right position again
+                  this.selectionStart = this.selectionEnd = start + 1;
+
+                  // prevent the focus lose
+                  return false;
+              }
+          });
+		});
+	</script>
 	<script>
         function confirmation(){
             return confirm('Sicuro di voler teminare l\'esame?')
