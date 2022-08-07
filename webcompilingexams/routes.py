@@ -142,11 +142,7 @@ def exam():
 
         # Other button pressed.
         if request.form.get('compile') == 'True':
-            if current_user.is_running:
-                flash('Attendere il termina del\'esecuzione corrente')
-            else:
-                run_manager = RunManager(current_user, current_question)
-                run_manager.compile()
+            RunManager(current_user, current_question).compile()
             return redirect(url_for('exam'))
 
         if request.form.get('test') == 'True':

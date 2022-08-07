@@ -1,7 +1,9 @@
 import os
 import subprocess
 import threading
+
 from flask import flash
+
 from webcompilingexams import db
 
 
@@ -19,9 +21,6 @@ class RunManager:
         os.mkdir(f'/app/student_exam/u{user_id}')
 
     def compile(self):
-        self.user.is_running = True
-        db.session.commit()
-
         PATH = f'/app/student_exam/u{self.user.id}'
 
         if self.question.type == 2:
@@ -52,7 +51,6 @@ class RunManager:
         if self.flash and self.flash_type:
             flash(self.flash, self.flash_type)
 
-        self.user.is_running = False
         db.session.commit()
 
     def test(self):
