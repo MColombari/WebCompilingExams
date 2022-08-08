@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField
+from wtforms import StringField, SubmitField, TextAreaField, PasswordField
 from wtforms.validators import DataRequired, Email, Length, ValidationError
 
 from webcompilingexams.models import User
@@ -39,7 +39,16 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Inizia esame')
 
     def get_attribute(self):
-        return [self.email, self.nome, self.cognome, self.matricola, self.submit]
+        return [self.email, self.nome, self.cognome, self.matricola]
+
+
+class AdminLoginForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired(message='Campo dati obbligatorio')])
+    password = PasswordField('Password', validators=[DataRequired(message='Campo dati obbligatorio')])
+    submit = SubmitField('Login')
+
+    def get_attribute(self):
+        return [self.name, self.password]
 
 
 class QuestionForm(FlaskForm):

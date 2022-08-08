@@ -13,6 +13,11 @@
 	</script>
 {% endblock head %}
 {% block body %}
+	<div id="admin_link">
+		<a href="{{ url_for('login_administrator') }}">
+			amministratore
+		</a>
+	</div>
     <div class="center" id="main_div">
     <form method="POST" action="{{ url_for('registration') }}" id="login_form" onsubmit="return show_confirm()">
         <table class="center center_vertical" id="login_form_table">
@@ -36,6 +41,9 @@
                 </tr>
             {% endfor %}
         </table>
+		<div style="text-align: center; margin: 10px 0 auto;">
+			{{ form.submit }}
+		</div>
     </form>
     </div>
 {% endblock body %}

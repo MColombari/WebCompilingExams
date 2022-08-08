@@ -4,7 +4,7 @@ from werkzeug.exceptions import HTTPException
 from datetime import datetime
 
 from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR
-from webcompilingexams.form import RegistrationForm, QuestionForm
+from webcompilingexams.form import RegistrationForm, QuestionForm, AdminLoginForm
 from webcompilingexams.load_exam_information import DebugExamInformation
 from webcompilingexams.load_question import DebugLoadQuestion
 from webcompilingexams.models import User
@@ -48,6 +48,27 @@ def registration():
                            )
 
 
+@app.route('/login-admin', methods=['GET', 'POST'])
+def login_administrator():
+    credential = DebugExamInformation().load_admin_information()
+
+    form = AdminLoginForm()
+    if form.validate_on_submit():
+        if (form.name.data == credential["Name"] and
+                form.password.data == credential["Password"]):
+            pass  # Go to admin page and login user
+            flash("Success", 'success')
+
+        else:
+            flash("Nome e/o password sono errati", 'danger')
+
+    return render_template("login_administrator.html", title='Admin Login',
+                           bottom_bar_left=DATE,
+                           bottom_bar_center='Login admin page',
+                           bottom_bar_right='Atteso login',
+                           form=form)
+
+
 @app.route('/start')
 @login_required
 def start_exam():
@@ -55,7 +76,7 @@ def start_exam():
         flash('L\'esame è in corso di svolgimento', 'warning')
         return redirect(url_for('exam'))
 
-    information = DebugExamInformation().load()
+    information = DebugExamInformation().load_generic_information()
     return render_template("start_exam.html", title='Start',
                            bottom_bar_left=DATE,
                            bottom_bar_center='Waiting room',
