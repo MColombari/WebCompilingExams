@@ -50,23 +50,42 @@ def registration():
 
 @app.route('/login-admin', methods=['GET', 'POST'])
 def login_administrator():
+    if current_user.is_authenticated:
+        if current_user.id == 1:
+            flash("Login amministratore già eseguito", 'warning')
+            return redirect(url_for('admin_page'))
+        else:
+            flash("Accesso alla pagina negato", 'danger')
+            return redirect(url_for('start_exam'))
+
     credential = DebugExamInformation().load_admin_information()
 
     form = AdminLoginForm()
     if form.validate_on_submit():
         if (form.name.data == credential["Name"] and
                 form.password.data == credential["Password"]):
-            pass  # Go to admin page and login user
-            flash("Success", 'success')
+            user = User(id=1, name="admin", surname="admin",
+                        email="admin")
+            db.session.add(user)
+            db.session.commit()
+            login_user(user, True)
 
+            flash("Login amminstratore eseguito con successo", 'success')
+            return redirect(url_for('admin_page'))
         else:
-            flash("Nome e/o password sono errati", 'danger')
+            flash("Nome e/o password sono errati", 'warning')
 
     return render_template("login_administrator.html", title='Admin Login',
                            bottom_bar_left=DATE,
                            bottom_bar_center='Login admin page',
                            bottom_bar_right='Atteso login',
                            form=form)
+
+
+@app.route('/admin')
+@login_required
+def admin_page():
+    return render_template('administrator_page.html')
 
 
 @app.route('/start')
@@ -224,12 +243,9 @@ def recap():
 @login_required
 def logout():
     if current_user.exam_started:
-        pass  # Salve user data.
-
-    current_user.exam_finished = True
-    db.session.commit()
-
-    SaveUserData(current_user).save()
+        SaveUserData(current_user).save()
+        current_user.exam_finished = True
+        db.session.commit()
 
     logout_user()
 
