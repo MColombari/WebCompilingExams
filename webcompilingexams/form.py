@@ -55,3 +55,7 @@ class QuestionForm(FlaskForm):
     text = TextAreaField('Answer')
     multiple_field_data = []  # Possible choice.
     multiple_field_selection = []  # Selected choice.
+
+
+class AdminForm(FlaskForm):
+    text = TextAreaField('Filter')

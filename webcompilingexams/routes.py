@@ -3,8 +3,8 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.exceptions import HTTPException
 from datetime import datetime
 
-from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR
-from webcompilingexams.form import RegistrationForm, QuestionForm, AdminLoginForm
+from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR, ADMIN_ID
+from webcompilingexams.form import RegistrationForm, QuestionForm, AdminLoginForm, AdminForm
 from webcompilingexams.load_exam_information import DebugExamInformation
 from webcompilingexams.load_question import DebugLoadQuestion
 from webcompilingexams.models import User
@@ -51,7 +51,7 @@ def registration():
 @app.route('/login-admin', methods=['GET', 'POST'])
 def login_administrator():
     if current_user.is_authenticated:
-        if current_user.id == 1:
+        if current_user.id == ADMIN_ID:
             flash("Login amministratore già eseguito", 'warning')
             return redirect(url_for('admin_page'))
         else:
@@ -64,10 +64,10 @@ def login_administrator():
     if form.validate_on_submit():
         if (form.name.data == credential["Name"] and
                 form.password.data == credential["Password"]):
-            user = User(id=1, name="admin", surname="admin",
+            user = User(id=ADMIN_ID, name="admin", surname="admin",
                         email="admin")
 
-            count = User.query.filter_by(id=1).count()
+            count = User.query.filter_by(id=ADMIN_ID).count()
             if count == 0:
                 db.session.add(user)
                 db.session.commit()
@@ -86,10 +86,25 @@ def login_administrator():
                            form=form)
 
 
-@app.route('/admin')
+@app.route('/admin', methods=['GET', 'POST'])
 @login_required
 def admin_page():
-    return render_template('administrator_page.html')
+    if current_user.id != ADMIN_ID:
+        flash("Accesso alla pagina negato", 'danger')
+        return redirect(url_for('start_exam'))
+
+    form = AdminForm()
+    if request.method == 'POST' and form.text.data != '':
+        users = [u for u in User.query.filter_by(id=int(form.text.data)) if u.id != ADMIN_ID]
+    else:
+        users = [u for u in User.query.all() if u.id != ADMIN_ID]
+
+    return render_template('administrator_page.html', title='Admin',
+                           bottom_bar_left=DATE,
+                           bottom_bar_center='Administrator page',
+                           bottom_bar_right='Controllo esame',
+                           form=form,
+                           users=users)
 
 
 @app.route('/start')

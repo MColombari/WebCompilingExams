@@ -1,0 +1,60 @@
+.user{
+	height: fit-content;
+	margin-top: 15px;
+	padding: 10px 40px;
+	font-size: 11pt;
+	border: 1px solid #7f7f7f;
+	border-radius: 10px;
+}
+
+.status_icon{
+	height: 20px;
+}
+
+#main_center_div{
+	margin: 10px 20px 70px;
+	height: fit-content;
+}
+
+#fast_function_div{
+	margin: 10px;
+	height: fit-content;
+	min-height: 100px;
+}
+
+#user_information_div{
+	margin: 0 10px 10px;
+}
+
+#search_bar_div{
+	margin: 0 10px;
+	padding: 0;
+}
+
+#text{
+	display: inline-block;
+	vertical-align: middle;
+	width: calc(100% - 105px);
+	height: 30px;
+	line-height: 30px;
+	padding: 5px 20px;
+	border: 2px solid #7f7f7f;
+	border-radius: 15px;
+	text-align: center;
+	font-size: 13pt;
+	
+	overflow:hidden;
+}
+
+#search_image{
+	display: inline-block;
+	vertical-align: middle;
+	margin: 0 10px;
+	
+}
+
+#show_user{
+	margin: 0 30px;
+	padding: 0;
+	height: fit-content;
+}

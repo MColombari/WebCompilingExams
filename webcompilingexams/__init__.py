@@ -22,5 +22,6 @@ app.config['UPLOAD_FOLDER'] = ICON_FOLDER
 QUESTION_TYPE = {0: 'Domanda a risposta aperta', 1: 'Domanda a risposta multipla',
                  2: 'Programmazione Java', 3: 'Programmazione Python'}
 CHARACTER_SEPARATOR = '\n'
+ADMIN_ID = 1000000
 
 from webcompilingexams import routes

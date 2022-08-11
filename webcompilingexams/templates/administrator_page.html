@@ -1,7 +1,52 @@
 {% extends "main_template.html" %}
 {%  block head %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='administrator_page.css') }}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script>
+		$(document).ready(function(){
+		  $("textarea").keydown(function(e) {
+              if (e.keyCode === 13) {
+                  $("form").submit()
+				  return false;
+			  }
+		  });
+		});
+	</script>
 {% endblock head %}
 {% block body %}
-    Admin page!
+    <div class="debug" id="main_center_div">
+		<div class="debug" id="fast_function_div">
+			Funzioni veloci.
+		</div>
+		<div class="debug" id="user_information_div">
+			<div class="debug" id="search_bar_div">
+				<form method="POST" action="{{ url_for('admin_page') }}">
+					{{ form.text }}
+					<input id="search_image" type="image" name="search" value="True"
+								   src="{{ url_for('static', filename="icon/search-30.png") }}"
+								   alt="Image not found">
+				</form>
+			</div>
+			<div class="debug" id="show_user">
+				{% for user in users %}
+					<div class="debug user">
+						{{ user.id }} {{ user.email }} {{ user.name }} {{ user.surname }}
+						{% if not user.exam_started and not user.exam_finished %}
+							<img class="status_icon" src="{{ url_for('static', filename="icon/red-circle-48.png") }}"
+								 alt="Image not found">
+						{% elif user.exam_started and (not user.exam_finished) %}
+							<img class="status_icon" src="{{ url_for('static', filename="icon/orange-circle-48.png") }}"
+								 alt="Image not found">
+						{% elif user.exam_started and user.exam_finished %}
+							<img class="status_icon" src="{{ url_for('static', filename="icon/green-circle-48.png") }}"
+								 alt="Image not found">
+						{% else %}
+							<img class="status_icon" src="{{ url_for('static', filename="icon/circled-48.png") }}"
+								 alt="Image not found">
+						{% endif %}
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
 {% endblock body %}
