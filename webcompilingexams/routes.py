@@ -66,8 +66,12 @@ def login_administrator():
                 form.password.data == credential["Password"]):
             user = User(id=1, name="admin", surname="admin",
                         email="admin")
-            db.session.add(user)
-            db.session.commit()
+
+            count = User.query.filter_by(id=1).count()
+            if count == 0:
+                db.session.add(user)
+                db.session.commit()
+
             login_user(user, True)
 
             flash("Login amminstratore eseguito con successo", 'success')

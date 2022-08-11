@@ -15,6 +15,13 @@
     margin-bottom: auto;
 }
 
+.option_div{
+    display: inline-block;
+	vertical-align:top;
+    text-align: center;
+    margin: 0 10px;
+}
+
 #main_div{
     margin-top: 10%;
 }
@@ -33,6 +40,12 @@
     height: fit-content;
     font-family: 'Albert Sans', sans-serif;
     font-size: 11pt;
+}
+
+#option_main_div{
+    width: fit-content;
+    height: fit-content;
+    margin: 20px auto 0;
 }
 
 input{
