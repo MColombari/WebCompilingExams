@@ -9,7 +9,7 @@ class SaveUserData:
         out = []
 
         single_out = ["Dati utente:\n",
-                      f'Matricola: {self.user.id}',
+                      f'Matricola: {self.user.id:06}',
                       f'Nome: {self.user.name}',
                       f'Congnome: {self.user.surname}',
                       f'Email: {self.user.email}']
@@ -35,10 +35,10 @@ class SaveUserData:
 
         out.append("\n".join(single_out))
 
-        with open(f'/app/student_exam/u{self.user.id}/user_results', 'w') as f:
+        with open(f'/app/student_exam/u{self.user.id:06}/user_results', 'w') as f:
             f.write('\n\n'.join(out))
 
-        with open(f'/app/student_exam/u{self.user.id}/raw_result_data', 'w') as f:
+        with open(f'/app/student_exam/u{self.user.id:06}/raw_result_data', 'w') as f:
             out = [f'{self.user}']
             for question in self.user.questions:
                 out.append(f'{question}')

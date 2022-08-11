@@ -18,10 +18,10 @@ class RunManager:
 
     @staticmethod
     def create_directory(user_id):
-        os.mkdir(f'/app/student_exam/u{user_id}')
+        os.mkdir(f'/app/student_exam/u{user_id:06}')
 
     def compile(self):
-        PATH = f'/app/student_exam/u{self.user.id}'
+        PATH = f'/app/student_exam/u{self.user.id:06}'
 
         if self.question.type == 2:
             with open(PATH + '/RunningFile.java', 'w') as f:
