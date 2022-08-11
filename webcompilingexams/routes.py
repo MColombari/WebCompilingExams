@@ -93,11 +93,20 @@ def admin_page():
         flash("Accesso alla pagina negato", 'danger')
         return redirect(url_for('start_exam'))
 
+    users = [u for u in User.query.all() if u.id != ADMIN_ID]
+
     form = AdminForm()
     if request.method == 'POST' and form.text.data != '':
-        users = [u for u in User.query.filter_by(id=int(form.text.data)) if u.id != ADMIN_ID]
-    else:
-        users = [u for u in User.query.all() if u.id != ADMIN_ID]
+        out_users = []
+        input_data = form.text.data.split(' ')
+        for user in users:
+            if any([True for d in input_data if (d in f"{user.id:06}") or
+                                                (d in user.email) or
+                                                (d in user.name) or
+                                                (d in user.surname)]):
+                out_users.append(user)
+
+        users = out_users
 
     return render_template('administrator_page.html', title='Admin',
                            bottom_bar_left=DATE,

@@ -30,7 +30,7 @@
 			<div class="debug" id="show_user">
 				{% for user in users %}
 					<div class="debug user">
-						{{ user.id }} {{ user.email }} {{ user.name }} {{ user.surname }}
+						{{ "{:06}".format(user.id) }} {{ user.email }} {{ user.name }} {{ user.surname }}
 						{% if not user.exam_started and not user.exam_finished %}
 							<img class="status_icon" src="{{ url_for('static', filename="icon/red-circle-48.png") }}"
 								 alt="Image not found">
