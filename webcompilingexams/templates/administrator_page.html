@@ -10,6 +10,20 @@
 				  return false;
 			  }
 		  });
+
+          let coll = document.getElementsByClassName("collapsible");
+          let i;
+          for (i = 0; i < coll.length; i++) {
+              coll[i].addEventListener("click", function() {
+				this.classList.toggle("active");
+				let content = this.nextElementSibling;
+				if (content.style.maxHeight){
+				  content.style.maxHeight = null;
+				} else {
+				  content.style.maxHeight = content.scrollHeight + "px";
+				}
+			  });
+          }
 		});
 	</script>
 {% endblock head %}
@@ -30,20 +44,33 @@
 			<div class="debug" id="show_user">
 				{% for user in users %}
 					<div class="debug user">
-						{{ "{:06}".format(user.id) }} {{ user.email }} {{ user.name }} {{ user.surname }}
-						{% if not user.exam_started and not user.exam_finished %}
-							<img class="status_icon" src="{{ url_for('static', filename="icon/red-circle-48.png") }}"
+						<div class="debug user_data">{{ "{:06}".format(user.id) }}</div>
+						<div class="debug user_data">{{ user.email }}</div>
+						<div class="debug user_data">{{ user.surname }}</div>
+						<div class="debug user_data">{{ user.name }}</div>
+						<div class="debug user_data">
+							{% if not user.exam_started and not user.exam_finished %}
+								<img class="user_icon" src="{{ url_for('static', filename="icon/red-circle-48.png") }}"
+									 alt="Image not found">
+							{% elif user.exam_started and (not user.exam_finished) %}
+								<img class="user_icon" src="{{ url_for('static', filename="icon/orange-circle-48.png") }}"
+									 alt="Image not found">
+							{% elif user.exam_started and user.exam_finished %}
+								<img class="user_icon" src="{{ url_for('static', filename="icon/green-circle-48.png") }}"
+									 alt="Image not found">
+							{% else %}
+								<img class="user_icon" src="{{ url_for('static', filename="icon/circled-48.png") }}"
+									 alt="Image not found">
+							{% endif %}
+						</div>
+						<div class="debug user_data collapsible">
+							<img class="user_icon collapsible" style="rotate: 270deg;"
+								 src="{{ url_for('static', filename="icon/triangle-48.png") }}"
 								 alt="Image not found">
-						{% elif user.exam_started and (not user.exam_finished) %}
-							<img class="status_icon" src="{{ url_for('static', filename="icon/orange-circle-48.png") }}"
-								 alt="Image not found">
-						{% elif user.exam_started and user.exam_finished %}
-							<img class="status_icon" src="{{ url_for('static', filename="icon/green-circle-48.png") }}"
-								 alt="Image not found">
-						{% else %}
-							<img class="status_icon" src="{{ url_for('static', filename="icon/circled-48.png") }}"
-								 alt="Image not found">
-						{% endif %}
+						</div>
+						<div class="debug more_user_information">
+							Show More user information.
+						</div>
 					</div>
 				{% endfor %}
 			</div>

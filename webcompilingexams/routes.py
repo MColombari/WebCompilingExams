@@ -100,10 +100,12 @@ def admin_page():
         out_users = []
         input_data = form.text.data.split(' ')
         for user in users:
-            if any([True for d in input_data if (d in f"{user.id:06}") or
-                                                (d in user.email) or
-                                                (d in user.name) or
-                                                (d in user.surname)]):
+            match = [((d in f"{user.id:06}") or
+                     (d in user.email) or
+                     (d.lower() in user.name.lower()) or
+                     (d.lower() in user.surname.lower()))
+                     for d in input_data]
+            if len(match) > 0 and all(match):
                 out_users.append(user)
 
         users = out_users
@@ -270,10 +272,17 @@ def recap():
 @app.route('/logout')
 @login_required
 def logout():
-    if current_user.exam_started:
-        SaveUserData(current_user).save()
-        current_user.exam_finished = True
-        db.session.commit()
+    if current_user.id == ADMIN_ID:
+        logout_user()
+        return redirect(url_for('login_administrator'))
+
+    if not current_user.exam_started:
+        flash('Per uscire è necessario iniziare l\'esame', 'warning')
+        return redirect(url_for('start_exam'))
+
+    SaveUserData(current_user).save()
+    current_user.exam_finished = True
+    db.session.commit()
 
     logout_user()
 
