@@ -39,8 +39,33 @@
 	min-height: 100px;
 }
 
+#pie_div{
+	position: relative;
+	width: 250px;
+	height: 250px;
+	padding: 0;
+	margin: 20px auto;
+}
+
+#pie_chart{
+	width: 250px;
+	height: 250px;
+	padding: 0;
+}
+
+#pie_text{
+	height: 20px;
+	width: 100px;
+	position: absolute;
+	top: calc((50% - 20px));
+	left: calc((50% - 50px));
+	font-size: 11pt;
+	text-align: center;
+	z-index: 10;
+}
+
 #user_information_div{
-	margin: 0 10px 10px;
+	margin: 0 10px;
 }
 
 #search_bar_div{

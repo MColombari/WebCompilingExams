@@ -2,6 +2,7 @@
 {%  block head %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='administrator_page.css') }}">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script>
 		$(document).ready(function(){
 		  $("textarea").keydown(function(e) {
@@ -24,13 +25,44 @@
 				}
 			  });
           }
+
+          google.charts.load('current', {'packages':['corechart']});
+          google.charts.setOnLoadCallback(drawChart);
+          function drawChart() {
+              let data = google.visualization.arrayToDataTable([
+                  ['Task', 'Hours per Day'],
+				  ['Non iniziato', {{ user_waiting }}],
+				  ['In svolgimento', {{ user_working }}],
+				  ['Terminato', {{ user_finish }}],
+				  ['Altri', {{ user_other }}]
+			  ]);
+
+			  // Optional; add a title and set the width and height of the chart
+			  let options = {
+                  'width':250,
+				  'height':250,
+				  'colors': ['#ff4d4d','#ff9900','#00e600', '#808080'],
+				  'pieHole': 0.5,
+				  'legend': 'none',
+				  'pieSliceTextStyle': {color: 'black', fontSize: 15},
+				  'chartArea': {width:'90%',height:'90%'}};
+
+			  // Display the chart inside the <div> element with id="piechart"
+			  let chart = new google.visualization.PieChart(document.getElementById('pie_chart'));
+			  chart.draw(data, options);
+		  }
 		});
 	</script>
 {% endblock head %}
 {% block body %}
     <div class="debug" id="main_center_div">
 		<div class="debug" id="fast_function_div">
-			Funzioni veloci.
+			<div id="pie_div">
+				<div class="debug" id="pie_chart">
+
+				</div>
+				<p class="debug" id="pie_text">{{ user_waiting + user_finish + user_working + user_other }}</p>
+			</div>
 		</div>
 		<div class="debug" id="user_information_div">
 			<div class="debug" id="search_bar_div">

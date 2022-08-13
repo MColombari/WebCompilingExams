@@ -94,28 +94,39 @@ def admin_page():
         return redirect(url_for('start_exam'))
 
     users = [u for u in User.query.all() if u.id != ADMIN_ID]
+    out_users = users
 
     form = AdminForm()
     if request.method == 'POST' and form.text.data != '':
-        out_users = []
+        tmp_u = []
         input_data = form.text.data.split(' ')
         for user in users:
             match = [((d in f"{user.id:06}") or
-                     (d in user.email) or
-                     (d.lower() in user.name.lower()) or
-                     (d.lower() in user.surname.lower()))
+                      (d in user.email) or
+                      (d.lower() in user.name.lower()) or
+                      (d.lower() in user.surname.lower()))
                      for d in input_data]
             if len(match) > 0 and all(match):
-                out_users.append(user)
+                tmp_u.append(user)
 
-        users = out_users
+        out_users = tmp_u
+
+    user_waiting = [user for user in users if (not user.exam_started) and (not user.exam_finished)]
+    user_working = [user for user in users if user.exam_started and (not user.exam_finished)]
+    user_finish = [user for user in users if user.exam_started and user.exam_finished]
+    user_other = [user for user in users if (not user.exam_started) and user.exam_finished]
 
     return render_template('administrator_page.html', title='Admin',
                            bottom_bar_left=DATE,
                            bottom_bar_center='Administrator page',
                            bottom_bar_right='Controllo esame',
                            form=form,
-                           users=users)
+                           users=out_users,
+                           user_waiting=len(user_waiting),
+                           user_working=len(user_working),
+                           user_finish=len(user_finish),
+                           user_other=len(user_other)
+                           )
 
 
 @app.route('/start')
