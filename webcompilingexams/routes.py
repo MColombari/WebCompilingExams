@@ -97,19 +97,25 @@ def admin_page():
     out_users = users
 
     form = AdminForm()
-    if request.method == 'POST' and form.text.data != '':
-        tmp_u = []
-        input_data = form.text.data.split(' ')
-        for user in users:
-            match = [((d in f"{user.id:06}") or
-                      (d in user.email) or
-                      (d.lower() in user.name.lower()) or
-                      (d.lower() in user.surname.lower()))
-                     for d in input_data]
-            if len(match) > 0 and all(match):
-                tmp_u.append(user)
-
-        out_users = tmp_u
+    if request.method == 'POST':
+        if request.form.get('delete'):
+            user_id = request.form.get('delete')
+            flash(f'Elimino l\'utente {user_id}', 'success')
+        elif request.form.get('show_more'):
+            user_id = request.form.get('show_more')
+            flash(f'Mostro l\'utente {user_id}', 'success')
+        elif form and form.text.data != '':
+            tmp_u = []
+            input_data = form.text.data.split(' ')
+            for user in users:
+                match = [((d in f"{user.id:06}") or
+                          (d in user.email) or
+                          (d.lower() in user.name.lower()) or
+                          (d.lower() in user.surname.lower()))
+                         for d in input_data]
+                if len(match) > 0 and all(match):
+                    tmp_u.append(user)
+            out_users = tmp_u
 
     user_waiting = [user for user in users if (not user.exam_started) and (not user.exam_finished)]
     user_working = [user for user in users if user.exam_started and (not user.exam_finished)]

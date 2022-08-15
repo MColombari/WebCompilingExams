@@ -23,6 +23,36 @@
 }
 
 .more_user_information{
+	width: 90%;
+	max-height: 0;
+  	overflow: hidden;
+	transition: all 0.2s ease-out;
+	margin: 0 auto;
+}
+
+.user_function_button{
+	display: inline-block;
+	vertical-align: top;
+	width: fit-content;
+	padding: 0 30px;
+	margin: 0 10px;
+	border-radius: 5px;
+	font-size: 9pt;
+	background-color: white;
+	border: 1px solid #7f7f7f;
+}
+
+.more_user_information_content{
+	display: inline-block;
+	vertical-align: top;
+	height: fit-content;
+}
+
+.user_question_title{
+
+}
+
+.user_question_div{
 	max-height: 0;
   	overflow: hidden;
   	transition: max-height 0.2s ease-out;

@@ -59,3 +59,4 @@ class QuestionForm(FlaskForm):
 
 class AdminForm(FlaskForm):
     text = TextAreaField('Filter')
+    ref_user_id = None

@@ -19,9 +19,30 @@
 				this.classList.toggle("active");
 				let content = this.nextElementSibling;
 				if (content.style.maxHeight){
-				  content.style.maxHeight = null;
+                    content.style.maxHeight =  null;
+                    content.style.marginTop = "0";
 				} else {
-				  content.style.maxHeight = content.scrollHeight + "px";
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    content.style.marginTop = "10px";
+				}
+			  });
+          }
+
+          let int_coll = document.getElementsByClassName("internal_collapsible");
+          let h
+          for (h = 0; h < int_coll.length; h++) {
+              int_coll[h].addEventListener("click", function() {
+				this.classList.toggle("active_now");
+				let content = this.nextElementSibling;
+                let parent_content = $(this).parent().parent();
+				if (content.style.maxHeight){
+                    content.style.maxHeight = null;
+                    content.style.marginTop = "0";
+				} else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    content.style.marginTop = "10px";
+                    parent_content.css("max-height", "fit-content");
+                    parent_content.css("margin-top", "10px");
 				}
 			  });
           }
@@ -58,22 +79,19 @@
     <div class="debug" id="main_center_div">
 		<div class="debug" id="fast_function_div">
 			<div id="pie_div">
-				<div class="debug" id="pie_chart">
-
-				</div>
+				<div class="debug" id="pie_chart"></div>
 				<p class="debug" id="pie_text">{{ user_waiting + user_finish + user_working + user_other }}</p>
 			</div>
 		</div>
 		<div class="debug" id="user_information_div">
-			<div class="debug" id="search_bar_div">
-				<form method="POST" action="{{ url_for('admin_page') }}">
+			<form method="POST" action="{{ url_for('admin_page') }}">
+				<div class="debug" id="search_bar_div">
 					{{ form.text }}
 					<input id="search_image" type="image" name="search" value="True"
 								   src="{{ url_for('static', filename="icon/search-30.png") }}"
 								   alt="Image not found">
-				</form>
-			</div>
-			<div class="debug" id="show_user">
+				</div>
+				<div class="debug" id="show_user">
 				{% for user in users %}
 					<div class="debug user">
 						<div class="debug user_data">{{ "{:06}".format(user.id) }}</div>
@@ -96,16 +114,26 @@
 							{% endif %}
 						</div>
 						<div class="debug user_data collapsible">
-							<img class="user_icon collapsible" style="rotate: 270deg;"
+							<img class="user_icon" style="rotate: 270deg;"
 								 src="{{ url_for('static', filename="icon/triangle-48.png") }}"
 								 alt="Image not found">
 						</div>
 						<div class="debug more_user_information">
-							Show More user information.
+							<button class="user_function_button" type="submit" name="delete" value="{{ user.id }}">
+								<img style="display: inline-block; vertical-align: middle; height: 20px;"
+										src="{{ url_for('static', filename="icon/cross-30.png") }}"
+								 		alt="Image not found">
+								<p style="display: inline-block; vertical-align: middle">Elimina l'utente.</p>
+							</button>
+							<div class="debug more_user_information_content">
+								<div class="debug internal_collapsible user_question_title">Mostra domande utente</div>
+								<div class="debug user_question_div">Domande utente</div>
+							</div>
 						</div>
 					</div>
 				{% endfor %}
 			</div>
+			</form>
 		</div>
 	</div>
 {% endblock body %}
