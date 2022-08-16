@@ -38,9 +38,11 @@
 				if (content.style.maxHeight){
                     content.style.maxHeight = null;
                     content.style.marginTop = "0";
+                    content.style.padding = "0";
 				} else {
                     content.style.maxHeight = content.scrollHeight + "px";
                     content.style.marginTop = "10px";
+                    content.style.padding = "10px 40px";
                     parent_content.css("max-height", "fit-content");
                     parent_content.css("margin-top", "10px");
 				}
@@ -126,8 +128,40 @@
 								<p style="display: inline-block; vertical-align: middle">Elimina l'utente.</p>
 							</button>
 							<div class="debug more_user_information_content">
-								<div class="debug internal_collapsible user_question_title">Mostra domande utente</div>
-								<div class="debug user_question_div">Domande utente</div>
+								<div class="debug internal_collapsible user_question_title">
+									<p>Mostra domande utente</p>
+								</div>
+								<div class="debug user_question_div">
+									{% if user.questions|length == 0 %}
+										<p>Nessuna domanda ancora caricata</p>
+									{% else %}
+										{% for question in user.questions|sort(attribute='number') %}
+											<table class="user_question_table">
+												<tr>
+													<th>{{ question.number }}) -</th>
+													<th>{{ question.text }}</th>
+												</tr>
+												<tr>
+													{% if question.type == 1 %}
+														{% for option in question.options.split(CHARACTER_SEPARATOR) %}
+															<tr>
+																<th></th>
+																{% if loop.index0|string in question.answer %}
+																	<th style="padding-left: 20px;">+ {{ option }}</th>
+																{% else %}
+																	<th style="padding-left: 20px;">- {{ option }}</th>
+																{% endif %}
+															</tr>
+														{% endfor %}
+													{% else %}
+														<th></th>
+														<th style="padding-left: 20px;">{{ question.answer }}</th>
+													{% endif %}
+												</tr>
+											</table>
+										{% endfor %}
+									{% endif %}
+								</div>
 							</div>
 						</div>
 					</div>

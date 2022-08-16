@@ -131,7 +131,8 @@ def admin_page():
                            user_waiting=len(user_waiting),
                            user_working=len(user_working),
                            user_finish=len(user_finish),
-                           user_other=len(user_other)
+                           user_other=len(user_other),
+                           CHARACTER_SEPARATOR=CHARACTER_SEPARATOR
                            )
 
 

@@ -1,3 +1,4 @@
+
 .user{
 	height: fit-content;
 	margin-top: 15px;
@@ -28,11 +29,13 @@
   	overflow: hidden;
 	transition: all 0.2s ease-out;
 	margin: 0 auto;
+	padding: 0;
 }
 
 .user_function_button{
 	display: inline-block;
 	vertical-align: top;
+	height: fit-content;
 	width: fit-content;
 	padding: 0 30px;
 	margin: 0 10px;
@@ -46,16 +49,29 @@
 	display: inline-block;
 	vertical-align: top;
 	height: fit-content;
+	width: 70%;
+	border-radius: 5px;
+	font-size: 11pt;
+	background-color: white;
+	border: 1px solid #7f7f7f;
 }
 
 .user_question_title{
-
+	text-align: center;
 }
 
 .user_question_div{
 	max-height: 0;
+	padding: 0;
   	overflow: hidden;
-  	transition: max-height 0.2s ease-out;
+  	transition: all 0.2s ease-out;
+}
+
+.user_question_table{
+	font-family: 'Albert Sans', sans-serif;
+    font-size: 9pt;
+    color: black;
+	text-align: left;
 }
 
 #main_center_div{
