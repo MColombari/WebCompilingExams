@@ -18,7 +18,8 @@ class RunManager:
 
     @staticmethod
     def create_directory(user_id):
-        os.mkdir(f'/app/student_exam/u{user_id:06}')
+        if not os.path.isdir(f'/app/student_exam/u{user_id:06}'):
+            os.mkdir(f'/app/student_exam/u{user_id:06}')
 
     def compile(self):
         PATH = f'/app/student_exam/u{self.user.id:06}'

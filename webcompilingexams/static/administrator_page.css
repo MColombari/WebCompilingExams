@@ -101,12 +101,13 @@
 
 #pie_text{
 	height: 20px;
-	width: 100px;
+	width: 50px;
 	position: absolute;
 	top: calc((50% - 20px));
-	left: calc((50% - 50px));
+	left: calc((50% - 25px));
 	font-size: 11pt;
 	text-align: center;
+	background-color: white;
 	z-index: 10;
 }
 

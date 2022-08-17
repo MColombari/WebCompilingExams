@@ -144,7 +144,7 @@
 										{% for question in user.questions|sort(attribute='number') %}
 											<table class="user_question_table">
 												<tr>
-													<th>{{ question.number }}) -</th>
+													<th>{{ question.number + 1 }}) -</th>
 													<th>{{ question.text }}</th>
 												</tr>
 												<tr>
