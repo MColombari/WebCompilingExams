@@ -37,7 +37,7 @@ class RunManager:
                 f.write(self.question.answer)
             # '-proc:only' suppress .class file generation.
             # '-Xlint:none' suppress warning due to a warning generated using '-proc:only'.
-            t = CompileRun(['javac', '-proc:only', '-Xlint:none', PATH + '/RunningFile.java'], self)
+            t = CompileRun(['javac', '-proc:only', '-Xlint:none', PATH + f'/{class_name}.java'], self)
             t.start()
             t.join()
 
