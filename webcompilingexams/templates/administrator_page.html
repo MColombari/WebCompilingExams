@@ -76,6 +76,11 @@
 		  }
 		});
 	</script>
+	<script>
+        function confirmation(){
+            return confirm('Sicuro di voler cancellare l\'utente?')
+		}
+	</script>
 {% endblock head %}
 {% block body %}
     <div class="debug" id="main_center_div">
@@ -121,7 +126,8 @@
 								 alt="Image not found">
 						</div>
 						<div class="debug more_user_information">
-							<button class="user_function_button" type="submit" name="delete" value="{{ user.id }}">
+							<button class="user_function_button" type="submit" name="delete" value="{{ user.id }}"
+							onclick="return confirmation()">
 								<img style="display: inline-block; vertical-align: middle; height: 20px;"
 										src="{{ url_for('static', filename="icon/cross-30.png") }}"
 								 		alt="Image not found">

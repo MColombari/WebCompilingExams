@@ -7,7 +7,7 @@ from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR, ADMIN
 from webcompilingexams.form import RegistrationForm, QuestionForm, AdminLoginForm, AdminForm
 from webcompilingexams.load_exam_information import DebugExamInformation
 from webcompilingexams.load_question import DebugLoadQuestion
-from webcompilingexams.models import User
+from webcompilingexams.models import User, Question
 from webcompilingexams.run_program import RunManager
 from webcompilingexams.save_user_data import SaveUserData
 
@@ -100,7 +100,11 @@ def admin_page():
     if request.method == 'POST':
         if request.form.get('delete'):
             user_id = request.form.get('delete')
-            flash(f'Elimino l\'utente {user_id}', 'success')
+            Question.query.filter_by(user_id=user_id).delete()
+            User.query.filter_by(id=user_id).delete()
+            db.session.commit()
+            flash(f'Utente {user_id:>06} eliminato', 'success')
+            return redirect(url_for('admin_page'))
         elif request.form.get('show_more'):
             user_id = request.form.get('show_more')
             flash(f'Mostro l\'utente {user_id}', 'success')
