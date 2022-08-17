@@ -25,10 +25,16 @@ class RunManager:
         PATH = f'/app/student_exam/u{self.user.id:06}'
 
         if self.question.type == 2:
-            with open(PATH + '/RunningFile.java', 'w') as f:
-                f.write("public class RunningFile{\n"
-                        f"   {self.question.answer}\n"
-                        "}")
+            words = self.question.answer.split()
+            class_index = [out[0] for out in enumerate(words) if out[1].lower() == 'class']
+            if len(class_index) > 0 and (class_index[0] + 1) <= (len(words) - 1):
+                class_name = words[class_index[0] + 1].replace("{", "")
+            else:
+                flash('Nessuna classe trovata', 'warning')
+                return
+
+            with open(PATH + f'/{class_name}.java', 'w') as f:
+                f.write(self.question.answer)
             # '-proc:only' suppress .class file generation.
             # '-Xlint:none' suppress warning due to a warning generated using '-proc:only'.
             t = CompileRun(['javac', '-proc:only', '-Xlint:none', PATH + '/RunningFile.java'], self)

@@ -97,15 +97,10 @@ a{
     top: 0;
     right: 0;
     width: fit-content;
-    max-width: 30%;
-    height: fit-content;
+    max-height: 50px;
     
-    padding: 10px 50px;
+    padding: 15px 50px 10px;
     text-align: left;
     
-    border: 2px solid #7f7f7f;
-    background-color: white;
     font-size: 11pt;
-    
-    z-index: 10;
 }
