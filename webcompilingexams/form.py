@@ -5,38 +5,37 @@ from wtforms.validators import DataRequired, Email, Length, ValidationError
 from webcompilingexams.models import User
 
 
-def validate_email():
-    def _validate(form, field):
-        count = User.query.filter_by(email=field.data).count()
-        if not count == 0:
-            raise ValidationError("Un utente con questa mail si è già registrato")
+class RegistrationForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(message='Campo dati obbligatorio'),
+                                             Email(message='Email non valida')])
+    nome = StringField('Nome', validators=[DataRequired(message='Campo dati obbligatorio')])
+    cognome = StringField('Cognome', validators=[DataRequired(message='Campo dati obbligatorio')])
+    matricola = StringField('Matricola', validators=[DataRequired(message='Campo dati obbligatorio'),
+                                                     Length(min=6, max=6, message='La matrciola è formata da 6 numeri')
+                                                     ])
+    submit = SubmitField('Inizia esame')
 
-    return _validate
+    def validate_email(self, field):
+        flag = False
 
+        for c in field.data:
+            if not c.isnumeric():
+                flag = True
 
-def validate_ID():
-    def _validate(form, field):
+        if flag or User.query.filter_by(email=field.data, id=int(self.matricola.data), restart_token=True).count() == 0:
+            count = User.query.filter_by(email=field.data, restart_token=False).count()
+            if not count == 0:
+                raise ValidationError("Un utente con questa mail si è già registrato")
+
+    def validate_matricola(self, field):
         for c in field.data:
             if not c.isnumeric():
                 raise ValidationError("La matricola deve essere un numero")
 
-        count = User.query.filter_by(id=int(field.data)).count()
-        if not count == 0:
-            raise ValidationError("Un utente con questa matricola si è già registrato")
-
-    return _validate
-
-
-class RegistrationForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(message='Campo dati obbligatorio'),
-                                             Email(message='Email non valida'),
-                                             validate_email()])
-    nome = StringField('Nome', validators=[DataRequired(message='Campo dati obbligatorio')])
-    cognome = StringField('Cognome', validators=[DataRequired(message='Campo dati obbligatorio')])
-    matricola = StringField('Matricola', validators=[DataRequired(message='Campo dati obbligatorio'),
-                                                     Length(min=6, max=6, message='La matrciola è formata da 6 numeri'),
-                                                     validate_ID()])
-    submit = SubmitField('Inizia esame')
+        if User.query.filter_by(email=self.email.data, id=int(field.data), restart_token=True).count() == 0:
+            count = User.query.filter_by(id=int(field.data), restart_token=False).count()
+            if not count == 0:
+                raise ValidationError("Un utente con questa matricola si è già registrato")
 
     def get_attribute(self):
         return [self.email, self.nome, self.cognome, self.matricola]
@@ -59,4 +58,3 @@ class QuestionForm(FlaskForm):
 
 class AdminForm(FlaskForm):
     text = TextAreaField('Filter')
-    ref_user_id = None

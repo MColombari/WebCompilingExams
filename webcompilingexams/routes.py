@@ -28,6 +28,17 @@ def registration():
     if form.validate_on_submit():
         user = User(id=int(form.matricola.data), name=form.nome.data, surname=form.cognome.data,
                     email=form.email.data)
+
+        if User.query.filter_by(id=int(form.matricola.data), email=form.email.data, restart_token=True).count() == 1:
+            login_user(user, True)
+            user = User.query.filter_by(id=int(form.matricola.data), email=form.email.data, restart_token=True).first()
+            user.exam_started = True
+            user.exam_finished = False
+            user.exam_checked = False
+            user.restart_token = False
+            db.session.commit()
+            return redirect(url_for('start_exam'))
+
         db.session.add(user)
         db.session.commit()
         login_user(user, True)
@@ -104,6 +115,12 @@ def admin_page():
             User.query.filter_by(id=user_id).delete()
             db.session.commit()
             flash(f'Utente {user_id:>06} eliminato', 'success')
+            return redirect(url_for('admin_page'))
+        elif request.form.get('token'):
+            user_id = request.form.get('token')
+            user = User.query.filter_by(id=user_id).first()
+            user.restart_token = True
+            db.session.commit()
             return redirect(url_for('admin_page'))
         elif request.form.get('show_more'):
             user_id = request.form.get('show_more')

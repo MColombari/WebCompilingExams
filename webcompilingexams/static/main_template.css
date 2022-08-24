@@ -8,6 +8,10 @@ a{
     text-decoration: none;
 }
 
+button{
+    color: black;
+}
+
 .debug{
     /* border: 1px solid dodgerblue; */
 }
