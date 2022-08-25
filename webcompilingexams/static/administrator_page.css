@@ -1,4 +1,13 @@
 
+.fast_function_divs{
+	display: inline-block;
+	vertical-align: middle;
+	margin: auto 15px;
+	height: fit-content;
+	width: 300px;
+	max-height: 250px;
+}
+
 .user{
 	height: fit-content;
 	margin-top: 15px;
@@ -92,12 +101,38 @@
 }
 
 #fast_function_div{
-	margin: 10px;
+	margin: 10px auto;
+	padding: 0;
 	height: fit-content;
+	width: fit-content;
 	min-height: 100px;
 }
 
+#fast_function_close_exam{
+	display: inline-block;
+	vertical-align: middle;
+	height: 100px;
+	width: 100px;
+	margin: 0 10px;
+	border-radius: 50px;
+	background-color: #ffb3b3;
+	border: 0 solid black;
+}
+
+#fast_function_check_exam{
+	display: inline-block;
+	vertical-align: middle;
+	height: 100px;
+	width: 100px;
+	margin: 0 10px;
+	border-radius: 50px;
+	background-color: #b3c6ff;
+	border: 0 solid black;
+}
+
 #pie_div{
+	display: inline-block;
+	vertical-align: middle;
 	position: relative;
 	width: 250px;
 	height: 250px;

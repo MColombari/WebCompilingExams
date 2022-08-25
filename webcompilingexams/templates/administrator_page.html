@@ -83,15 +83,27 @@
 	</script>
 {% endblock head %}
 {% block body %}
-    <div class="debug" id="main_center_div">
-		<div class="debug" id="fast_function_div">
-			<div id="pie_div">
-				<div class="debug" id="pie_chart"></div>
-				<p class="debug" id="pie_text">{{ user_waiting + user_finish + user_working + user_other }}</p>
+	<form method="POST" action="{{ url_for('admin_page') }}">
+		<div class="debug" id="main_center_div">
+			<div class="debug" id="fast_function_div">
+				<div class="debug fast_function_divs">
+					<button id="fast_function_close_exam" type="submit" name="close_exam" value="True"
+						onclick="return confirmation('Sicuro di voler chiudere l\'esame, e quindi salvare i dati' +
+						 ' e cancellare il database?')">
+						Chiudi e salva l'esame
+					</button>
+					<button id="fast_function_check_exam" type="submit" name="check_exam" value="True"
+						onclick="return confirmation('Avvio modalità di correzione?')">
+						Correggi l'esame
+					</button>
+				</div>
+				<div id="pie_div">
+					<div class="debug" id="pie_chart"></div>
+					<p class="debug" id="pie_text">{{ user_waiting + user_finish + user_working + user_other }}</p>
+				</div>
+				<div class="debug fast_function_divs"></div>
 			</div>
-		</div>
-		<div class="debug" id="user_information_div">
-			<form method="POST" action="{{ url_for('admin_page') }}">
+			<div class="debug" id="user_information_div">
 				<div class="debug" id="search_bar_div">
 					{{ form.text }}
 					<input id="search_image" type="image" name="search" value="True"
@@ -197,8 +209,8 @@
 						</div>
 					</div>
 				{% endfor %}
+				</div>
 			</div>
-			</form>
 		</div>
-	</div>
+	</form>
 {% endblock body %}

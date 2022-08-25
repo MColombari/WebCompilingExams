@@ -1,3 +1,7 @@
+import os
+from distutils import dir_util
+from shutil import rmtree
+
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.exceptions import HTTPException
@@ -12,6 +16,7 @@ from webcompilingexams.run_program import RunManager
 from webcompilingexams.save_user_data import SaveUserData
 
 DATE = str(datetime.today().strftime('%Y / %m / %d'))
+DIR_DATE = str(datetime.today().strftime('%Y_%m_%d'))
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -116,15 +121,42 @@ def admin_page():
             db.session.commit()
             flash(f'Utente {user_id:>06} eliminato', 'success')
             return redirect(url_for('admin_page'))
+
         elif request.form.get('token'):
             user_id = request.form.get('token')
             user = User.query.filter_by(id=user_id).first()
             user.restart_token = True
             db.session.commit()
             return redirect(url_for('admin_page'))
+
+        elif request.form.get('close_exam') == "True":
+            for user in User.query.all():
+                save_user_data(user)
+
+            if not os.path.isdir(f'/app/past_student_exam/exam_{str(DIR_DATE)}'):
+                os.mkdir(f'/app/past_student_exam/exam_{str(DIR_DATE)}')
+
+            pass  # save user points.
+
+            dir_util.copy_tree('/app/student_exam', f'/app/past_student_exam/exam_{str(DIR_DATE)}')
+            rmtree('/app/student_exam')
+            os.mkdir('/app/student_exam')
+
+            db.drop_all()
+            db.create_all()
+
+            admin = User(id=ADMIN_ID, name="admin", surname="admin", email="admin")
+            db.session.add(admin)
+            db.session.commit()
+
+            login_user(admin, True)
+
+            return redirect(url_for('admin_page'))
+
         elif request.form.get('show_more'):
             user_id = request.form.get('show_more')
             flash(f'Mostro l\'utente {user_id}', 'success')
+
         elif form and form.text.data != '':
             tmp_u = []
             input_data = form.text.data.split(' ')
@@ -308,6 +340,15 @@ def recap():
                            sorted_questions=sorted(current_user.questions, key=lambda q: q.number))
 
 
+def save_user_data(user):
+    if user.exam_finished or user.id == ADMIN_ID:
+        return
+
+    SaveUserData(user).save()
+    user.exam_finished = True
+    db.session.commit()
+
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -319,9 +360,7 @@ def logout():
         flash('Per uscire è necessario iniziare l\'esame', 'warning')
         return redirect(url_for('start_exam'))
 
-    SaveUserData(current_user).save()
-    current_user.exam_finished = True
-    db.session.commit()
+    save_user_data(current_user)
 
     logout_user()
 

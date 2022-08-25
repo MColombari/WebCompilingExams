@@ -1,3 +1,5 @@
+import os
+
 from webcompilingexams import QUESTION_TYPE, CHARACTER_SEPARATOR
 
 
@@ -6,6 +8,18 @@ class SaveUserData:
         self.user = user
 
     def save(self):
+        if not self.user.exam_started:
+            if not os.path.isdir(f'/app/student_exam/u{self.user.id:06}'):
+                os.mkdir(f'/app/student_exam/u{self.user.id:06}')
+
+            with open(f'/app/student_exam/u{self.user.id:06}/user_results', 'w') as f:
+                f.write('L\'utente non ha neanche iniziato l\'esame')
+
+            with open(f'/app/student_exam/u{self.user.id:06}/raw_result_data', 'w') as f:
+                f.write(f'{self.user}')
+
+            return
+
         out = []
 
         single_out = ["Dati utente:\n",
