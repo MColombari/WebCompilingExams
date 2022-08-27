@@ -7,7 +7,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.exceptions import HTTPException
 from datetime import datetime
 
-from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR, ADMIN_ID
+from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR, ADMIN_ID, WRONG_ANSWER_PENALTY
 from webcompilingexams.form import RegistrationForm, QuestionForm, AdminLoginForm, AdminForm
 from webcompilingexams.load_exam_information import DebugExamInformation
 from webcompilingexams.load_question import DebugLoadQuestion
@@ -153,6 +153,11 @@ def admin_page():
 
             return redirect(url_for('admin_page'))
 
+        elif request.form.get('check_exam') == "True":
+            current_user.exam_checked = not current_user.exam_checked
+            db.session.commit()
+            return redirect(url_for('admin_page'))
+
         elif request.form.get('show_more'):
             user_id = request.form.get('show_more')
             flash(f'Mostro l\'utente {user_id}', 'success')
@@ -174,6 +179,8 @@ def admin_page():
     user_working = [user for user in users if user.exam_started and (not user.exam_finished)]
     user_finish = [user for user in users if user.exam_started and user.exam_finished]
     user_other = [user for user in users if (not user.exam_started) and user.exam_finished]
+    user_checked = [user for user in users if user.exam_checked]
+    user_not_checked = [user for user in users if not user.exam_checked]
 
     return render_template('administrator_page.html', title='Admin',
                            bottom_bar_left=DATE,
@@ -185,6 +192,8 @@ def admin_page():
                            user_working=len(user_working),
                            user_finish=len(user_finish),
                            user_other=len(user_other),
+                           user_checked=len(user_checked),
+                           user_not_checked=len(user_not_checked),
                            CHARACTER_SEPARATOR=CHARACTER_SEPARATOR
                            )
 
@@ -270,6 +279,21 @@ def exam():
                     # Add selected question.
                     current_question.answer += f'{CHARACTER_SEPARATOR}{answer_selected}'
                 db.session.commit()
+
+            # Update Answer points
+            points = 0
+            correct_answers = current_question.correct_answer.split(CHARACTER_SEPARATOR)
+            selected_answer = current_question.answer.split(CHARACTER_SEPARATOR)
+            for s_op in selected_answer:
+                if s_op != '':
+                    if s_op in correct_answers:
+                        points += 1
+                    else:
+                        points -= WRONG_ANSWER_PENALTY
+            points = points / len(correct_answers)
+
+            current_question.points = points
+            db.session.commit()
 
         # Update answer summary.
         if current_question.type <= 1:
