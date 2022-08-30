@@ -158,9 +158,14 @@ def admin_page():
             db.session.commit()
             return redirect(url_for('admin_page'))
 
-        elif request.form.get('show_more'):
-            user_id = request.form.get('show_more')
-            flash(f'Mostro l\'utente {user_id}', 'success')
+        elif request.form.get('checked'):
+            user_id = request.form.get('checked')
+            for question in Question.query.filter_by(user_id=user_id):
+                question.points = float(request.form.get(f'question_value-{user_id}-{question.number}')) / 100
+                question.question_weight = float(request.form.get(f'question_weight-{user_id}-{question.number}'))
+
+            db.session.commit()
+            flash(f"Voto salvato per l'utente: {user_id}", 'success')
 
         elif form and form.text.data != '':
             tmp_u = []

@@ -133,6 +133,40 @@
 				</div>
 				<div class="debug" id="show_user">
 				{% for user in users %}
+					{% if current_user.exam_checked %}
+						<script>
+							$(document).ready(function(){
+								let questions_value = document.getElementsByClassName("question_value-{{ user.id }}");
+                                let questions_weight = document.getElementsByClassName("question_weight-{{ user.id }}");
+                                let final_result = document.getElementById("final_result-{{ user.id }}")
+
+								function calc_final(){
+                                    let tmp = 0.00;
+                                    let sum = 0;
+									for (let h = 0; h < questions_value.length; h++) {
+                                        let p = parseFloat($(questions_value[h]).val());
+                                        let w = parseFloat($(questions_weight[h]).val());
+										tmp += (p * w);
+                                        sum += w;
+									}
+                                    if (sum !== 0){
+                                        tmp /= sum;
+									}
+                                    final_result.innerHTML = "Voto finale " + tmp.toFixed(2) + "/100";
+								}
+
+								for (let h = 0; h < questions_value.length; h++) {
+                                    questions_value[h].addEventListener("change", calc_final)
+									questions_weight[h].addEventListener("change", calc_final)
+                                }
+
+                                let user_question_title = document.getElementsByClassName("user_question_title")
+								for (let h = 0; h < user_question_title.length; h++){
+                                    user_question_title[h].addEventListener("click", calc_final)
+								}
+							});
+						</script>
+					{% endif %}
 					<div class="debug user">
 						<div class="debug user_data">{{ "{:06}".format(user.id) }}</div>
 						<div class="debug user_data">{{ user.email }}</div>
@@ -180,7 +214,7 @@
 								{% if user.restart_token %}
 									<div class="user_function_button"
 										 style="background-color: #b3ffb3; text-align: center; padding: 5px 0;"
-									onclick="return alert('L\'utente ha già la possibilità di loggarsi nuovamente')">
+										 onclick="return alert('L\'utente ha già la possibilità di loggarsi nuovamente')">
 										<img class="user_function_image"
 												src="{{ url_for('static', filename="icon/key-24.png") }}"
 												alt="Image not found">
@@ -190,7 +224,7 @@
 									</div>
 								{% else %}
 									<button class="user_function_button" type="submit" name="token" value="{{ user.id }}"
-									onclick="return confirmation('Sicuro di voler abilitare l\'utente a un nuovo login?')">
+											onclick="return confirmation('Sicuro di voler abilitare l\'utente a un nuovo login?')">
 										<img class="user_function_image"
 												src="{{ url_for('static', filename="icon/key-24.png") }}"
 												alt="Image not found">
@@ -199,23 +233,38 @@
 										</p>
 									</button>
 								{% endif %}
-
+								{% if current_user.exam_checked %}
+									<button class="user_function_button" type="submit" name="checked" value="{{ user.id }}">
+										<img class="user_function_image"
+												src="{{ url_for('static', filename="icon/save-24.png") }}"
+												alt="Image not found">
+										<p style="display: inline-block; vertical-align: middle">Salva il voto.</p>
+									</button>
+								{% endif %}
 							</div>
 							<div class="debug more_user_information_content">
 								<div class="debug internal_collapsible user_question_title">
 									<p>Mostra domande utente</p>
+									<p id="final_result-{{ user.id }}"></p>
 								</div>
 								<div class="debug user_question_div">
 									{% if user.questions|length == 0 %}
 										<p>Nessuna domanda ancora caricata</p>
 									{% else %}
-										{% for question in user.questions|sort(attribute='number') %}
-											<table class="debug user_question_table">
+										<table class="debug user_question_table">
+											{% for question in user.questions|sort(attribute='number') %}
 												<tr class="debug">
 													<th>{{ question.number + 1 }}) -</th>
 													<th>{{ question.text }}</th>
 													{% if current_user.exam_checked %}
-														<th>Punti: {{ question.points }}Peso: {{ question.question_weight }}</th>
+														<th>
+															<p class="" style="margin-left: 50px; padding: 0;">
+																Punti:
+																<input name="question_value-{{ user.id }}-{{ question.number }}" class="question_value-{{ user.id }}" size="4" type="text" value="{{ "{0}".format(question.points * 100) }}">
+																Peso:
+																<input name="question_weight-{{ user.id }}-{{ question.number }}" class="question_weight-{{ user.id }}" size="4" type="text" value="{{ "{0}".format(question.question_weight) }}">
+															</p>
+														</th>
 													{% endif %}
 												</tr>
 												<tr>
@@ -238,8 +287,8 @@
 														<th></th>
 													{% endif %}
 												</tr>
-											</table>
-										{% endfor %}
+											{% endfor %}
+										</table>
 									{% endif %}
 								</div>
 							</div>
