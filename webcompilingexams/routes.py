@@ -112,6 +112,25 @@ def admin_page():
     users = [u for u in User.query.all() if u.id != ADMIN_ID]
     out_users = users
 
+    # Update Answer points.
+    if current_user.exam_checked:
+        for user in users:
+            for question in user.questions:
+                if question.type == 1:
+                    points = 0
+                    correct_answers = question.correct_answer.split(CHARACTER_SEPARATOR)
+                    selected_answer = question.answer.split(CHARACTER_SEPARATOR)
+                    for s_op in selected_answer:
+                        if s_op != '':
+                            if s_op in correct_answers:
+                                points += 1
+                            else:
+                                points -= WRONG_ANSWER_PENALTY
+                    points = points / len(correct_answers)
+
+                    question.points = points
+                    db.session.commit()
+
     form = AdminForm()
     if request.method == 'POST':
         if request.form.get('delete'):
@@ -147,11 +166,18 @@ def admin_page():
 
                     user_results.append(f'Matricola: {user.id:06} Punteggio: {points}/100')
 
-            with open(f'/app/student_exam/results', 'w') as f:
+            with open(f'/app/student_exam/results.txt', 'a') as f:
                 f.write('\n'.join(user_results))
 
             if not os.path.isdir(f'/app/past_student_exam/exam_{str(DIR_DATE)}'):
                 os.mkdir(f'/app/past_student_exam/exam_{str(DIR_DATE)}')
+            else:
+                if (os.path.isfile(f'/app/past_student_exam/exam_{str(DIR_DATE)}/results.txt') and
+                        os.path.isfile('/app/student_exam/results.txt')):
+                    with open(f'/app/past_student_exam/exam_{str(DIR_DATE)}/results.txt', 'a') as f_out:
+                        with open('/app/student_exam/results.txt', 'r') as f_in:
+                            f_out.write("\n" + f_in.read())
+                    os.remove('/app/student_exam/results.txt')
 
             dir_util.copy_tree('/app/student_exam', f'/app/past_student_exam/exam_{str(DIR_DATE)}')
             rmtree('/app/student_exam')
@@ -303,22 +329,6 @@ def exam():
                     # Add selected question.
                     current_question.answer += f'{CHARACTER_SEPARATOR}{answer_selected}'
                 db.session.commit()
-
-            # Update Answer points
-            points = 0
-            correct_answers = current_question.correct_answer.split(CHARACTER_SEPARATOR)
-            selected_answer = current_question.answer.split(CHARACTER_SEPARATOR)
-            flash(f'{correct_answers} - {selected_answer}')
-            for s_op in selected_answer:
-                if s_op != '':
-                    if s_op in correct_answers:
-                        points += 1
-                    else:
-                        points -= WRONG_ANSWER_PENALTY
-            points = points / len(correct_answers)
-
-            current_question.points = points
-            db.session.commit()
 
         # Update answer summary.
         if current_question.type <= 1:
