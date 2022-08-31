@@ -130,13 +130,28 @@ def admin_page():
             return redirect(url_for('admin_page'))
 
         elif request.form.get('close_exam') == "True":
+            user_results = []
+
             for user in User.query.all():
-                save_user_data(user)
+                if user.id != ADMIN_ID:
+                    save_user_data(user)
+
+                    points = 0.0
+                    weight_sum = 0
+                    for question in user.questions:
+                        points += (question.points * 100) * question.question_weight
+                        weight_sum += question.question_weight
+
+                    if weight_sum != 0:
+                        points /= weight_sum
+
+                    user_results.append(f'Matricola: {user.id:06} Punteggio: {points}/100')
+
+            with open(f'/app/student_exam/results', 'w') as f:
+                f.write('\n'.join(user_results))
 
             if not os.path.isdir(f'/app/past_student_exam/exam_{str(DIR_DATE)}'):
                 os.mkdir(f'/app/past_student_exam/exam_{str(DIR_DATE)}')
-
-            pass  # save user points.
 
             dir_util.copy_tree('/app/student_exam', f'/app/past_student_exam/exam_{str(DIR_DATE)}')
             rmtree('/app/student_exam')
@@ -164,6 +179,7 @@ def admin_page():
                 question.points = float(request.form.get(f'question_value-{user_id}-{question.number}')) / 100
                 question.question_weight = float(request.form.get(f'question_weight-{user_id}-{question.number}'))
 
+            User.query.filter_by(id=user_id).first().exam_checked = True
             db.session.commit()
             flash(f"Voto salvato per l'utente: {user_id}", 'success')
 
@@ -186,6 +202,9 @@ def admin_page():
     user_other = [user for user in users if (not user.exam_started) and user.exam_finished]
     user_checked = [user for user in users if user.exam_checked]
     user_not_checked = [user for user in users if not user.exam_checked]
+
+    if current_user.exam_checked:
+        out_users.sort(key=lambda x: x.exam_checked)
 
     return render_template('administrator_page.html', title='Admin',
                            bottom_bar_left=DATE,
@@ -289,6 +308,7 @@ def exam():
             points = 0
             correct_answers = current_question.correct_answer.split(CHARACTER_SEPARATOR)
             selected_answer = current_question.answer.split(CHARACTER_SEPARATOR)
+            flash(f'{correct_answers} - {selected_answer}')
             for s_op in selected_answer:
                 if s_op != '':
                     if s_op in correct_answers:
