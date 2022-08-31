@@ -8,6 +8,12 @@
 	max-height: 250px;
 }
 
+.fast_function_legend{
+	width: 200px;
+	margin: 10px auto;
+	font-size: 11pt;
+}
+
 .user{
 	height: fit-content;
 	margin-top: 15px;

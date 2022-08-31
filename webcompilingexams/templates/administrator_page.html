@@ -122,7 +122,36 @@
 					<div class="debug" id="pie_chart"></div>
 					<p class="debug" id="pie_text">{{ user_waiting + user_finish + user_working + user_other }}</p>
 				</div>
-				<div class="debug fast_function_divs"></div>
+				<div class="debug fast_function_divs">
+					{% if current_user.exam_checked %}
+						<p class="debug fast_function_legend">
+							<img class="user_icon" src="{{ url_for('static', filename="icon/red-circle-48.png") }}"
+								 alt="Image not found" style="vertical-align: top;"> = Non corretto.
+						</p>
+						<p class="debug fast_function_legend">
+							<img class="user_icon" src="{{ url_for('static', filename="icon/green-circle-48.png") }}"
+								 alt="Image not found" style="vertical-align: top;"> = Corretto.
+						</p>
+					{% else %}
+						<p class="debug fast_function_legend">
+							<img class="user_icon" src="{{ url_for('static', filename="icon/red-circle-48.png") }}"
+								 alt="Image not found" style="vertical-align: top;"> = Registrato.
+						</p>
+						<p class="debug fast_function_legend">
+							<img class="user_icon" src="{{ url_for('static', filename="icon/orange-circle-48.png") }}"
+								 alt="Image not found" style="vertical-align: top;"> = Esame in corso.
+						</p>
+						<p class="debug fast_function_legend">
+							<img class="user_icon" src="{{ url_for('static', filename="icon/green-circle-48.png") }}"
+								 alt="Image not found" style="vertical-align: top;"> = Esame terminato.
+						</p>
+						<p class="debug fast_function_legend">
+							<img class="user_icon" src="{{ url_for('static', filename="icon/circled-48.png") }}"
+								 alt="Image not found" style="vertical-align: top;"> = Stato non definito.
+						</p>
+					{% endif %}
+
+				</div>
 			</div>
 			<div class="debug" id="user_information_div">
 				<div class="debug" id="search_bar_div">
