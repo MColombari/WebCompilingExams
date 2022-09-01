@@ -74,15 +74,14 @@ def login_administrator():
             flash("Accesso alla pagina negato", 'danger')
             return redirect(url_for('start_exam'))
 
-    credential = DebugExamInformation().load_admin_information()
+    credential = DebugExamInformation('/app/config.ini').load_admin_information()
 
     form = AdminLoginForm()
     if form.validate_on_submit():
-        if (form.name.data == credential["Name"] and
+        if (form.name.data == credential["Username"] and
                 form.password.data == credential["Password"]):
             user = User(id=ADMIN_ID, name="admin", surname="admin",
                         email="admin")
-
             count = User.query.filter_by(id=ADMIN_ID).count()
             if count == 0:
                 db.session.add(user)
@@ -255,7 +254,7 @@ def start_exam():
         flash('L\'esame è in corso di svolgimento', 'warning')
         return redirect(url_for('exam'))
 
-    information = DebugExamInformation().load_generic_information()
+    information = DebugExamInformation('/app/config.ini').load_generic_information()
     return render_template("start_exam.html", title='Start',
                            bottom_bar_left=DATE,
                            bottom_bar_center='Waiting room',
