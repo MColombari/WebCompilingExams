@@ -1,0 +1,13 @@
+{% extends "main_template.html" %}
+{%  block head %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='logout_page.css') }}">
+{% endblock head %}
+{% block body %}
+    <div id="main_center_div">
+		<p style="font-size: 30pt;">Esame terminato con successo!</p>
+		<p style="font-size: 11pt;">Ora è possibile chiudere la pagina oppure tornare alla home.</p>
+		<a href="{{ url_for('registration') }}">
+			<button id="home_return_button">Ritorna alla home.</button>
+		</a>
+	</div>
+{% endblock body %}

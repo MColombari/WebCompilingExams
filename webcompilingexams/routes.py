@@ -424,7 +424,10 @@ def logout():
     logout_user()
 
     flash('Logout eseguito con successo', 'success')
-    return redirect(url_for('registration'))
+    return render_template('logout_page.html', title='Esame Terminato',
+                           bottom_bar_left=DATE,
+                           bottom_bar_center='Uscita',
+                           bottom_bar_right='Attesa uscita')
 
 
 @app.errorhandler(HTTPException)
