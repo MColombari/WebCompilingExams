@@ -11,6 +11,7 @@ from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR, ADMIN
 from webcompilingexams.form import RegistrationForm, QuestionForm, AdminLoginForm, AdminForm
 from webcompilingexams.load_exam_information import DebugExamInformation
 from webcompilingexams.load_question import DebugLoadQuestion
+from webcompilingexams.log import Log
 from webcompilingexams.models import User, Question
 from webcompilingexams.run_program import RunManager
 from webcompilingexams.save_user_data import SaveUserData
@@ -18,12 +19,17 @@ from webcompilingexams.save_user_data import SaveUserData
 DATE = str(datetime.today().strftime('%Y / %m / %d'))
 DIR_DATE = str(datetime.today().strftime('%Y_%m_%d'))
 
+log = Log('/app/log.txt')
+
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/registration', methods=['GET', 'POST'])
 def registration():
     if current_user.is_authenticated:
         if current_user.exam_started:
+            if current_user.exam_finished:
+                flash('Logout forzato poiché l\'esame è terminato.', 'danger')
+                return redirect(url_for('logout'))
             flash('L\'esame è in corso di svolgimento', 'warning')
             return redirect(url_for('exam'))
         flash('L\'utente è già registrato', 'warning')
@@ -42,6 +48,8 @@ def registration():
             user.exam_checked = False
             user.restart_token = False
             db.session.commit()
+
+            log.write(f'[User: {user.id}] used the access token to log again to the exam.')
             return redirect(url_for('start_exam'))
 
         db.session.add(user)
@@ -55,6 +63,7 @@ def registration():
         # if next_page:
         #     return redirect(next_page)  # Vai alla pagina a cui ha cercato di andare precedentemente senza il login.
 
+        log.write(f'[User: {user.id}] registered to the exam.')
         return redirect(url_for('start_exam'))
 
     return render_template('user_registration.html', title='Registration', form=form,
@@ -89,14 +98,17 @@ def login_administrator():
 
             login_user(user, True)
 
-            flash("Login amminstratore eseguito con successo", 'success')
+            flash("Login amministratore eseguito con successo", 'success')
+
+            log.write(f'[Admin] successfully login to the admin page.')
             return redirect(url_for('admin_page'))
         else:
-            flash("Nome e/o password sono errati", 'warning')
+            flash("Nome e/o password errati", 'warning')
+            log.write(f'[Unknown] tried unsuccessfully to login to the admin page.')
 
     return render_template("login_administrator.html", title='Admin Login',
                            bottom_bar_left=DATE,
-                           bottom_bar_center='Login admin page',
+                           bottom_bar_center='Login admin',
                            bottom_bar_right='Atteso login',
                            form=form)
 
@@ -106,6 +118,8 @@ def login_administrator():
 def admin_page():
     if current_user.id != ADMIN_ID:
         flash("Accesso alla pagina negato", 'danger')
+
+        log.write(f'[User: {current_user.id}] tried to enter to the admin page.')
         return redirect(url_for('start_exam'))
 
     users = [u for u in User.query.all() if u.id != ADMIN_ID]
@@ -113,7 +127,7 @@ def admin_page():
 
     # Update Answer points.
     if current_user.exam_checked:
-        for user in users:
+        for user in [u for u in users if not u.exam_checked]:
             for question in user.questions:
                 if question.type == 1:
                     points = 0
@@ -138,6 +152,8 @@ def admin_page():
             User.query.filter_by(id=user_id).delete()
             db.session.commit()
             flash(f'Utente {user_id:>06} eliminato', 'success')
+
+            log.write(f'[Admin] deleted "User: {user_id}" from the db.')
             return redirect(url_for('admin_page'))
 
         elif request.form.get('token'):
@@ -145,9 +161,13 @@ def admin_page():
             user = User.query.filter_by(id=user_id).first()
             user.restart_token = True
             db.session.commit()
+
+            log.write(f'[Admin] granted access token to "User: {user_id}".')
             return redirect(url_for('admin_page'))
 
         elif request.form.get('close_exam') == "True":
+            log.write(f'[Admin] close the exam and deleted the db.')
+
             user_results = []
 
             for user in User.query.all():
@@ -163,7 +183,7 @@ def admin_page():
                     if weight_sum != 0:
                         points /= weight_sum
 
-                    user_results.append(f'Matricola: {user.id:06} Punteggio: {points}/100')
+                    user_results.append(f'Matricola: {user.id:06} Punteggio: {points:.2f}/100')
 
             with open(f'/app/student_exam/results.txt', 'a') as f:
                 f.write('\n'.join(user_results))
@@ -181,6 +201,15 @@ def admin_page():
             dir_util.copy_tree('/app/student_exam', f'/app/past_student_exam/exam_{str(DIR_DATE)}')
             rmtree('/app/student_exam')
             os.mkdir('/app/student_exam')
+
+            if os.path.isfile('/app/log.txt'):
+                if os.path.isfile(f'/app/past_student_exam/exam_{str(DIR_DATE)}/log.txt'):
+                    with open(f'/app/past_student_exam/exam_{str(DIR_DATE)}/log.txt', 'a') as f_out:
+                        with open('/app/log.txt', 'r') as f_in:
+                            f_out.write("\n" + f_in.read())
+                    os.remove('/app/log.txt')
+                else:
+                    os.rename('/app/log.txt', f'/app/past_student_exam/exam_{str(DIR_DATE)}/log.txt')
 
             db.drop_all()
             db.create_all()
@@ -200,13 +229,16 @@ def admin_page():
 
         elif request.form.get('checked'):
             user_id = request.form.get('checked')
+            tmp = []
             for question in Question.query.filter_by(user_id=user_id):
                 question.points = float(request.form.get(f'question_value-{user_id}-{question.number}')) / 100
                 question.question_weight = float(request.form.get(f'question_weight-{user_id}-{question.number}'))
+                tmp.append(question.points)
 
             User.query.filter_by(id=user_id).first().exam_checked = True
             db.session.commit()
             flash(f"Voto salvato per l'utente: {user_id}", 'success')
+            return redirect(url_for('admin_page'))
 
         elif form and form.text.data != '':
             tmp_u = []
@@ -233,7 +265,7 @@ def admin_page():
 
     return render_template('administrator_page.html', title='Admin',
                            bottom_bar_left=DATE,
-                           bottom_bar_center='Administrator page',
+                           bottom_bar_center='Admin page',
                            bottom_bar_right='Controllo esame',
                            form=form,
                            users=out_users,
@@ -251,6 +283,9 @@ def admin_page():
 @login_required
 def start_exam():
     if current_user.exam_started:
+        if current_user.exam_finished:
+            flash('Logout forzato poiché l\'esame è terminato.', 'danger')
+            return redirect(url_for('logout'))
         flash('L\'esame è in corso di svolgimento', 'warning')
         return redirect(url_for('exam'))
 
@@ -267,6 +302,9 @@ def start_exam():
 @login_required
 def starting_exam():
     if current_user.exam_started:
+        if current_user.exam_finished:
+            flash('Logout forzato poiché l\'esame è terminato.', 'danger')
+            return redirect(url_for('logout'))
         flash('L\'esame è in corso di svolgimento', 'warning')
         return redirect(url_for('exam'))
 
@@ -279,6 +317,7 @@ def starting_exam():
     current_user.exam_started = True
     db.session.commit()
 
+    log.write(f'[User: {current_user.id}] started the exam.')
     return redirect(url_for('exam'))
 
 
@@ -286,6 +325,9 @@ def starting_exam():
 @login_required
 def exam():
     if not current_user.exam_started:
+        if current_user.exam_finished:
+            flash('Logout forzato poiché l\'esame è terminato.', 'danger')
+            return redirect(url_for('logout'))
         flash('Per accedere alla pagina è necessario avviare l\'esame', 'warning')
         return redirect(url_for('start_exam'))
 
@@ -375,7 +417,7 @@ def exam():
     return render_template("exam.html", title='Esame',
                            bottom_bar_left=DATE,
                            bottom_bar_center='Esame',
-                           bottom_bar_right='Esame in svolgimento',
+                           bottom_bar_right='Esame in corso',
                            question=current_question,
                            questions_number=len(current_user.questions),
                            preselected=current_question.answer.split(CHARACTER_SEPARATOR),
@@ -389,6 +431,9 @@ def exam():
 @login_required
 def recap():
     if not current_user.exam_started:
+        if current_user.exam_finished:
+            flash('Logout forzato poiché l\'esame è terminato.', 'danger')
+            return redirect(url_for('logout'))
         flash('Per accedere alla pagina è necessario avviare l\'esame', 'warning')
         return redirect(url_for('start_exam'))
     return render_template('recap.html', title='Recap Esame',
@@ -412,6 +457,8 @@ def save_user_data(user):
 def logout():
     if current_user.id == ADMIN_ID:
         logout_user()
+
+        log.write(f'[Admin] logged out.')
         return redirect(url_for('login_administrator'))
 
     if not current_user.exam_started:
@@ -420,9 +467,12 @@ def logout():
 
     save_user_data(current_user)
 
+    user_id = current_user.id
     logout_user()
 
     flash('Logout eseguito con successo', 'success')
+
+    log.write(f'[User: {user_id}] terminate the exam and logged out.')
     return render_template('logout_page.html', title='Esame Terminato',
                            bottom_bar_left=DATE,
                            bottom_bar_center='Uscita',
@@ -432,4 +482,5 @@ def logout():
 @app.errorhandler(HTTPException)
 def errorhandler(e):
     print(f"{e.code}, {e.name}, {e.description}")
+    log.write(f'[ERROR] "{e.code}" - "{e.name}" - "{e.description}".')
     return e  # Da completare
