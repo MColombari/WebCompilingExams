@@ -144,6 +144,15 @@ def admin_page():
                     question.points = points
                     db.session.commit()
 
+                elif question.type == 3:
+                    points = 0
+                    if not question.test_output == '':
+                        data = question.test_output.split('\n')[0].split('/')
+                        points = float(data[0]) / float(data[1])
+
+                    question.points = points
+                    db.session.commit()
+
     form = AdminForm()
     if request.method == 'POST':
         if request.form.get('delete'):
