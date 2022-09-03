@@ -3,7 +3,7 @@ import shutil
 import subprocess
 import threading
 
-from flask import flash
+from flask import flash, url_for
 
 from webcompilingexams import db
 
@@ -88,8 +88,19 @@ class RunManager:
             count_success = result.count(".")
             count_failed = result.count("F")
 
-            self.question.test_output = f'''Test passati: {count_success}
-                                            Test falliti: {count_failed}'''
+            self.question.test_output = f'{count_success}/{count_success + count_failed}\n' \
+                                        f'Test passati: {count_success}\n' \
+                                        f'Test falliti: {count_failed}'
+
+            if count_failed == 0:
+                self.question.test_output_summary = 'Tutti i test passati'
+                self.question.test_output_icon = url_for('static', filename="icon/check-mark-48.png")
+            elif count_failed != 0 and count_success != 0:
+                self.question.test_output_summary = 'Alcuni test passati e altri no'
+                self.question.test_output_icon = url_for('static', filename="icon/cross-mark-48.png")
+            else:
+                self.question.test_output_summary = 'Nessun test passato'
+                self.question.test_output_icon = url_for('static', filename="icon/cross-mark-48.png")
 
             result = str(self.stderr).split('----------------------------------------------------------------------')
             out = []
