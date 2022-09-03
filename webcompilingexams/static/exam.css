@@ -113,6 +113,7 @@
 	border-radius: 10px;
 	padding: 5px 20px;
 	word-wrap: break-word;
+	overflow:scroll;
 }
 
 #output_test_div{

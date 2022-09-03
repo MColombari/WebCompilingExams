@@ -90,7 +90,11 @@
 					{% if question.compiler_output == '' %}
 						Nessun output.
 					{% else %}
-						{{ question.compiler_output }}
+						{% for row in question.compiler_output.split('\n') %}
+							<div class="debug" style="margin: 3px 0;">
+								{{ row }}
+							</div>
+						{% endfor %}
 					{% endif %}
 				</div>
 				<div id="output_test_div">
@@ -98,7 +102,11 @@
 					{% if question.test_output == '' %}
 						Nessun output dai test.
 					{% else %}
-						{{ question.test_output }}
+						{% for row in question.test_output.split('\n') %}
+							<div class="debug" style="margin: 3px 0;">
+								{{ row }}
+							</div>
+						{% endfor %}
 					{% endif %}
 				</div>
 				<div id="input_user_div">

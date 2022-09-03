@@ -12,8 +12,8 @@ class RunManager:
     def __init__(self, user, question):
         self.user = user
         self.question = question
-        self.terminal_output = None
-        self.test_output = None
+        self.stderr = None
+        self.stdout = None
         self.flash = None
         self.flash_type = None
 
@@ -50,11 +50,10 @@ class RunManager:
             t.start()
             t.join()
 
-        if self.terminal_output:
-            self.question.compiler_output = self.terminal_output
-
-        if self.test_output:
-            self.question.compiler_output = self.test_output
+        if self.stderr == '':
+            self.question.compiler_output = 'Il compilatore non ha trovato nessun errore.'
+        else:
+            self.question.compiler_output = self.stderr
 
         if self.flash and self.flash_type:
             flash(self.flash, self.flash_type)
@@ -85,11 +84,23 @@ class RunManager:
             t.start()
             t.join()
 
-        if self.terminal_output:
-            self.question.compiler_output = self.terminal_output
+            result = str(self.stderr).split('\n')[0]
+            count_success = result.count(".")
+            count_failed = result.count("F")
 
-        if self.test_output:
-            self.question.test_output = self.test_output
+            self.question.test_output = f'''Test passati: {count_success}
+                                            Test falliti: {count_failed}'''
+
+            result = str(self.stderr).split('----------------------------------------------------------------------')
+            out = []
+            for i in range(count_failed):
+                if len(result) > i + 1:
+                    out.append(result[i + 1]
+                               .split("======================================================================")[0])
+
+            self.question.compiler_output = ''.join(out)
+
+            db.session.commit()
 
         if self.flash and self.flash_type:
             flash(self.flash, self.flash_type)
@@ -106,13 +117,11 @@ class CommandRun(threading.Thread):
     def run(self):
         flash_type = 'success'
         try:
-
             process = subprocess.run(self.command, capture_output=True, encoding="utf-8",
                                      timeout=5)
-            if process.stderr == '':
-                self.run_manager.terminal_output = "Il compilatore non ha trovato nessun errore."
-            else:
-                self.run_manager.terminal_output = process.stderr
+            self.run_manager.stdout = process.stdout
+            self.run_manager.stderr = process.stderr
+
         except subprocess.TimeoutExpired as e:
             self.run_manager.terminal_output = f'La compilazione ha richiesto più di 5 secondi\n{e}'
             flash_type = 'warning'
