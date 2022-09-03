@@ -1,0 +1,32 @@
+General:
+  Duration: 60
+  NumberOfQuestion: 11
+
+AdminCredential:
+  Username: 'admin'
+  Password: 'admin'
+
+Questions:
+  Code:
+
+    Java:
+      Basic:
+        Easy: 3
+        Normal: 2
+        Difficult: 1
+      Collection:
+        Easy: 3
+        Normal: 2
+        Difficult: 1
+      IO:
+        Easy: 3
+        Normal: 2
+        Difficult: 1
+      ObjectOriented:
+        Easy: 3
+        Normal: 2
+        Difficult: 1
+
+    Python:
+      Basic:
+        Easy: 1

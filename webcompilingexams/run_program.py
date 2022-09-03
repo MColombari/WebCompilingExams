@@ -1,4 +1,5 @@
 import os
+import shutil
 import subprocess
 import threading
 
@@ -37,7 +38,7 @@ class RunManager:
                 f.write(self.question.answer)
             # '-proc:only' suppress .class file generation.
             # '-Xlint:none' suppress warning due to a warning generated using '-proc:only'.
-            t = CompileRun(['javac', '-proc:only', '-Xlint:none', PATH + f'/{class_name}.java'], self)
+            t = CommandRun(['javac', '-proc:only', '-Xlint:none', PATH + f'/{class_name}.java'], self)
             t.start()
             t.join()
 
@@ -45,7 +46,7 @@ class RunManager:
             with open(PATH + '/RunningFile.py', 'w') as f:
                 f.write(self.question.answer)
 
-            t = CompileRun(['python3', PATH + '/RunningFile.py'], self)
+            t = CommandRun(['python3', PATH + '/RunningFile.py'], self)
             t.start()
             t.join()
 
@@ -61,10 +62,42 @@ class RunManager:
         db.session.commit()
 
     def test(self):
-        pass
+        PATH = f'/app/student_exam/u{self.user.id:06}'
+        TEST_PATH = str(self.question.options)
+
+        if self.question.type == 2:
+            pass
+        elif self.question.type == 3:
+            with open(PATH + '/RunningFile.py', 'w') as f:
+                f.write(self.question.answer)
+
+            if not os.path.isfile(TEST_PATH):
+                self.question.compiler_output = ''
+                self.question.test_output = 'Errore, test non trovato!'
+                flash('Errore esecuzione', 'danger')
+                db.session.commit()
+                return
+
+            test_name = TEST_PATH.split('/')[-1]
+            shutil.copyfile(TEST_PATH, PATH + '/' + test_name)
+
+            t = CommandRun(['python3', PATH + '/' + test_name], self)
+            t.start()
+            t.join()
+
+        if self.terminal_output:
+            self.question.compiler_output = self.terminal_output
+
+        if self.test_output:
+            self.question.test_output = self.test_output
+
+        if self.flash and self.flash_type:
+            flash(self.flash, self.flash_type)
+
+        db.session.commit()
 
 
-class CompileRun(threading.Thread):
+class CommandRun(threading.Thread):
     def __init__(self, command, run_manager):
         threading.Thread.__init__(self)
         self.command = command

@@ -83,7 +83,7 @@ def login_administrator():
             flash("Accesso alla pagina negato", 'danger')
             return redirect(url_for('start_exam'))
 
-    credential = DebugExamInformation('/app/config.ini').load_admin_information()
+    credential = DebugExamInformation('/app/config.yaml').load_admin_information()
 
     form = AdminLoginForm()
     if form.validate_on_submit():
@@ -289,7 +289,7 @@ def start_exam():
         flash('L\'esame è in corso di svolgimento', 'warning')
         return redirect(url_for('exam'))
 
-    information = DebugExamInformation('/app/config.ini').load_generic_information()
+    information = DebugExamInformation('/app/config.yaml').load_generic_information()
     return render_template("start_exam.html", title='Start',
                            bottom_bar_left=DATE,
                            bottom_bar_center='Waiting room',
@@ -387,8 +387,7 @@ def exam():
             return redirect(url_for('exam'))
 
         if request.form.get('test') == 'True':
-            flash('Inizio test', 'warning')
-            pass
+            RunManager(current_user, current_question).test()
             return redirect(url_for('exam'))
 
         if request.form.get('recap') == 'Revisione domande':

@@ -1,13 +1,13 @@
-import configparser
+import yaml
 
 
 class DebugExamInformation:
     def __init__(self, path):
-        self.config = configparser.ConfigParser()
-        self.config.read(str(path))
+        with open(str(path)) as f:
+            self.config = yaml.load(f)
 
     def load_generic_information(self):
-        return {"Durata": self.config['General']['Duration'] + " minuti",
+        return {"Durata": str(self.config['General']['Duration']) + " minuti",
                 "Numero di domande": str(self.config['General']['NumberOfQuestion']),
                 }
 
