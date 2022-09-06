@@ -7,8 +7,43 @@ AdminCredential:
   Password: 'admin'
 
 Questions:
-  Code:
+  OpenQuestion:
+    Basic:
+      Easy: 1
+      Normal: 0
+      Difficult: 0
+    Collection:
+      Easy: 1
+      Normal: 0
+      Difficult: 0
+    IO:
+      Easy: 1
+      Normal: 0
+      Difficult: 0
+    ObjectOriented:
+      Easy: 1
+      Normal: 0
+      Difficult: 0
 
+  MultipleOptionQuestion:
+    Basic:
+      Easy: 1
+      Normal: 0
+      Difficult: 0
+    Collection:
+      Easy: 1
+      Normal: 0
+      Difficult: 0
+    IO:
+      Easy: 1
+      Normal: 0
+      Difficult: 0
+    ObjectOriented:
+      Easy: 1
+      Normal: 0
+      Difficult: 0
+
+  Code:
     Java:
       Basic:
         Easy: 3
@@ -26,7 +61,6 @@ Questions:
         Easy: 3
         Normal: 2
         Difficult: 1
-
     Python:
       Basic:
         Easy: 1

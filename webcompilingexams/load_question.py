@@ -9,7 +9,8 @@ class DebugLoadQuestion:
 
     def load(self):
         return [
-            Question(user_id=self.user.id, number=0, type=2, text='Domanda 1', options="",
+            Question(user_id=self.user.id, number=0, type=2, text='Domanda 1',
+                     options="/app/questions/Java/Basic/Es1.java",
                      answer='', compiler_output='',
                      test_output='',
                      test_output_summary='Nessun test eseguito',

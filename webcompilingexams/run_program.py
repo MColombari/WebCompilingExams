@@ -65,7 +65,39 @@ class RunManager:
         TEST_PATH = str(self.question.options)
 
         if self.question.type == 2:
-            pass
+            words = self.question.answer.split()
+            class_index = [out[0] for out in enumerate(words) if out[1].lower() == 'class']
+            if len(class_index) > 0 and (class_index[0] + 1) <= (len(words) - 1):
+                class_name = words[class_index[0] + 1].replace("{", "")
+            else:
+                flash('Nessuna classe trovata', 'warning')
+                return
+
+            with open(PATH + f'/{class_name}.java', 'w') as f:
+                f.write(f'package student_exam.u{self.user.id:06};')
+                f.write(self.question.answer)
+
+            if not os.path.isfile(TEST_PATH):
+                self.question.compiler_output = ''
+                self.question.test_output = 'Errore, test non trovato!'
+                flash('Errore esecuzione', 'danger')
+                db.session.commit()
+                return
+
+            test_name = TEST_PATH.split('/')[-1]
+            with open(PATH + '/' + test_name, 'w') as f_out:
+                f_out.write(f'package student_exam.u{self.user.id:06};\n')
+                with open(TEST_PATH, 'r') as f_in:
+                    f_out.write(f_in.read())
+
+            t = CommandRun(['javac', PATH + '/' + test_name, PATH + f'/{class_name}.java'], self)
+            t.start()
+            t.join()
+
+            self.question.test_output = self.stderr
+            self.question.compiler_output = self.stdout
+            db.session.commit()
+
         elif self.question.type == 3:
             with open(PATH + '/RunningFile.py', 'w') as f:
                 f.write(self.question.answer)

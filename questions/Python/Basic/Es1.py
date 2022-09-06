@@ -1,4 +1,4 @@
-"""Easy - Realizza una funzione 'run' che sommi due numeri. """
+"""Easy-'Realizza una funzione 'run' che sommi due numeri.' """
 
 import unittest
 from RunningFile import run

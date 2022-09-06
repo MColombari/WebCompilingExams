@@ -1,0 +1,10 @@
+-- "Easy" (weight: 1)
+"Indicare fra le opzioni di che tipo è questa espressione in Python '10':"
+-"String"
++"Integer"
+-"Float"
+"Indicare fra le opzioni di che tipo è questa espressione in Python 'Ciao':"
++"String"
+-"Integer"
+-"Float"
++"Solo una delle precedenti"
