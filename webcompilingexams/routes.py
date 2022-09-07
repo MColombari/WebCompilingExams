@@ -144,7 +144,7 @@ def admin_page():
                     question.points = points
                     db.session.commit()
 
-                elif question.type == 3:
+                elif question.type >= 2:
                     points = 0
                     if not question.test_output == '':
                         data = question.test_output.split('\n')[0].split('/')

@@ -6,10 +6,10 @@ public class Es1{
     public static void main(String[] args) {
 	    Sum es = new Sum(1,2);
         if (es.run() == 3){
-            System.out.println("Test eseguiti con successo.");
+            System.out.println(".\nTest eseguiti con successo.");
         }
         else {
-            System.out.println("Test falliti.");
+            System.out.println("T\nTest falliti.");
         }
     }
 }

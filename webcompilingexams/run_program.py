@@ -63,6 +63,7 @@ class RunManager:
     def test(self):
         PATH = f'/app/student_exam/u{self.user.id:06}'
         TEST_PATH = str(self.question.options)
+        LOCAL_PATH = f'student_exam/u{self.user.id:06}'
 
         if self.question.type == 2:
             words = self.question.answer.split()
@@ -74,7 +75,7 @@ class RunManager:
                 return
 
             with open(PATH + f'/{class_name}.java', 'w') as f:
-                f.write(f'package student_exam.u{self.user.id:06};')
+                f.write(f'package student_exam.u{self.user.id:06};\n')
                 f.write(self.question.answer)
 
             if not os.path.isfile(TEST_PATH):
@@ -90,12 +91,42 @@ class RunManager:
                 with open(TEST_PATH, 'r') as f_in:
                     f_out.write(f_in.read())
 
-            t = CommandRun(['javac', PATH + '/' + test_name, PATH + f'/{class_name}.java'], self)
+            t = CommandRun(['javac', LOCAL_PATH + '/' + test_name, LOCAL_PATH + f'/{class_name}.java'], self)
             t.start()
             t.join()
 
-            self.question.test_output = self.stderr
-            self.question.compiler_output = self.stdout
+            if (self.stderr != '') or (self.stdout != ''):
+                self.question.test_output = 'Compilazione fallita'
+                self.question.compiler_output = self.stdout + '\n' + self.stderr
+                db.session.commit()
+                return
+
+            t = CommandRun(['java', LOCAL_PATH + '/' + test_name.split('.java')[0]], self)
+            t.start()
+            t.join()
+
+            result = str(self.stdout).split('\n')[0]
+            count_success = result.count(".")
+            count_failed = result.count("F")
+
+            self.question.test_output = f'{count_success}/{count_success + count_failed}\n' \
+                                        f'Test passati: {count_success}\n' \
+                                        f'Test falliti: {count_failed}'
+
+            if count_failed == 0:
+                self.question.test_output_summary = 'Tutti i test passati'
+                self.question.test_output_icon = url_for('static', filename="icon/check-mark-48.png")
+            elif count_failed != 0 and count_success != 0:
+                self.question.test_output_summary = 'Alcuni test passati e altri no'
+                self.question.test_output_icon = url_for('static', filename="icon/cross-mark-48.png")
+            else:
+                self.question.test_output_summary = 'Nessun test passato'
+                self.question.test_output_icon = url_for('static', filename="icon/cross-mark-48.png")
+
+            tmp_out = self.stdout.split('\n')
+            del tmp_out[0]
+            self.question.compiler_output = '\n'.join(tmp_out)
+
             db.session.commit()
 
         elif self.question.type == 3:
