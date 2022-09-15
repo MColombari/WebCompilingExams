@@ -31,7 +31,7 @@ class Question(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, primary_key=True)
     number = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Integer, nullable=False)
-    text = db.Column(db.String, nullable=False)
+    text = db.Column(db.String, nullable=False, default="")
     options = db.Column(db.String, nullable=False, default="")
     answer = db.Column(db.String, nullable=False, default="")
     correct_answer = db.Column(db.String, nullable=False, default="")

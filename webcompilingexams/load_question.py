@@ -67,7 +67,54 @@ class LoadQuestion:
         # PATH = '/Users/mattiacolombari/Desktop/ProgettoBicocchi/WebCompilingExams/questions/'
 
         # Load Java Questions
-        pass
+        java_question_data = self.question_data['Java']
+        java_question_ret = []
+        for k in java_question_data.keys():
+            if os.path.isdir(PATH + 'Java/' + k):
+                dir_path = PATH + 'Java/' + k
+                file_collection = [f_p for f_p in os.listdir(dir_path) if '.java' in f_p]
+
+                question_list = {}
+                for file in file_collection:
+                    file_path = PATH + 'Java/' + k + "/" + file
+                    question = Question(user_id=self.user.id, number=0, type=2,
+                                        options=file_path,
+                                        test_output_summary='Nessun test eseguito',
+                                        test_output_icon=url_for('static', filename="icon/question-mark-64.png"))
+                    tag = None
+                    weight = None
+                    with open(file_path, 'r') as f:
+                        for line in f.read().split('\n'):
+                            if ('/*' in line) and ('--' in line):
+                                tag = line.split('"')[1]
+                                weight = line.split("'")[1]
+                                question.question_weight = int(weight)
+                            elif ('/*' in line) and ("'" in line):
+                                if question.text:
+                                    question.text += line.split("'")[1]
+                                else:
+                                    question.text = line.split("'")[1]
+
+                    if tag and weight:
+                        if tag not in question_list.keys():
+                            question_list[tag] = []
+                        question_list[tag].append(question)
+
+                for tmp_key in question_list.keys():
+                    random.shuffle(question_list[tmp_key])
+
+                for difficulty_key in java_question_data[k].keys():
+                    if difficulty_key in question_list.keys():
+                        for i in range(int(java_question_data[k][difficulty_key])):
+                            if len(question_list[difficulty_key]) > 0:
+                                q = question_list[difficulty_key].pop()
+                                java_question_ret.append(q)
+
+        random.shuffle(java_question_ret)
+
+        for q_i in java_question_ret:
+            q_i.number = len(out_question)
+            out_question.append(q_i)
 
         # Load Python Questions
         pass

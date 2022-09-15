@@ -11,7 +11,7 @@ Questions:
     Basic:
       Easy: 0
       Normal: 0
-      Difficult: 1
+      Difficult: 0
     Collection:
       Easy: 0
       Normal: 0
@@ -27,9 +27,9 @@ Questions:
 
   MultipleOptionQuestion:
     Basic:
-      Easy: 1
+      Easy: 0
       Normal: 0
-      Difficult: 10
+      Difficult: 0
     Collection:
       Easy: 0
       Normal: 0
@@ -42,3 +42,25 @@ Questions:
       Easy: 0
       Normal: 0
       Difficult: 0
+
+  Java:
+    Basic:
+      Easy: 1
+      Normal: 0
+      Difficult: 0
+    Collection:
+      Easy: 0
+      Normal: 0
+      Difficult: 0
+    IO:
+      Easy: 0
+      Normal: 0
+      Difficult: 0
+    ObjectOriented:
+      Easy: 0
+      Normal: 0
+      Difficult: 0
+
+  Python:
+    Basic:
+      Easy: 1

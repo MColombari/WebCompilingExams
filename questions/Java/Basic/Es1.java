@@ -1,5 +1,6 @@
-/*Easy-'Realizza una classe Esercizio a cui si passi nel costruttore due numeri interi, tale classe deve avere una funzione
-run che ritorni la somma dei due numeri'*/
+/* -- "Easy", weight: '1'
+/* 'Realizza una classe Esercizio a cui si passi nel costruttore due numeri interi, ' */
+/* 'tale classe deve avere una funzione run che ritorni la somma dei due numeri' */
 
 
 public class Es1{
@@ -9,7 +10,7 @@ public class Es1{
             System.out.println(".\nTest eseguiti con successo.");
         }
         else {
-            System.out.println("T\nTest falliti.");
+            System.out.println("F\nTest falliti.");
         }
     }
 }
