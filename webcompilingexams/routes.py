@@ -9,8 +9,8 @@ from datetime import datetime
 
 from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR, ADMIN_ID, WRONG_ANSWER_PENALTY
 from webcompilingexams.form import RegistrationForm, QuestionForm, AdminLoginForm, AdminForm
-from webcompilingexams.load_exam_information import DebugExamInformation
-from webcompilingexams.load_question import DebugLoadQuestion
+from webcompilingexams.load_exam_information import ExamInformation
+from webcompilingexams.load_question import DebugLoadQuestion, LoadQuestion
 from webcompilingexams.log import Log
 from webcompilingexams.models import User, Question
 from webcompilingexams.run_program import RunManager
@@ -83,7 +83,7 @@ def login_administrator():
             flash("Accesso alla pagina negato", 'danger')
             return redirect(url_for('start_exam'))
 
-    credential = DebugExamInformation('/app/config.yaml').load_admin_information()
+    credential = ExamInformation('/app/config.yaml').load_admin_information()
 
     form = AdminLoginForm()
     if form.validate_on_submit():
@@ -298,7 +298,7 @@ def start_exam():
         flash('L\'esame è in corso di svolgimento', 'warning')
         return redirect(url_for('exam'))
 
-    information = DebugExamInformation('/app/config.yaml').load_generic_information()
+    information = ExamInformation('/app/config.yaml').load_generic_information()
     return render_template("start_exam.html", title='Start',
                            bottom_bar_left=DATE,
                            bottom_bar_center='Waiting room',
@@ -317,7 +317,7 @@ def starting_exam():
         flash('L\'esame è in corso di svolgimento', 'warning')
         return redirect(url_for('exam'))
 
-    questions = DebugLoadQuestion(current_user).load()
+    questions = LoadQuestion(current_user, ExamInformation('/app/config.yaml')).load()
     for q in questions:
         db.session.add(q)
 

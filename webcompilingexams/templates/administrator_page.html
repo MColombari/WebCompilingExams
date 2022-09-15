@@ -287,7 +287,7 @@
 													<th>{{ question.text }}</th>
 													{% if current_user.exam_checked %}
 														<th>
-															<p class="" style="margin-left: 50px; padding: 0;">
+															<p class="" style="margin-left: 50px; padding: 0; width: 80px;">
 																Punti:
 																<input name="question_value-{{ user.id }}-{{ question.number }}" class="question_value-{{ user.id }}" size="4" type="text" value="{{ "{0}".format(question.points * 100) }}">
 																Peso:

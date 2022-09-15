@@ -1,7 +1,7 @@
 import yaml
 
 
-class DebugExamInformation:
+class ExamInformation:
     def __init__(self, path):
         with open(str(path)) as f:
             self.config = yaml.load(f)
@@ -10,6 +10,9 @@ class DebugExamInformation:
         return {"Durata": str(self.config['General']['Duration']) + " minuti",
                 "Numero di domande": str(self.config['General']['NumberOfQuestion']),
                 }
+
+    def load_questions_data(self):
+        return self.config['Questions']
 
     def load_admin_information(self):
         return {"Username": str(self.config['AdminCredential']['Username']),
