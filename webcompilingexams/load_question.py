@@ -66,47 +66,11 @@ class LoadQuestion:
         PATH = '/app/questions/'
         # PATH = '/Users/mattiacolombari/Desktop/ProgettoBicocchi/WebCompilingExams/questions/'
 
-        # Load Open Questions
-        open_question_data = self.question_data['OpenQuestion']
-        open_question_ret = []
-        for k in open_question_data.keys():
-            if (os.path.isdir(PATH + 'OpenQuestion/' + k) and
-                    os.path.isfile(PATH + 'OpenQuestion/' + k + '/OpenQuestion.txt')):
-                file_path = PATH + 'OpenQuestion/' + k + '/OpenQuestion.txt'
+        # Load Java Questions
+        pass
 
-                tmp_load = {}
-                tmp_weight = {}
-                with open(file_path, 'r') as f:
-                    tag = None
-                    for line in f.read().split('\n'):
-                        if '--' in line:
-                            tag = line.split('"')[1]
-                            weight = line.split("'")[1]
-                            tmp_load[tag] = []
-                            tmp_weight[tag] = int(weight)
-                        elif '"' in line:
-                            if tag:
-                                tmp_load[tag].append(line.split('"')[1])
-
-                for tmp_k in tmp_load.keys():
-                    random.shuffle(tmp_load[tmp_k])
-
-                for difficulty_key in open_question_data[k].keys():
-                    if difficulty_key in tmp_load.keys():
-                        for i in range(int(open_question_data[k][difficulty_key])):
-                            if len(tmp_load[difficulty_key]) > 0:
-                                q_text = tmp_load[difficulty_key].pop()
-                                open_question_ret.append(Question(user_id=self.user.id, type=0, text=q_text,
-                                                                  number=0,
-                                                                  question_weight=tmp_weight[difficulty_key],
-                                                                  test_output_summary='Nessuna risposta fornita',
-                                                                  test_output_icon=url_for('static',
-                                                                                           filename="icon/cross-mark-48.png")))
-        random.shuffle(open_question_ret)
-
-        for q_i in open_question_ret:
-            q_i.number = len(out_question)
-            out_question.append(q_i)
+        # Load Python Questions
+        pass
 
         # Load Multiple Option Questions
         multiple_option_data = self.question_data['MultipleOptionQuestion']
@@ -168,6 +132,48 @@ class LoadQuestion:
         random.shuffle(multiple_option_ret)
 
         for q_i in multiple_option_ret:
+            q_i.number = len(out_question)
+            out_question.append(q_i)
+
+        # Load Open Questions
+        open_question_data = self.question_data['OpenQuestion']
+        open_question_ret = []
+        for k in open_question_data.keys():
+            if (os.path.isdir(PATH + 'OpenQuestion/' + k) and
+                    os.path.isfile(PATH + 'OpenQuestion/' + k + '/OpenQuestion.txt')):
+                file_path = PATH + 'OpenQuestion/' + k + '/OpenQuestion.txt'
+
+                tmp_load = {}
+                tmp_weight = {}
+                with open(file_path, 'r') as f:
+                    tag = None
+                    for line in f.read().split('\n'):
+                        if '--' in line:
+                            tag = line.split('"')[1]
+                            weight = line.split("'")[1]
+                            tmp_load[tag] = []
+                            tmp_weight[tag] = int(weight)
+                        elif '"' in line:
+                            if tag:
+                                tmp_load[tag].append(line.split('"')[1])
+
+                for tmp_k in tmp_load.keys():
+                    random.shuffle(tmp_load[tmp_k])
+
+                for difficulty_key in open_question_data[k].keys():
+                    if difficulty_key in tmp_load.keys():
+                        for i in range(int(open_question_data[k][difficulty_key])):
+                            if len(tmp_load[difficulty_key]) > 0:
+                                q_text = tmp_load[difficulty_key].pop()
+                                open_question_ret.append(Question(user_id=self.user.id, type=0, text=q_text,
+                                                                  number=0,
+                                                                  question_weight=tmp_weight[difficulty_key],
+                                                                  test_output_summary='Nessuna risposta fornita',
+                                                                  test_output_icon=url_for('static',
+                                                                                           filename="icon/cross-mark-48.png")))
+        random.shuffle(open_question_ret)
+
+        for q_i in open_question_ret:
             q_i.number = len(out_question)
             out_question.append(q_i)
 
