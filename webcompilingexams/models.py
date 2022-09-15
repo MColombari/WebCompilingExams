@@ -50,4 +50,4 @@ class Question(db.Model):
 
     def __repr__(self):
         return f"Question('{self.user_id:06}', '{self.number}', '{self.type}', '{self.text}', '{self.options}'," \
-               f"'{self.answer}', '{self.compiler_output}', '{self.test_output}')"
+               f"'{self.correct_answer}', '{self.answer}', '{self.compiler_output}', '{self.test_output}')"

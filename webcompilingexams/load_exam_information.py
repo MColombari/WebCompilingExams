@@ -3,6 +3,7 @@ import yaml
 
 class ExamInformation:
     def __init__(self, path):
+        yaml.warnings({'YAMLLoadWarning': False})
         with open(str(path)) as f:
             self.config = yaml.load(f)
 

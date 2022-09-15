@@ -1,4 +1,0 @@
--- "Easy" (weight: 1)
-"Domanda sugli Oggetti"
-+"Giusta"
--"Sbagliata"
