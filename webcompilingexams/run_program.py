@@ -79,8 +79,7 @@ class RunManager:
                 f.write(self.question.answer)
 
             if not os.path.isfile(TEST_PATH):
-                self.question.compiler_output = ''
-                self.question.test_output = 'Errore, test non trovato!'
+                self.question.test_output = ''
                 flash('Errore esecuzione', 'danger')
                 db.session.commit()
                 return
@@ -96,8 +95,9 @@ class RunManager:
             t.join()
 
             if (self.stderr != '') or (self.stdout != ''):
-                self.question.test_output = 'Compilazione fallita'
+                self.question.test_output = ''
                 self.question.compiler_output = self.stdout + '\n' + self.stderr
+                flash('Errore compilazione', 'warning')
                 db.session.commit()
                 return
 
