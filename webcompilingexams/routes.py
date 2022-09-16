@@ -10,7 +10,7 @@ from datetime import datetime
 from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR, ADMIN_ID, WRONG_ANSWER_PENALTY
 from webcompilingexams.form import RegistrationForm, QuestionForm, AdminLoginForm, AdminForm
 from webcompilingexams.load_exam_information import ExamInformation
-from webcompilingexams.load_question import DebugLoadQuestion, LoadQuestion
+from webcompilingexams.load_question import LoadQuestion
 from webcompilingexams.log import Log
 from webcompilingexams.models import User, Question
 from webcompilingexams.run_program import RunManager
@@ -148,7 +148,7 @@ def admin_page():
                     points = 0
                     if not question.test_output == '':
                         data = question.test_output.split('\n')[0].split('/')
-                        if (int(data[1]) == 0):
+                        if int(data[1]) == 0:
                             points = 0
                         else:
                             points = float(data[0]) / float(data[1])
@@ -340,6 +340,8 @@ def starting_exam():
 
     RunManager.create_directory(current_user.id)
 
+    current_user.time_of_start = str(datetime.today().strftime('%Y / %m / %d - %H:%M:%S'))
+
     current_user.exam_started = True
     db.session.commit()
 
@@ -350,6 +352,19 @@ def starting_exam():
 @app.route('/exam', methods=['GET', 'POST'])
 @login_required
 def exam():
+    duration = ExamInformation('/app/config.yaml').load_duration()
+    if duration > 0 and current_user.time_of_start != '':
+        start_date = datetime.strptime(current_user.time_of_start, '%Y / %m / %d - %H:%M:%S')
+        time_now = datetime.today()
+
+        date_difference = time_now - start_date
+
+        if date_difference.total_seconds() > (duration * 60):
+            current_user.exam_finished = True
+            db.session.commit()
+            flash('Logout forzato poiché l\'esame è terminato.', 'danger')
+            return redirect(url_for('logout'))
+
     if current_user.exam_finished:
         flash('Logout forzato poiché l\'esame è terminato.', 'danger')
         return redirect(url_for('logout'))
@@ -440,6 +455,13 @@ def exam():
     else:
         form.text.data = current_question.answer
 
+    second_to_end = None
+    if duration > 0 and current_user.time_of_start != '':
+        start_date = datetime.strptime(current_user.time_of_start, '%Y / %m / %d - %H:%M:%S')
+        time_now = datetime.today()
+
+        second_to_end = (duration * 60) - (time_now - start_date).total_seconds()
+
     return render_template("exam.html", title='Esame',
                            bottom_bar_left=DATE,
                            bottom_bar_center='Esame',
@@ -449,13 +471,27 @@ def exam():
                            preselected=current_question.answer.split(CHARACTER_SEPARATOR),
                            index=index_current_question,
                            form=form,
-                           QUESTION_TYPE=QUESTION_TYPE
+                           QUESTION_TYPE=QUESTION_TYPE,
+                           second_to_end=second_to_end
                            )
 
 
 @app.route('/recap')
 @login_required
 def recap():
+    duration = ExamInformation('/app/config.yaml').load_duration()
+    if duration > 0 and current_user.time_of_start != '':
+        start_date = datetime.strptime(current_user.time_of_start, '%Y / %m / %d - %H:%M:%S')
+        time_now = datetime.today()
+
+        date_difference = time_now - start_date
+
+        if date_difference.total_seconds() > (duration * 60):
+            current_user.exam_finished = True
+            db.session.commit()
+            flash('Logout forzato poiché l\'esame è terminato.', 'danger')
+            return redirect(url_for('logout'))
+
     if current_user.exam_finished:
         flash('Logout forzato poiché l\'esame è terminato.', 'danger')
         return redirect(url_for('logout'))

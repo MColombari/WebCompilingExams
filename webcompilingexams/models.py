@@ -20,6 +20,7 @@ class User(db.Model, UserMixin):
     exam_finished = db.Column(db.Boolean, unique=False, default=False)
     exam_checked = db.Column(db.Boolean, unique=False, default=False)
     restart_token = db.Column(db.Boolean, unique=False, default=False)
+    time_of_start = db.Column(db.String, nullable=False, default="")
     index_question = db.Column(db.Integer, unique=False, default=0)
     questions = db.relationship('Question', backref='user', lazy=True)
 

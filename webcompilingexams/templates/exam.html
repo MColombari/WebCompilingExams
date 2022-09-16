@@ -62,6 +62,41 @@
 			<div class="debug information_divs">
 				<input id="recap_answer_button" type="submit" name="recap" value="Revisione domande">
 			</div>
+			<div class="debug information_divs"
+					style="font-weight: bold; font-size: 15pt;">
+				{% if second_to_end != None %}
+					<div id="count_down_display"></div>
+						<script>
+							$(document).ready(function(){
+                                let second_to_end = parseInt({{ second_to_end }});
+								setInterval(function() {
+                                    if (second_to_end <= 0){
+                                        location.reload();
+									}
+									let h = Math.floor(second_to_end / 3600);
+                                    let m = Math.floor(second_to_end / 60) - (h * 60);
+                                    let s = second_to_end - (h * 3600) - (m * 60);
+
+                                    h = h.toLocaleString("en-US", { minimumIntegerDigits: 2});
+                                    m = m.toLocaleString("en-US", { minimumIntegerDigits: 2});
+                                    s = s.toLocaleString("en-US", { minimumIntegerDigits: 2});
+
+                                    if (h != 0) {
+                                        $('#count_down_display').text(h + ":" + m + ":" + s);
+                                    }
+                                    else if (m != 0){
+                                        $('#count_down_display').text(m + ":" + s);
+									}
+                                    else{
+                                        $('#count_down_display').text(s + " secondi");
+                                        $('#count_down_display').css('color', 'red');
+									}
+									second_to_end = second_to_end - 1;
+								}, 1000);
+                            });
+						</script>
+				{% endif %}
+			</div>
 		</div>
 		<div class="debug" id="question_content_div">
 			<div id="text_question_div">
