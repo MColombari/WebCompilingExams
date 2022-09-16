@@ -234,6 +234,18 @@ def admin_page():
 
             return redirect(url_for('admin_page'))
 
+        elif request.form.get('stop_exam') == "True":
+            log.write(f'[Admin] stop the exam.')
+
+            for user in User.query.all():
+                if user.id != ADMIN_ID:
+                    user.exam_finished = True
+            db.session.commit()
+
+            flash('Tutti gli utenti sono stati scollegati', 'success')
+
+            return redirect(url_for('admin_page'))
+
         elif request.form.get('check_exam') == "True":
             current_user.exam_checked = not current_user.exam_checked
             db.session.commit()
@@ -294,10 +306,11 @@ def admin_page():
 @app.route('/start')
 @login_required
 def start_exam():
+    if current_user.exam_finished:
+        flash('Logout forzato poiché l\'esame è terminato.', 'danger')
+        return redirect(url_for('logout'))
+
     if current_user.exam_started:
-        if current_user.exam_finished:
-            flash('Logout forzato poiché l\'esame è terminato.', 'danger')
-            return redirect(url_for('logout'))
         flash('L\'esame è in corso di svolgimento', 'warning')
         return redirect(url_for('exam'))
 
@@ -313,10 +326,11 @@ def start_exam():
 @app.route('/starting')
 @login_required
 def starting_exam():
+    if current_user.exam_finished:
+        flash('Logout forzato poiché l\'esame è terminato.', 'danger')
+        return redirect(url_for('logout'))
+
     if current_user.exam_started:
-        if current_user.exam_finished:
-            flash('Logout forzato poiché l\'esame è terminato.', 'danger')
-            return redirect(url_for('logout'))
         flash('L\'esame è in corso di svolgimento', 'warning')
         return redirect(url_for('exam'))
 
@@ -336,10 +350,11 @@ def starting_exam():
 @app.route('/exam', methods=['GET', 'POST'])
 @login_required
 def exam():
+    if current_user.exam_finished:
+        flash('Logout forzato poiché l\'esame è terminato.', 'danger')
+        return redirect(url_for('logout'))
+
     if not current_user.exam_started:
-        if current_user.exam_finished:
-            flash('Logout forzato poiché l\'esame è terminato.', 'danger')
-            return redirect(url_for('logout'))
         flash('Per accedere alla pagina è necessario avviare l\'esame', 'warning')
         return redirect(url_for('start_exam'))
 
@@ -441,10 +456,11 @@ def exam():
 @app.route('/recap')
 @login_required
 def recap():
+    if current_user.exam_finished:
+        flash('Logout forzato poiché l\'esame è terminato.', 'danger')
+        return redirect(url_for('logout'))
+
     if not current_user.exam_started:
-        if current_user.exam_finished:
-            flash('Logout forzato poiché l\'esame è terminato.', 'danger')
-            return redirect(url_for('logout'))
         flash('Per accedere alla pagina è necessario avviare l\'esame', 'warning')
         return redirect(url_for('start_exam'))
     return render_template('recap.html', title='Recap Esame',
@@ -455,12 +471,13 @@ def recap():
 
 
 def save_user_data(user):
-    if user.exam_finished or user.id == ADMIN_ID:
+    if user.id == ADMIN_ID:
         return
 
     SaveUserData(user).save()
-    user.exam_finished = True
-    db.session.commit()
+    if not user.exam_finished:
+        user.exam_finished = True
+        db.session.commit()
 
 
 @app.route('/logout')
@@ -471,10 +488,6 @@ def logout():
 
         log.write(f'[Admin] logged out.')
         return redirect(url_for('login_administrator'))
-
-    if not current_user.exam_started:
-        flash('Per uscire è necessario iniziare l\'esame', 'warning')
-        return redirect(url_for('start_exam'))
 
     save_user_data(current_user)
 

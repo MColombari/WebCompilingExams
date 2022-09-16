@@ -101,9 +101,15 @@
 			<div class="debug" id="fast_function_div">
 				<div class="debug fast_function_divs">
 					<button id="fast_function_close_exam" type="submit" name="close_exam" value="True"
+							style="background-color: white; border: 1px solid black;"
 						onclick="return confirmation('Sicuro di voler chiudere l\'esame, e quindi salvare i dati' +
 						 ' e cancellare il database?')">
-						Chiudi e salva l'esame
+						Reseta e salva l'esame
+					</button>
+					<button id="fast_function_close_exam" type="submit" name="stop_exam" value="True"
+						onclick="return confirmation('Sicuro di voler fermare l\'esame, e quindi forzare il loggout'
+						 + ' a tutti gli utenti?')">
+						Ferma l'esame
 					</button>
 					{% if current_user.exam_checked %}
 						<button id="fast_function_check_exam" type="submit" name="check_exam" value="True"
@@ -114,7 +120,7 @@
 						<button id="fast_function_check_exam" type="submit" name="check_exam" value="True"
 								style="background-color: white; border: 1px solid black;"
 							onclick="return confirmation('Avvio modalità di correzione?')">
-							Correggi l'esame
+							Monitora l'esame
 						</button>
 					{% endif %}
 				</div>
