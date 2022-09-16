@@ -9,11 +9,11 @@ AdminCredential:
 Questions:
   OpenQuestion:
     Basic:
-      Easy: 0
+      Easy: 2
       Normal: 0
       Difficult: 0
     Collection:
-      Easy: 0
+      Easy: 1
       Normal: 0
       Difficult: 0
     IO:
@@ -27,7 +27,7 @@ Questions:
 
   MultipleOptionQuestion:
     Basic:
-      Easy: 0
+      Easy: 2
       Normal: 0
       Difficult: 0
     Collection:
@@ -35,7 +35,7 @@ Questions:
       Normal: 0
       Difficult: 0
     IO:
-      Easy: 0
+      Easy: 1
       Normal: 0
       Difficult: 0
     ObjectOriented:
@@ -63,5 +63,5 @@ Questions:
 
   Python:
     Basic:
-      Easy: 2
+      Easy: 20
       Normal: 30

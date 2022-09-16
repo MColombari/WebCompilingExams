@@ -283,8 +283,8 @@
 										<table class="debug user_question_table">
 											{% for question in user.questions|sort(attribute='number') %}
 												<tr class="debug">
-													<th>{{ question.number + 1 }}) -</th>
-													<th>{{ question.text }}</th>
+													<th>{{ question.number + 1 }})</th>
+													<th><p class="debug" style="margin-left: 10px; font-weight: normal;">{{ question.text }}</p></th>
 													{% if current_user.exam_checked %}
 														<th>
 															<p class="" style="margin-left: 50px; padding: 0; width: 80px;">
@@ -310,7 +310,22 @@
 														{% endfor %}
 													{% else %}
 														<th></th>
-														<th style="padding-left: 20px;">{{ question.answer }}</th>
+														<th style="padding-left: 20px;">
+															{% for answer_line in question.answer.split("\n") %}
+																<div class="debug" style="margin: 1px; padding: 0; min-height: 16px;">
+																	{% set flag = namespace(val=True) %}
+																	{% for c in answer_line %}
+																		{% if c != '\t' %}
+																			{% set flag.val = False %}
+																		{% endif %}
+																		{% if flag.val == True %}
+																			&emsp;&emsp;&emsp;&emsp;
+																		{% endif %}
+																	{% endfor %}
+																	{{ answer_line }}
+																</div>
+															{% endfor %}
+														</th>
 													{% endif %}
 													{% if current_user.exam_checked %}
 														<th></th>
