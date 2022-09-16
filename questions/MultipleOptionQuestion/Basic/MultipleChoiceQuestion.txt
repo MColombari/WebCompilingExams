@@ -1,0 +1,17 @@
+-- "Easy" (weight: '10')
+"Indicare fra le opzioni di che tipo è questa espressione in Python '10':"
+-"String"
++"Integer"
+-"Float"
+"Indicare fra le opzioni di che tipo è questa espressione in Python 'Ciao':"
++"String"
+-"Integer"
+-"Float"
++"Solo una delle precedenti"
+
+-- "Difficult" (weight: '100')
+"Indicare chi è il miglior professore:"
++"OK"
+-"NO"
++"OK"
++"Solo due delle altre"

@@ -1,0 +1,9 @@
+-- "Easy" (weight: '1')
+"Python è un linguaggio di programmazione?"
+"Python è un linguaggio di programmazione?_2"
+
+-- "Normal" (weight: '2')
+"Python è un linguaggio di programmazione o una cipolla?"
+
+-- "Difficult" (weight: '5')
+"Python è un linguaggio tipizzato?"

@@ -5,7 +5,7 @@ from shutil import rmtree
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.exceptions import HTTPException
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR, ADMIN_ID, WRONG_ANSWER_PENALTY
 from webcompilingexams.form import RegistrationForm, QuestionForm, AdminLoginForm, AdminForm
@@ -16,10 +16,15 @@ from webcompilingexams.models import User, Question
 from webcompilingexams.run_program import RunManager
 from webcompilingexams.save_user_data import SaveUserData
 
-DATE = str(datetime.today().strftime('%Y / %m / %d'))
-DIR_DATE = str(datetime.today().strftime('%Y_%m_%d'))
+DATE = str((datetime.today() + timedelta(hours=2)).strftime('%Y / %m / %d'))
+DIR_DATE = str((datetime.today() + timedelta(hours=2)).strftime('%Y_%m_%d'))
 
 log = Log('/app/log.txt')
+
+if not os.path.isdir('/app/student_exam'):
+    os.mkdir('/app/student_exam')
+if not os.path.isdir('/app/past_student_exam'):
+    os.mkdir('/app/past_student_exam')
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -340,7 +345,7 @@ def starting_exam():
 
     RunManager.create_directory(current_user.id)
 
-    current_user.time_of_start = str(datetime.today().strftime('%Y / %m / %d - %H:%M:%S'))
+    current_user.time_of_start = str((datetime.today() + timedelta(hours=2)).strftime('%Y / %m / %d - %H:%M:%S'))
 
     current_user.exam_started = True
     db.session.commit()
@@ -355,7 +360,7 @@ def exam():
     duration = ExamInformation('/app/config.yaml').load_duration()
     if duration > 0 and current_user.time_of_start != '':
         start_date = datetime.strptime(current_user.time_of_start, '%Y / %m / %d - %H:%M:%S')
-        time_now = datetime.today()
+        time_now = (datetime.today() + timedelta(hours=2))
 
         date_difference = time_now - start_date
 
@@ -458,7 +463,7 @@ def exam():
     second_to_end = None
     if duration > 0 and current_user.time_of_start != '':
         start_date = datetime.strptime(current_user.time_of_start, '%Y / %m / %d - %H:%M:%S')
-        time_now = datetime.today()
+        time_now = (datetime.today() + timedelta(hours=2))
 
         second_to_end = (duration * 60) - (time_now - start_date).total_seconds()
 
@@ -482,7 +487,7 @@ def recap():
     duration = ExamInformation('/app/config.yaml').load_duration()
     if duration > 0 and current_user.time_of_start != '':
         start_date = datetime.strptime(current_user.time_of_start, '%Y / %m / %d - %H:%M:%S')
-        time_now = datetime.today()
+        time_now = (datetime.today() + timedelta(hours=2))
 
         date_difference = time_now - start_date
 
