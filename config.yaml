@@ -1,6 +1,6 @@
 General:
   Duration: 2
-  NumberOfQuestion: 11
+  NumberOfQuestion: 12
 
 AdminCredential:
   Username: 'admin'
@@ -17,11 +17,11 @@ Questions:
       Normal: 0
       Difficult: 0
     IO:
-      Easy: 0
+      Easy: 1
       Normal: 0
       Difficult: 0
     ObjectOriented:
-      Easy: 0
+      Easy: 1
       Normal: 0
       Difficult: 0
 
@@ -63,5 +63,5 @@ Questions:
 
   Python:
     Basic:
-      Easy: 20
-      Normal: 30
+      Easy: 2
+      Normal: 1
