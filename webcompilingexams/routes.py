@@ -148,7 +148,10 @@ def admin_page():
                     points = 0
                     if not question.test_output == '':
                         data = question.test_output.split('\n')[0].split('/')
-                        points = float(data[0]) / float(data[1])
+                        if (int(data[1]) == 0):
+                            points = 0
+                        else:
+                            points = float(data[0]) / float(data[1])
 
                     question.points = points
                     db.session.commit()

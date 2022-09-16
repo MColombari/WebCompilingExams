@@ -133,9 +133,23 @@ class RunManager:
             with open(PATH + '/RunningFile.py', 'w') as f:
                 f.write(self.question.answer)
 
+            t = CommandRun(['python3', PATH + '/RunningFile.py'], self)
+            t.start()
+            t.join()
+
+            if self.stderr == '':
+                self.question.compiler_output = 'Il compilatore non ha trovato nessun errore.'
+            else:
+                self.question.test_output = ''
+                self.question.compiler_output = self.stderr
+                self.question.test_output_summary = 'Errore compilazione'
+                self.question.test_output_icon = url_for('static', filename="icon/cross-mark-48.png")
+                flash('Errore compilazione', 'warning')
+                db.session.commit()
+                return
+
             if not os.path.isfile(TEST_PATH):
-                self.question.compiler_output = ''
-                self.question.test_output = 'Errore, test non trovato!'
+                self.question.test_output = ''
                 flash('Errore esecuzione', 'danger')
                 db.session.commit()
                 return
@@ -150,12 +164,13 @@ class RunManager:
             result = str(self.stderr).split('\n')[0]
             count_success = result.count(".")
             count_failed = result.count("F")
+            count_failed += result.count("E")
 
             self.question.test_output = f'{count_success}/{count_success + count_failed}\n' \
                                         f'Test passati: {count_success}\n' \
                                         f'Test falliti: {count_failed}'
 
-            if count_failed == 0:
+            if count_failed == 0 and count_success != 0:
                 self.question.test_output_summary = 'Tutti i test passati'
                 self.question.test_output_icon = url_for('static', filename="icon/check-mark-48.png")
             elif count_failed != 0 and count_success != 0:
