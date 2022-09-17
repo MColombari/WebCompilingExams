@@ -17,11 +17,11 @@
 		<div class="debug" id="option_main_div">
 			<div class="debug option_div">
 				<a href="{{ url_for('registration') }}">
-					<input type="button" value="Indietro">
+					<input class="generic_button" type="button" value="Indietro">
 				</a>
 			</div>
 			<div class="debug option_div">
-				{{ form.submit }}
+				<input class="generic_button" id="submit" name="submit" type="submit" value="Login">
 			</div>
 		</div>
     </form>

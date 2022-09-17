@@ -13,7 +13,6 @@ class RegistrationForm(FlaskForm):
     matricola = StringField('Matricola', validators=[DataRequired(message='Campo dati obbligatorio'),
                                                      Length(min=6, max=6, message='La matrciola è formata da 6 numeri')
                                                      ])
-    submit = SubmitField('Inizia esame')
 
     def validate_email(self, field):
         flag = False
@@ -44,7 +43,6 @@ class RegistrationForm(FlaskForm):
 class AdminLoginForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(message='Campo dati obbligatorio')])
     password = PasswordField('Password', validators=[DataRequired(message='Campo dati obbligatorio')])
-    submit = SubmitField('Login')
 
     def get_attribute(self):
         return [self.name, self.password]

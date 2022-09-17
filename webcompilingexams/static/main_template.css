@@ -13,7 +13,7 @@ button{
 }
 
 .debug{
-    border: 1px solid dodgerblue;
+    /* border: 1px solid dodgerblue; */
 }
 
 .center_text{
@@ -41,6 +41,18 @@ button{
     display: inline-block;
     
     color: white;
+}
+
+.generic_button{
+    height: 30px;
+    min-witdh: 300px;
+    padding: 5px 20px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    font-size: 11pt;
+    font-weight: normal;
+    color: black;
 }
 
 #left_div{
