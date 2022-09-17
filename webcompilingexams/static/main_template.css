@@ -83,6 +83,7 @@ button{
     border-radius: 10px;
     
     font-size: 11pt;
+    z-index: 10;
 }
 
 #bar_div{

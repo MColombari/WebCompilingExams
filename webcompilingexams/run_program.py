@@ -14,8 +14,6 @@ class RunManager:
         self.question = question
         self.stderr = None
         self.stdout = None
-        self.flash = None
-        self.flash_type = None
 
     @staticmethod
     def create_directory(user_id):
@@ -54,9 +52,6 @@ class RunManager:
             self.question.compiler_output = 'Il compilatore non ha trovato nessun errore.'
         else:
             self.question.compiler_output = self.stderr
-
-        if self.flash and self.flash_type:
-            flash(self.flash, self.flash_type)
 
         db.session.commit()
 
@@ -104,6 +99,13 @@ class RunManager:
             t = CommandRun(['java', LOCAL_PATH + '/' + test_name.split('.java')[0]], self)
             t.start()
             t.join()
+
+            if 'La compilazione ha richiesto più di 5 secondi' in self.stdout:
+                self.question.test_output = ''
+                self.question.compiler_output = self.stdout
+                flash('Errore test', 'warning')
+                db.session.commit()
+                return
 
             result = str(self.stdout).split('\n')[0]
             count_success = result.count(".")
@@ -161,6 +163,13 @@ class RunManager:
             t.start()
             t.join()
 
+            if 'La compilazione ha richiesto più di 5 secondi' in self.stdout:
+                self.question.test_output = ''
+                self.question.compiler_output = self.stdout
+                flash('Errore test', 'warning')
+                db.session.commit()
+                return
+
             result = str(self.stderr).split('\n')[0]
             count_success = result.count(".")
             count_failed = result.count("F")
@@ -191,9 +200,6 @@ class RunManager:
 
             db.session.commit()
 
-        if self.flash and self.flash_type:
-            flash(self.flash, self.flash_type)
-
         db.session.commit()
 
 
@@ -204,7 +210,6 @@ class CommandRun(threading.Thread):
         self.run_manager = run_manager
 
     def run(self):
-        flash_type = 'success'
         try:
             process = subprocess.run(self.command, capture_output=True, encoding="utf-8",
                                      timeout=5)
@@ -212,8 +217,4 @@ class CommandRun(threading.Thread):
             self.run_manager.stderr = process.stderr
 
         except subprocess.TimeoutExpired as e:
-            self.run_manager.terminal_output = f'La compilazione ha richiesto più di 5 secondi\n{e}'
-            flash_type = 'warning'
-        finally:
-            self.run_manager.flash = 'Compilazione completata'
-            self.run_manager.flash_type = flash_type
+            self.run_manager.stdout = f'La compilazione ha richiesto più di 5 secondi\n{e}'

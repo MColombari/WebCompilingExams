@@ -69,7 +69,8 @@
 						<script>
 							$(document).ready(function(){
                                 let second_to_end = parseInt({{ second_to_end }});
-								setInterval(function() {
+
+                                function print_time(){
                                     if (second_to_end <= 0){
                                         location.reload();
 									}
@@ -92,7 +93,10 @@
                                         $('#count_down_display').css('color', 'red');
 									}
 									second_to_end = second_to_end - 1;
-								}, 1000);
+								}
+
+								print_time();
+								setInterval(print_time, 1000);
                             });
 						</script>
 				{% endif %}

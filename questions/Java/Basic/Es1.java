@@ -5,7 +5,7 @@
 
 public class Es1{
     public static void main(String[] args) {
-	    Sum es = new Sum(1,2);
+	    Esercizio es = new Esercizio(1,2);
         if (es.run() == 3){
             System.out.println(".\nTest eseguiti con successo.");
         }
