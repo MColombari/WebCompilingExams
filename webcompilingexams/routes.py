@@ -7,7 +7,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.exceptions import HTTPException
 from datetime import datetime, timedelta
 
-from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR, ADMIN_ID, WRONG_ANSWER_PENALTY
+from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR, ADMIN_ID
 from webcompilingexams.form import RegistrationForm, QuestionForm, AdminLoginForm, AdminForm
 from webcompilingexams.load_exam_information import ExamInformation
 from webcompilingexams.load_question import LoadQuestion
@@ -143,7 +143,7 @@ def admin_page():
                             if s_op in correct_answers:
                                 points += 1
                             else:
-                                points -= WRONG_ANSWER_PENALTY
+                                points -= ExamInformation('/app/config.yaml').load_penalty()
                     points = points / len(correct_answers)
 
                     question.points = points

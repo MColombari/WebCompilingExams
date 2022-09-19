@@ -24,6 +24,4 @@ QUESTION_TYPE = {0: 'Domanda a risposta aperta', 1: 'Domanda a risposta multipla
 CHARACTER_SEPARATOR = '\n'
 ADMIN_ID = 1000000
 
-WRONG_ANSWER_PENALTY = 0.5
-
 from webcompilingexams import routes

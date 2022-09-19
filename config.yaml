@@ -1,6 +1,6 @@
 General:
-  Duration: 20
-  NumberOfQuestion: 12
+  Duration: 3
+  WrongOptionQuestionPenalty: 0.5
 
 AdminCredential:
   Username: 'admin'

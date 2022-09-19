@@ -7,8 +7,8 @@
 		<table class="debug" id="information_table">
 			{% for k in exam_information.keys() %}
 				<tr>
-					<th class="debug table_column" style="font-weight: bold;">{{ k }}:</th>
-					<th class="debug table_column" style="font-weight: normal">{{ exam_information[k] }}</th>
+					<th class="debug table_column" style="font-weight: bold; width: 70%">{{ k }}:</th>
+					<th class="debug table_column" style="font-weight: normal; width: 30%;">{{ exam_information[k] }}</th>
 				</tr>
 			{% endfor %}
 		</table>
