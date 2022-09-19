@@ -92,6 +92,8 @@ class RunManager:
             if (self.stderr != '') or (self.stdout != ''):
                 self.question.test_output = ''
                 self.question.compiler_output = self.stdout + '\n' + self.stderr
+                self.question.test_output_summary = 'Errore compilatione'
+                self.question.test_output_icon = url_for('static', filename="icon/cross-mark-48.png")
                 flash('Errore compilazione', 'warning')
                 db.session.commit()
                 return
@@ -103,6 +105,8 @@ class RunManager:
             if 'La compilazione ha richiesto più di 5 secondi' in self.stdout:
                 self.question.test_output = ''
                 self.question.compiler_output = self.stdout
+                self.question.test_output_summary = 'Errore test'
+                self.question.test_output_icon = url_for('static', filename="icon/cross-mark-48.png")
                 flash('Errore test', 'warning')
                 db.session.commit()
                 return
@@ -166,6 +170,8 @@ class RunManager:
             if 'La compilazione ha richiesto più di 5 secondi' in self.stdout:
                 self.question.test_output = ''
                 self.question.compiler_output = self.stdout
+                self.question.test_output_summary = 'Errore test'
+                self.question.test_output_icon = url_for('static', filename="icon/cross-mark-48.png")
                 flash('Errore test', 'warning')
                 db.session.commit()
                 return
