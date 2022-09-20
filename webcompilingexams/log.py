@@ -19,5 +19,7 @@ class Log:
     @synchronized
     def write(self, row):
         with open(self.path, 'a') as f:
-            date_time = (datetime.today() + timedelta(hours=2)).strftime('[%Y/%m/%d') + ' - ' + (datetime.now() + timedelta(hours=2)).strftime('%H:%M:%S]')
+            date_time = (datetime.today() +
+                         timedelta(hours=2)).strftime('[%Y/%m/%d') + ' - ' + (datetime.now() +
+                                                                              timedelta(hours=2)).strftime('%H:%M:%S]')
             f.write(f'\n{date_time}: ' + str(row))

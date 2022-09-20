@@ -45,7 +45,6 @@ button{
 
 .generic_button{
     height: 30px;
-    min-witdh: 300px;
     padding: 5px 20px;
     background-color: white;
     border: 1px solid black;

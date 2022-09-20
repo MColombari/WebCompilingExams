@@ -78,18 +78,18 @@
                                     let m = Math.floor(second_to_end / 60) - (h * 60);
                                     let s = second_to_end - (h * 3600) - (m * 60);
 
-                                    h = h.toLocaleString("en-US", { minimumIntegerDigits: 2});
-                                    m = m.toLocaleString("en-US", { minimumIntegerDigits: 2});
-                                    s = s.toLocaleString("en-US", { minimumIntegerDigits: 2});
+                                    let h_str = h.toLocaleString("en-US", { minimumIntegerDigits: 2});
+                                    let m_str = m.toLocaleString("en-US", { minimumIntegerDigits: 2});
+                                    let s_str = s.toLocaleString("en-US", { minimumIntegerDigits: 2});
 
-                                    if (h != 0) {
-                                        $('#count_down_display').text(h + ":" + m + ":" + s);
+                                    if (h !== 0) {
+                                        $('#count_down_display').text(h_str + ":" + m_str + ":" + s_str);
                                     }
-                                    else if (m != 0){
-                                        $('#count_down_display').text(m + ":" + s);
+                                    else if (m !== 0){
+                                        $('#count_down_display').text(m_str + ":" + s_str);
 									}
                                     else{
-                                        $('#count_down_display').text(s + " secondi");
+                                        $('#count_down_display').text(s_str + " secondi");
                                         $('#count_down_display').css('color', 'red');
 									}
 									second_to_end = second_to_end - 1;

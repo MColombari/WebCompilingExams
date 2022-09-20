@@ -1,5 +1,5 @@
 General:
-  Duration: 15
+  Duration: 10
   WrongOptionQuestionPenalty: 0.5
 
 AdminCredential:
@@ -47,10 +47,10 @@ Questions:
     Basic:
       Easy: 1
       Normal: 0
-      Difficult: 0
+      Difficult: 1
     Collection:
       Easy: 0
-      Normal: 0
+      Normal: 1
       Difficult: 0
     IO:
       Easy: 0

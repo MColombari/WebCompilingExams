@@ -53,7 +53,7 @@ class OptionContainer:
         self.option = []
 
     def __repr__(self):
-        return f'Text: {self.text}\nRight_op: {self.right_option}\nWrong_op: {self.wrong_option}'
+        return f'Text: {self.text}\nOptions: {self.option}'
 
 
 class LoadQuestion:
