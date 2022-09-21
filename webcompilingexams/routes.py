@@ -548,4 +548,4 @@ def logout():
 def errorhandler(e):
     print(f"{e.code}, {e.name}, {e.description}")
     log.write(f'[ERROR] "{e.code}" - "{e.name}" - "{e.description}".')
-    return e  # Da completare
+    return e
