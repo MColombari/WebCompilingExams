@@ -1,9 +1,9 @@
 Avvio applicazione:
 - Scaricare da il seguente link il l'immagine di docker:
-        ...
+        https://hub.docker.com/repository/docker/mcolombari/final_webapp
 - Se ci si trova su un sistema UNIX, lanciare l'applicazione con lo script "run.sh".
 - Altrimenti se ci si trova un altro sistema digitare nel terminale il comando:
-        ...
+        docker run -p 5000:5000 -v *APPLICATION_PATH*:/app mcolombari/final_webapp
 
 Gestione dell'applicazione:
 - Il file "config.yaml" permette di:
