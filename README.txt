@@ -1,5 +1,5 @@
 Avvio applicazione:
-- Scaricare da il seguente link il l'immagine di docker:
+- Scaricare dal seguente link l'immagine di docker:
         https://hub.docker.com/repository/docker/mcolombari/final_webapp
 - Se ci si trova su un sistema UNIX, lanciare l'applicazione con lo script "run.sh".
 - Altrimenti se ci si trova un altro sistema digitare nel terminale il comando:
