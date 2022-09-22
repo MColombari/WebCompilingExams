@@ -1,0 +1,4 @@
+
+[2022/09/22 - 11:14:23]: [User: 383939] registered to the exam.
+[2022/09/22 - 11:14:25]: [User: 383939] started the exam.
+[2022/09/22 - 11:14:29]: [User: 383939] terminate the exam and logged out.
