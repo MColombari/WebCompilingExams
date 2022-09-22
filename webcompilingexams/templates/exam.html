@@ -153,15 +153,20 @@
 				</div>
 				<div id="function_management_div">
 					<div class="debug function_divs" style="margin-bottom: 0;">
-						<input class="function_images" type="image" name="compile" value="True"
-							   src="{{ url_for('static', filename="icon/checked-checkbox-50.png") }}"
-							   alt="Image not found">
+						<button class="" type="submit" name="compile" value="True"
+							style="background-color: white; border: 0px solid white;">
+							<img src="{{ url_for('static', filename="icon/checked-checkbox-50.png") }}"
+								alt="Image not found" class="function_images"/>
+						</button>
 						<p style="margin-bottom: 0; padding-bottom: 0;">Compila</p>
 					</div>
 					<div class="function_divs">
 						<!-- <img src="{{ url_for('static', filename="icon/test-passed-50.png") }}" alt="Image not found"/><br> -->
-						<input class="function_images" type="image" name="test" value="True"
-							   src="{{ url_for('static', filename="icon/test-passed-50.png") }}" alt="Image not found">
+						<button class="" type="submit" name="test" value="True"
+							style="background-color: white; border: 0px solid white;">
+							<img src="{{ url_for('static', filename="icon/test-passed-50.png") }}"
+								alt="Image not found" class="function_images"/>
+						</button>
 						<p>Testa</p>
 					</div>
 				</div>
@@ -170,9 +175,11 @@
 		<div class="debug" id="navigation_bar_div">
 			<div class="debug navigation_divs" id="navigation_bar_left_div">
 				{% if index > 0 %}
-					<input class="" type="image" value="Indietro" name="sub"
-						style="transform: rotate(180deg);"
-						src="{{ url_for('static', filename="icon/arrow-24.png") }}" alt="Image not found"/>
+					<button class="" type="submit" name="sub" value="Indietro"
+						style="background-color: white; border: 0px solid white;">
+						<img src="{{ url_for('static', filename="icon/arrow-24.png") }}"
+							alt="Image not found" style="transform: rotate(180deg);"/>
+					</button>
 				{% endif %}
 			</div>
 			<div class="debug navigation_divs" id="navigation_bar_center_div">
@@ -181,8 +188,11 @@
 			</div>
 			<div class="debug navigation_divs" id="navigation_bar_right_div">
 				{% if index + 1 < questions_number %}
-					<input class="" type="image" value="Avanti" name="add"
-						src="{{ url_for('static', filename="icon/arrow-24.png") }}" alt="Image not found"/>
+					<button class="" type="submit" name="add" value="Avanti"
+						style="background-color: white; border: 0px solid white;">
+						<img src="{{ url_for('static', filename="icon/arrow-24.png") }}"
+							alt="Image not found"/>
+					</button>
 				{% endif %}
 			</div>
 		</div>
