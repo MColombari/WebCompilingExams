@@ -15,14 +15,11 @@ from webcompilingexams.log import Log
 from webcompilingexams.models import User, Question
 from webcompilingexams.run_program import RunManager
 from webcompilingexams.save_user_data import SaveUserData
-
-DATE = str((datetime.today() + timedelta(hours=2)).strftime('%Y / %m / %d'))
-DIR_DATE = str((datetime.today() + timedelta(hours=2)).strftime('%Y_%m_%d'))
+from webcompilingexams import DATE
+from webcompilingexams import DIR_DATE
 
 log = Log('/app/log.txt')
 
-if not os.path.isdir('/app/student_exam'):
-    os.mkdir('/app/student_exam')
 if not os.path.isdir('/app/past_student_exam'):
     os.mkdir('/app/past_student_exam')
 
@@ -202,31 +199,11 @@ def admin_page():
 
                     user_results.append(f'Matricola: {user.id:06} Punteggio: {points:.2f}/100')
 
-            with open(f'/app/student_exam/results.txt', 'a') as f:
-                f.write('\n'.join(user_results))
-
             if not os.path.isdir(f'/app/past_student_exam/exam_{str(DIR_DATE)}'):
                 os.mkdir(f'/app/past_student_exam/exam_{str(DIR_DATE)}')
-            else:
-                if (os.path.isfile(f'/app/past_student_exam/exam_{str(DIR_DATE)}/results.txt') and
-                        os.path.isfile('/app/student_exam/results.txt')):
-                    with open(f'/app/past_student_exam/exam_{str(DIR_DATE)}/results.txt', 'a') as f_out:
-                        with open('/app/student_exam/results.txt', 'r') as f_in:
-                            f_out.write("\n" + f_in.read())
-                    os.remove('/app/student_exam/results.txt')
 
-            dir_util.copy_tree('/app/student_exam', f'/app/past_student_exam/exam_{str(DIR_DATE)}')
-            rmtree('/app/student_exam')
-            os.mkdir('/app/student_exam')
-
-            if os.path.isfile('/app/log.txt'):
-                if os.path.isfile(f'/app/past_student_exam/exam_{str(DIR_DATE)}/log.txt'):
-                    with open(f'/app/past_student_exam/exam_{str(DIR_DATE)}/log.txt', 'a') as f_out:
-                        with open('/app/log.txt', 'r') as f_in:
-                            f_out.write("\n" + f_in.read())
-                    os.remove('/app/log.txt')
-                else:
-                    os.rename('/app/log.txt', f'/app/past_student_exam/exam_{str(DIR_DATE)}/log.txt')
+            with open(f'/app/past_student_exam/exam_{str(DIR_DATE)}' + '/results.txt', 'a') as f:
+                f.write('\n' + '\n'.join(user_results))
 
             db.drop_all()
             db.create_all()

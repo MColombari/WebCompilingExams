@@ -1,6 +1,7 @@
 import os
 
 from webcompilingexams import QUESTION_TYPE, CHARACTER_SEPARATOR
+from webcompilingexams import DIR_DATE
 
 
 class SaveUserData:
@@ -8,14 +9,19 @@ class SaveUserData:
         self.user = user
 
     def save(self):
-        if not self.user.exam_started:
-            if not os.path.isdir(f'/app/student_exam/u{self.user.id:06}'):
-                os.mkdir(f'/app/student_exam/u{self.user.id:06}')
+        DIR_PATH = f'/app/past_student_exam/exam_{str(DIR_DATE)}'
+        USER_DIR_PATH = DIR_PATH + f'/u{self.user.id:06}'
 
-            with open(f'/app/student_exam/u{self.user.id:06}/user_results', 'w') as f:
+        if not self.user.exam_started:
+            if not os.path.isdir(DIR_PATH):
+                os.mkdir(DIR_PATH)
+            if not os.path.isdir(USER_DIR_PATH):
+                os.mkdir(USER_DIR_PATH)
+
+            with open(USER_DIR_PATH + '/user_results', 'w') as f:
                 f.write('L\'utente non ha neanche iniziato l\'esame')
 
-            with open(f'/app/student_exam/u{self.user.id:06}/raw_result_data', 'w') as f:
+            with open(USER_DIR_PATH + '/raw_result_data', 'w') as f:
                 f.write(f'{self.user}')
 
             return
@@ -49,10 +55,10 @@ class SaveUserData:
 
         out.append("\n".join(single_out))
 
-        with open(f'/app/student_exam/u{self.user.id:06}/user_results', 'w') as f:
+        with open(USER_DIR_PATH + '/user_results', 'w') as f:
             f.write('\n\n'.join(out))
 
-        with open(f'/app/student_exam/u{self.user.id:06}/raw_result_data', 'w') as f:
+        with open(USER_DIR_PATH + '/raw_result_data', 'w') as f:
             out = [f'{self.user}']
             for question in self.user.questions:
                 out.append(f'{question}')

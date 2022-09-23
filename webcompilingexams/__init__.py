@@ -1,4 +1,5 @@
 import os
+from datetime import datetime, timedelta
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -23,5 +24,8 @@ QUESTION_TYPE = {0: 'Domanda a risposta aperta', 1: 'Domanda a risposta multipla
                  2: 'Programmazione Java', 3: 'Programmazione Python'}
 CHARACTER_SEPARATOR = '\n'
 ADMIN_ID = 1000000
+
+DATE = str((datetime.today() + timedelta(hours=2)).strftime('%Y / %m / %d'))
+DIR_DATE = str((datetime.today() + timedelta(hours=2)).strftime('%Y_%m_%d'))
 
 from webcompilingexams import routes

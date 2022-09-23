@@ -6,6 +6,7 @@ import threading
 from flask import flash, url_for
 
 from webcompilingexams import db
+from webcompilingexams import DIR_DATE
 
 
 class RunManager:
@@ -17,11 +18,16 @@ class RunManager:
 
     @staticmethod
     def create_directory(user_id):
-        if not os.path.isdir(f'/app/student_exam/u{user_id:06}'):
-            os.mkdir(f'/app/student_exam/u{user_id:06}')
+        DIR_PATH = f'/app/past_student_exam/exam_{str(DIR_DATE)}'
+        USER_DIR_PATH = DIR_PATH + f'/u{user_id:06}'
+
+        if not os.path.isdir(DIR_PATH):
+            os.mkdir(DIR_PATH)
+        if not os.path.isdir(USER_DIR_PATH):
+            os.mkdir(USER_DIR_PATH)
 
     def compile(self):
-        PATH = f'/app/student_exam/u{self.user.id:06}'
+        PATH = f'/app/past_student_exam/exam_{str(DIR_DATE)}/u{self.user.id:06}'
 
         if self.question.type == 2:
             words = self.question.answer.split()
@@ -56,9 +62,9 @@ class RunManager:
         db.session.commit()
 
     def test(self):
-        PATH = f'/app/student_exam/u{self.user.id:06}'
+        PATH = f'/app/past_student_exam/exam_{str(DIR_DATE)}/u{self.user.id:06}'
         TEST_PATH = str(self.question.options)
-        LOCAL_PATH = f'student_exam/u{self.user.id:06}'
+        LOCAL_PATH = f'past_student_exam/exam_{str(DIR_DATE)}/u{self.user.id:06}'
 
         if self.question.type == 2:
             words = self.question.answer.split()
@@ -70,7 +76,7 @@ class RunManager:
                 return
 
             with open(PATH + f'/{class_name}.java', 'w') as f:
-                f.write(f'package student_exam.u{self.user.id:06};\n')
+                f.write(f'package past_student_exam.exam_{str(DIR_DATE)}.u{self.user.id:06};\n')
                 f.write(self.question.answer)
 
             if not os.path.isfile(TEST_PATH):
@@ -81,7 +87,7 @@ class RunManager:
 
             test_name = TEST_PATH.split('/')[-1]
             with open(PATH + '/' + test_name, 'w') as f_out:
-                f_out.write(f'package student_exam.u{self.user.id:06};\n')
+                f_out.write(f'package past_student_exam.exam_{str(DIR_DATE)}.u{self.user.id:06};\n')
                 with open(TEST_PATH, 'r') as f_in:
                     f_out.write(f_in.read())
 
