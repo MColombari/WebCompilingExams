@@ -205,8 +205,9 @@ def admin_page():
             with open(f'/app/past_student_exam/exam_{str(DIR_DATE)}' + '/results.txt', 'a') as f:
                 f.write('\n' + '\n'.join(user_results))
 
-            db.drop_all()
-            db.create_all()
+            Question.query.delete()
+            User.query.delete()
+            db.session.commit()
 
             admin = User(id=ADMIN_ID, name="admin", surname="admin", email="admin")
             db.session.add(admin)
