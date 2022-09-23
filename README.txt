@@ -5,7 +5,10 @@ Avvio applicazione:
             docker pull mcolombari/final_webapp:latest
 - Se ci si trova su un sistema UNIX, lanciare l'applicazione con lo script "run.sh".
 - Altrimenti se ci si trova un altro sistema digitare nel terminale il comando:
-        docker run -p 5000:5000 -v *APPLICATION_PATH*:/app mcolombari/final_webapp
+        docker run -it -p 5000:5000 -v *APPLICATION_PATH*/config.yaml:/app/config.yaml \
+                            -v *APPLICATION_PATH*/log.txt:/app/log.txt \
+                            -v *APPLICATION_PATH*/past_student_exam:/app/past_student_exam \
+                            -v *APPLICATION_PATH*/questions:/app/questions \
 
 Gestione dell'applicazione:
 - Il file "config.yaml" permette di:
