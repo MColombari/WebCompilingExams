@@ -6,16 +6,16 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
 app = Flask(__name__)
-# Chiave di sicurezza, abbiamo messo una string di caratteri casuali (hex).
+
+# Secret Key, generated randomly.
 app.config['SECRET_KEY'] = '9c986a8dac94804409f30ecf62c2ce22'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.db'  # Il database verrà creato nella directory dell'app.
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.db'  # Database will be created in the app directory.
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable signal after object modification.
-db = SQLAlchemy(app)  # Funziona come Room.
+db = SQLAlchemy(app)
 login_manager = LoginManager(app)
-login_manager.login_view = 'registration'  # Pagina a cui vado nel caso in cui l'utente cerchi accedere a una pagina
-# senza aver fatto l'accesso.
-login_manager.login_message = 'Per eccedere a questa pagina è encessario registrarsi'  # Messaggio mostrato.
-login_manager.login_message_category = 'danger'  # Categoria del popup flash.
+login_manager.login_view = 'registration'  # Page to redirect the user if is not registered.
+login_manager.login_message = 'Per eccedere a questa pagina è encessario registrarsi'  # Message to flash.
+login_manager.login_message_category = 'danger'  # Type of message to flash.
 
 ICON_FOLDER = os.path.join('static', 'icon')
 app.config['UPLOAD_FOLDER'] = ICON_FOLDER

@@ -64,7 +64,6 @@ class LoadQuestion:
     def load(self):
         out_question = []
         PATH = '/app/questions/'
-        # PATH = '/Users/mattiacolombari/Desktop/ProgettoBicocchi/WebCompilingExams/questions/'
 
         # Load Java Questions
         java_question_data = self.question_data['Java']
@@ -214,8 +213,6 @@ class LoadQuestion:
                                     if op[0]:
                                         right_option.append(str(index))
                                     index += 1
-
-                                # print(f'{all_options} - {right_option}')
 
                                 multiple_option_ret.append(Question(user_id=self.user.id, number=0, type=1, text=q.text,
                                                                     options='\n'.join(option_text),

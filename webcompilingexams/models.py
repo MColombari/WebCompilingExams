@@ -1,6 +1,8 @@
 from webcompilingexams import db, login_manager
 from flask_login import UserMixin
 
+# This file contains the definition of the database table, express in class,
+# the following are useful commands to create the db.
 
 # db.create_all()
 # db.drop_all()

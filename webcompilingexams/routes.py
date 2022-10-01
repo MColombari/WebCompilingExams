@@ -1,6 +1,4 @@
 import os
-from distutils import dir_util
-from shutil import rmtree
 
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
@@ -58,12 +56,7 @@ def registration():
         db.session.commit()
         login_user(user, True)
 
-        # next_page = request.args.get('next')
-
         flash('Registrazione utente completata', 'success')
-
-        # if next_page:
-        #     return redirect(next_page)  # Vai alla pagina a cui ha cercato di andare precedentemente senza il login.
 
         log.write(f'[User: {user.id}] registered to the exam.')
         return redirect(url_for('start_exam'))
@@ -127,7 +120,7 @@ def admin_page():
     users = [u for u in User.query.all() if u.id != ADMIN_ID]
     out_users = users
 
-    # Update Answer points.
+    # Update answers points.
     if current_user.exam_checked:
         for user in [u for u in users if not u.exam_checked]:
             for question in user.questions:
