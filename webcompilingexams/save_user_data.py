@@ -9,7 +9,7 @@ class SaveUserData:
         self.user = user
 
     def save(self):
-        DIR_PATH = f'/app/past_student_exam/exam_{str(DIR_DATE)}'
+        DIR_PATH = f'/app/exam/exam_{str(DIR_DATE)}'
         USER_DIR_PATH = DIR_PATH + f'/u{self.user.id:06}'
 
         if not self.user.exam_started:

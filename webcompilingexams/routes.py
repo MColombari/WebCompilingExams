@@ -18,8 +18,8 @@ from webcompilingexams import DIR_DATE
 
 log = Log('/app/log.txt')
 
-if not os.path.isdir('/app/past_student_exam'):
-    os.mkdir('/app/past_student_exam')
+if not os.path.isdir('/app/exam'):
+    os.mkdir('/app/exam')
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -195,13 +195,17 @@ def admin_page():
                     if weight_sum != 0:
                         points /= weight_sum
 
-                    user_results.append(f'Matricola: {user.id:06} Punteggio: {points:.2f}/100')
+                    user_results.append(f'{user.name};{user.surname};{user.email};{points:.2f}/100')
 
-            if not os.path.isdir(f'/app/past_student_exam/exam_{str(DIR_DATE)}'):
-                os.mkdir(f'/app/past_student_exam/exam_{str(DIR_DATE)}')
+            if not os.path.isdir(f'/app/exam/exam_{str(DIR_DATE)}'):
+                os.mkdir(f'/app/exam/exam_{str(DIR_DATE)}')
 
-            with open(f'/app/past_student_exam/exam_{str(DIR_DATE)}' + '/results.txt', 'a') as f:
-                f.write('\n' + '\n'.join(user_results))
+            if len(user_results) > 0:
+                prefix = '\n'
+                if not os.path.isfile(f'/app/exam/exam_{str(DIR_DATE)}' + '/results.txt'):
+                    prefix = ''
+                with open(f'/app/exam/exam_{str(DIR_DATE)}' + '/results.txt', 'a') as f:
+                    f.write(prefix + '\n'.join(user_results))
 
             Question.query.delete()
             User.query.delete()

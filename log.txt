@@ -85,3 +85,35 @@
 [2022/10/05 - 11:40:33]: [ERROR] "404" - "Not Found" - "The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.".
 [2022/10/05 - 11:40:35]: [User: 1000000] started the exam.
 [2022/10/05 - 11:40:39]: [Admin] logged out.
+[2022/10/05 - 11:55:37]: [Admin] successfully login to the admin page.
+[2022/10/05 - 12:13:27]: [Admin] logged out.
+[2022/10/05 - 12:14:20]: [User: 348499] registered to the exam.
+[2022/10/05 - 12:14:21]: [User: 348499] started the exam.
+[2022/10/05 - 12:14:27]: [User: 348499] terminate the exam and logged out.
+[2022/10/05 - 12:14:36]: [Admin] successfully login to the admin page.
+[2022/10/05 - 12:15:21]: [ERROR] "404" - "Not Found" - "The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.".
+[2022/10/05 - 12:15:41]: [User: 383949] registered to the exam.
+[2022/10/05 - 12:15:50]: [Admin] stop the exam.
+[2022/10/05 - 12:17:24]: [Admin] logged out.
+[2022/10/05 - 12:17:30]: [Admin] successfully login to the admin page.
+[2022/10/05 - 12:17:33]: [Admin] logged out.
+[2022/10/05 - 12:17:43]: [User: 40404] registered to the exam.
+[2022/10/05 - 12:17:45]: [User: 40404] started the exam.
+[2022/10/05 - 12:18:31]: [User: 40404] terminate the exam and logged out.
+[2022/10/05 - 12:18:50]: [User: 373839] registered to the exam.
+[2022/10/05 - 12:18:57]: [Admin] successfully login to the admin page.
+[2022/10/05 - 12:19:01]: [Admin] stop the exam.
+[2022/10/05 - 12:22:16]: [Admin] logged out.
+[2022/10/05 - 12:22:28]: [User: 393933] registered to the exam.
+[2022/10/05 - 12:22:30]: [User: 393933] started the exam.
+[2022/10/05 - 12:24:00]: [User: 393933] terminate the exam and logged out.
+[2022/10/05 - 12:24:17]: [User: 373839] registered to the exam.
+[2022/10/05 - 12:24:24]: [Admin] successfully login to the admin page.
+[2022/10/05 - 12:24:27]: [Admin] stop the exam.
+[2022/10/05 - 12:25:25]: [Admin] close the exam and deleted the db.
+[2022/10/05 - 12:25:39]: [Admin] close the exam and deleted the db.
+[2022/10/05 - 12:25:43]: [Admin] close the exam and deleted the db.
+[2022/10/05 - 12:26:03]: [User: 383394] registered to the exam.
+[2022/10/05 - 12:26:05]: [User: 383394] started the exam.
+[2022/10/05 - 12:26:07]: [User: 383394] terminate the exam and logged out.
+[2022/10/05 - 12:26:21]: [Admin] close the exam and deleted the db.

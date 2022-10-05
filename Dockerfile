@@ -12,7 +12,7 @@ RUN apt update
 RUN apt -y install default-jre
 RUN apt -y install default-jdk
 
-RUN mkdir /app/past_student_exam
+RUN mkdir /app/exam
 RUN mkdir /app/questions
 RUN mkdir /app/webcompilingexams
 COPY ./webcompilingexams /app/webcompilingexams
