@@ -80,3 +80,8 @@
 [2022/09/23 - 12:40:30]: [User: 767676] terminate the exam and logged out.
 [2022/09/23 - 12:40:47]: [Admin] successfully login to the admin page.
 [2022/09/23 - 12:40:51]: [Admin] close the exam and deleted the db.
+[2022/10/05 - 11:40:33]: [ERROR] "404" - "Not Found" - "The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.".
+[2022/10/05 - 11:40:33]: [ERROR] "404" - "Not Found" - "The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.".
+[2022/10/05 - 11:40:33]: [ERROR] "404" - "Not Found" - "The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.".
+[2022/10/05 - 11:40:35]: [User: 1000000] started the exam.
+[2022/10/05 - 11:40:39]: [Admin] logged out.

@@ -18,7 +18,11 @@
 <body>
 	<div id="bar_div">
 		<div id="left_div">
-			<p>Esame Programmazione ad Oggetti</p>
+			{% if page_title %}
+				<p>{{ page_title }}</p>
+			{% else %}
+				<p>Title</p>
+			{% endif %}
 		</div>
 	</div>
 	{% with messages = get_flashed_messages(with_categories=true) %}

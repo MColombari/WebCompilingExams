@@ -7,6 +7,9 @@ class ExamInformation:
         with open(str(path)) as f:
             self.config = yaml.load(f)
 
+    def load_title(self):
+        return str(self.config['Title'])
+
     def load_generic_information(self):
         open_question_count = sum(
             [sum([int(val) for val in self.config['Questions']['OpenQuestion'][k].values()]) for k in

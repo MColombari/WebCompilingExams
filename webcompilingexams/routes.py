@@ -61,7 +61,10 @@ def registration():
         log.write(f'[User: {user.id}] registered to the exam.')
         return redirect(url_for('start_exam'))
 
-    return render_template('user_registration.html', title='Registration', form=form,
+    return render_template('user_registration.html',
+                           title='Registration',
+                           page_title=ExamInformation('/app/config.yaml').load_title(),
+                           form=form,
                            bottom_bar_left=DATE,
                            bottom_bar_center='Registrazione',
                            bottom_bar_right='Attesa registrazione'
@@ -101,7 +104,9 @@ def login_administrator():
             flash("Nome e/o password errati", 'warning')
             log.write(f'[Unknown] tried unsuccessfully to login to the admin page.')
 
-    return render_template("login_administrator.html", title='Admin Login',
+    return render_template("login_administrator.html",
+                           title='Admin Login',
+                           page_title=ExamInformation('/app/config.yaml').load_title(),
                            bottom_bar_left=DATE,
                            bottom_bar_center='Login admin',
                            bottom_bar_right='Atteso login',
@@ -263,7 +268,9 @@ def admin_page():
     if current_user.exam_checked:
         out_users.sort(key=lambda x: x.exam_checked)
 
-    return render_template('administrator_page.html', title='Admin',
+    return render_template('administrator_page.html',
+                           title='Admin',
+                           page_title=ExamInformation('/app/config.yaml').load_title(),
                            bottom_bar_left=DATE,
                            bottom_bar_center='Admin page',
                            bottom_bar_right='Controllo esame',
@@ -291,7 +298,9 @@ def start_exam():
         return redirect(url_for('exam'))
 
     information = ExamInformation('/app/config.yaml').load_generic_information()
-    return render_template("start_exam.html", title='Start',
+    return render_template("start_exam.html",
+                           title='Start',
+                           page_title=ExamInformation('/app/config.yaml').load_title(),
                            bottom_bar_left=DATE,
                            bottom_bar_center='Waiting room',
                            bottom_bar_right='In attesa dell\' inizio dell\'esame',
@@ -438,7 +447,9 @@ def exam():
 
         second_to_end = (duration * 60) - (time_now - start_date).total_seconds()
 
-    return render_template("exam.html", title='Esame',
+    return render_template("exam.html",
+                           title='Esame',
+                           page_title=ExamInformation('/app/config.yaml').load_title(),
                            bottom_bar_left=DATE,
                            bottom_bar_center='Esame',
                            bottom_bar_right='Esame in corso',
@@ -475,7 +486,9 @@ def recap():
     if not current_user.exam_started:
         flash('Per accedere alla pagina è necessario avviare l\'esame', 'warning')
         return redirect(url_for('start_exam'))
-    return render_template('recap.html', title='Recap Esame',
+    return render_template('recap.html',
+                           title='Recap Esame',
+                           page_title=ExamInformation('/app/config.yaml').load_title(),
                            bottom_bar_left=DATE,
                            bottom_bar_center='Recap',
                            bottom_bar_right='Revisione domande',
@@ -509,7 +522,9 @@ def logout():
     flash('Logout eseguito con successo', 'success')
 
     log.write(f'[User: {user_id}] terminate the exam and logged out.')
-    return render_template('logout_page.html', title='Esame Terminato',
+    return render_template('logout_page.html',
+                           title='Esame Terminato',
+                           page_title=ExamInformation('/app/config.yaml').load_title(),
                            bottom_bar_left=DATE,
                            bottom_bar_center='Uscita',
                            bottom_bar_right='Attesa uscita')
