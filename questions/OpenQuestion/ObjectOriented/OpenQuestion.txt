@@ -1,2 +1,0 @@
--- "Easy" (weight: '1')
-"Qual'è la differenza fra classe e oggetto?"

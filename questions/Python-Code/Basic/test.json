@@ -1,0 +1,16 @@
+[
+  {
+    "type": 3,
+    "text": "Realizza una funzione \"run\" che sommi due numeri.",
+    "options": "import unittest\nfrom RunningFile import run\n\n\nclass Test(unittest.TestCase):\n    def test_1(self):\n        self.assertEqual(run(1, 2), 3, 'Errore')\n\n    def test_2(self):\n        self.assertEqual(run(0, 2), 2, 'Errore')\n\n    def test_3(self):\n        self.assertEqual(run(-1, 2), 1, 'Errore')\n\n\nunittest.main()",
+    "correct_answer": "",
+    "difficulty": "Easy"
+  },
+  {
+    "type": 3,
+    "text": "Realizza una funzione \"run\" che moltiplichi due numeri.",
+    "options": "import unittest\nfrom RunningFile import run\n\n\nclass Test(unittest.TestCase):\n    def test_1(self):\n        self.assertEqual(run(1, 2), 2, 'Errore')\n\n    def test_2(self):\n        self.assertEqual(run(0, 2), 0, 'Errore')\n\n    def test_3(self):\n        self.assertEqual(run(-1, 2), -2, 'Errore')\n\n\nunittest.main()",
+    "correct_answer": "",
+    "difficulty": "Easy"
+  }
+]

@@ -11,43 +11,33 @@ class ExamInformation:
         return str(self.config['Title'])
 
     def load_generic_information(self):
-        open_question_count = sum(
-            [sum([int(val) for val in self.config['Questions']['OpenQuestion'][k].values()]) for k in
-             self.config['Questions']['OpenQuestion'].keys()]
-        )
-        option_question_count = sum(
-            [sum([int(val) for val in self.config['Questions']['MultipleOptionQuestion'][k].values()]) for k in
-             self.config['Questions']['MultipleOptionQuestion'].keys()]
-        )
-        java_question_count = sum(
-            [sum([int(val) for val in self.config['Questions']['Java'][k].values()]) for k in
-             self.config['Questions']['Java'].keys()]
-        )
-        python_question_count = sum(
-            [sum([int(val) for val in self.config['Questions']['Python'][k].values()]) for k in
-             self.config['Questions']['Python'].keys()]
-        )
+        ret_dict = {}
+        info_dict = self.config['Questions']
+        total_count = 0
 
-        total_count = open_question_count + option_question_count + java_question_count + python_question_count
         duration = "Nessun limite di tempo"
-
         if int(self.config['General']['Duration']) != 0:
             duration = str(self.config['General']['Duration']) + " minuti"
 
-        return {"Durata": duration,
-                "Numero totale di domande": total_count,
-                "Domande di programmazione su java": java_question_count,
-                "Domande di programmazione su python": python_question_count,
-                "Domande a risposta multipla": option_question_count,
-                "Domande a risposta aperta": open_question_count,
-                "Penalità in caso di errore domande a risposta multipla": str(self.load_penalty())
-                }
+        ret_dict["Durata"] = duration
+        ret_dict["Numero totale di domande"] = total_count
+
+        for key in info_dict.keys():
+            ret_dict[key] = info_dict[key]["Number"]
+            total_count += int(info_dict[key]["Number"])
+
+        ret_dict["Penalità in caso di errore domande a risposta multipla"] = str(self.load_penalty())
+
+        return ret_dict
 
     def load_duration(self):
         return int(self.config['General']['Duration'])
 
     def load_penalty(self):
         return float(self.config['General']['WrongOptionQuestionPenalty'])
+
+    def load_difficulty(self):
+        return str(self.config["Difficulty"])
 
     def load_questions_data(self):
         return self.config['Questions']

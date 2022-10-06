@@ -1,2 +1,0 @@
--- "Easy" (weight: '1')
-"E' meglio usare un file o un database per salvare i dati, articolare la motivazione"

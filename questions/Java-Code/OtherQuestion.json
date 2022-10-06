@@ -1,0 +1,16 @@
+[
+  {
+    "type": 2,
+    "text": "Realizza una classe Esercizio a cui si passi nel costruttore due numeri interi, tale classe deve avere una funzione run che ritorni il prodotto dei due numeri",
+    "options": "public class Es2{\n    public static void main(String[] args) {\n        Esercizio e1 = new Esercizio(1,2);\n        Esercizio e2 = new Esercizio(2,-2);\n        if (e1.run() == 2){\n            if (e2.run() == -4){\n                System.out.println(\"..\\nTest eseguiti con successo.\");\n            }\n            else{\n                System.out.println(\".F\\nUn test fallito.\");\n            }\n        }\n        else {\n            System.out.println(\"FF\\nTest falliti.\");\n        }\n    }\n}",
+    "correct_answer": "",
+    "difficulty": "Easy"
+  },
+  {
+    "type": 2,
+    "text": "Realizza una classe Esercizio a cui si passi nel costruttore due numeri interi, tale classe deve avere una funzione run che ritorni il primo diviso il secondo.",
+    "options": "public class Es3{\n    public static void main(String[] args) {\n        Esercizio e1 = new Esercizio(1,2);\n        Esercizio e2 = new Esercizio(2,-2);\n        if (e1.run() == 0.5){\n            if (e2.run() == -1){\n                System.out.println(\"..\\nTest eseguiti con successo.\");\n            }\n            else{\n                System.out.println(\".F\\nUn test fallito.\");\n            }\n        }\n        else {\n            System.out.println(\"FF\\nTest falliti.\");\n        }\n    }\n}",
+    "correct_answer": "",
+    "difficulty": "Easy"
+  }
+]

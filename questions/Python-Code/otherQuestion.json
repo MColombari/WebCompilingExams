@@ -1,0 +1,7 @@
+{
+  "type": 3,
+  "text": "Realizza una funzione \"run\" che sottragga il primo con il secondo.",
+  "options": "import unittest\nfrom RunningFile import run\n\n\nclass Test(unittest.TestCase):\n    def test_1(self):\n        self.assertEqual(run(1, 2), -1, 'Errore')\n\n    def test_2(self):\n        self.assertEqual(run(0, 2), -2, 'Errore')\n\n    def test_3(self):\n        self.assertEqual(run(-1, 2), -3, 'Errore')\n\n    def test_4(self):\n        self.assertEqual(run(5, 2), 3, 'Errore')\n\n    def test_5(self):\n        self.assertEqual(run(100, 99), 1, 'Errore')\n\n\nunittest.main()",
+  "correct_answer": "",
+  "difficulty": "Easy"
+}

@@ -1,8 +1,0 @@
--- "Easy" (weight: '1')
-"Domanda sulle Collection"
-+"Giusta"
--"Sbagliata"
--"Sbagliata"
--"Sbagliata"
--"Sbagliata"
-+"Giusta"

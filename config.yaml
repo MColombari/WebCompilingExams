@@ -8,62 +8,18 @@ AdminCredential:
   Username: 'admin'
   Password: 'admin'
 
+Difficulty: "Easy"
+
 Questions:
-  OpenQuestion:
-    Basic:
-      Easy: 2
-      Normal: 0
-      Difficult: 0
-    Collection:
-      Easy: 1
-      Normal: 0
-      Difficult: 0
-    IO:
-      Easy: 1
-      Normal: 0
-      Difficult: 0
-    ObjectOriented:
-      Easy: 1
-      Normal: 0
-      Difficult: 0
-
-  MultipleOptionQuestion:
-    Basic:
-      Easy: 2
-      Normal: 0
-      Difficult: 0
-    Collection:
-      Easy: 0
-      Normal: 0
-      Difficult: 0
-    IO:
-      Easy: 1
-      Normal: 0
-      Difficult: 0
-    ObjectOriented:
-      Easy: 0
-      Normal: 0
-      Difficult: 0
-
-  Java:
-    Basic:
-      Easy: 1
-      Normal: 0
-      Difficult: 1
-    Collection:
-      Easy: 0
-      Normal: 1
-      Difficult: 0
-    IO:
-      Easy: 0
-      Normal: 0
-      Difficult: 0
-    ObjectOriented:
-      Easy: 0
-      Normal: 0
-      Difficult: 0
-
-  Python:
-    Basic:
-      Easy: 2
-      Normal: 1
+  Java-Code:
+    Number: 3
+    Weight: 3
+  Java-Multiple:
+    Number: 4
+    Weight: 1
+  Java-Open:
+    Number: 5
+    Weight: 1
+  Python-Code:
+    Number: 10
+    Weight: 4

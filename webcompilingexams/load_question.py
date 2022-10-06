@@ -1,8 +1,10 @@
+import json
 import os
 import random
 
 from flask import url_for
 
+from webcompilingexams import CHARACTER_SEPARATOR
 from webcompilingexams.models import Question
 
 
@@ -60,212 +62,75 @@ class LoadQuestion:
     def __init__(self, user, exam_information):
         self.user = user
         self.question_data = exam_information.load_questions_data()
+        self.difficulty = exam_information.load_difficulty()
+
+    def parse_question(self, q_dict, weight):
+        ret_options = q_dict["options"]
+        ret_correct_answer = q_dict["correct_answer"]
+
+        if q_dict["type"] == 1:
+            options = []
+            correct_options_index = q_dict["correct_answer"].split(CHARACTER_SEPARATOR)
+            index = 0
+            for o in q_dict["options"].split(CHARACTER_SEPARATOR):
+                if str(index) in correct_options_index:
+                    options.append((o, True))
+                else:
+                    options.append((o, False))
+                index += 1
+
+            random.shuffle(options)
+
+            ret_options = []
+            ret_correct_answer = []
+            index = 0
+            for o in options:
+                ret_options.append(str(o[0]))
+                if o[1]:
+                    ret_correct_answer.append(str(index))
+                index += 1
+
+            ret_options = CHARACTER_SEPARATOR.join(ret_options)
+            ret_correct_answer = CHARACTER_SEPARATOR.join(ret_correct_answer)
+
+        return Question(user_id=self.user.id,
+                        type=q_dict["type"],
+                        text=q_dict["text"],
+                        options=ret_options,
+                        answer="",
+                        correct_answer=ret_correct_answer,
+                        question_weight=weight,
+                        test_output_summary= "Nessuna risposta fornita" if q_dict["type"] < 2 else "Nessun test eseguito",
+                        test_output_icon=url_for('static', filename="icon/cross-mark-48.png") if q_dict["type"] < 2 else url_for('static', filename="icon/question-mark-64.png"))
 
     def load(self):
         out_question = []
         PATH = '/app/questions/'
 
-        # Load Java Questions
-        java_question_data = self.question_data['Java']
-        java_question_ret = []
-        for k in java_question_data.keys():
-            if os.path.isdir(PATH + 'Java/' + k):
-                dir_path = PATH + 'Java/' + k
-                file_collection = [f_p for f_p in os.listdir(dir_path) if '.java' in f_p]
+        for type_key in self.question_data.keys():
+            if os.path.isdir(PATH + type_key):
+                current_type_question = []
+                for path, currentDirectory, files in os.walk(PATH + type_key):
+                    for file in files:
+                        if file.endswith('.json'):
+                            with open(os.path.join(path, file), "r") as f:
+                                content = f.read()
+                                content_parsed = json.loads(content)
+                                weight = self.question_data[type_key]["Weight"]
+                                if isinstance(content_parsed, list):
+                                    for q_dict in content_parsed:
+                                        if q_dict["difficulty"] == self.difficulty:
+                                            current_type_question.append(self.parse_question(q_dict, weight))
+                                elif isinstance(content_parsed, dict):
+                                    if content_parsed["difficulty"] == self.difficulty:
+                                        current_type_question.append(self.parse_question(content_parsed, weight))
 
-                question_list = {}
-                for file in file_collection:
-                    file_path = PATH + 'Java/' + k + "/" + file
-                    question = Question(user_id=self.user.id, number=0, type=2,
-                                        options=file_path,
-                                        test_output_summary='Nessun test eseguito',
-                                        test_output_icon=url_for('static', filename="icon/question-mark-64.png"))
-                    tag = None
-                    weight = None
-                    with open(file_path, 'r') as f:
-                        for line in f.read().split('\n'):
-                            if ('/*' in line) and ('--' in line):
-                                tag = line.split('"')[1]
-                                weight = line.split("'")[1]
-                                question.question_weight = int(weight)
-                            elif ('/*' in line) and ("'" in line):
-                                if question.text:
-                                    question.text += line.split("'")[1]
-                                else:
-                                    question.text = line.split("'")[1]
-
-                    if tag and weight:
-                        if tag not in question_list.keys():
-                            question_list[tag] = []
-                        question_list[tag].append(question)
-
-                for tmp_key in question_list.keys():
-                    random.shuffle(question_list[tmp_key])
-
-                for difficulty_key in java_question_data[k].keys():
-                    if difficulty_key in question_list.keys():
-                        for i in range(int(java_question_data[k][difficulty_key])):
-                            if len(question_list[difficulty_key]) > 0:
-                                q = question_list[difficulty_key].pop()
-                                java_question_ret.append(q)
-
-        random.shuffle(java_question_ret)
-
-        for q_i in java_question_ret:
-            q_i.number = len(out_question)
-            out_question.append(q_i)
-
-        # Load Python Questions
-        python_question_data = self.question_data['Python']
-        python_question_ret = []
-        for k in python_question_data.keys():
-            if os.path.isdir(PATH + 'Python/' + k):
-                dir_path = PATH + 'Python/' + k
-                file_collection = [f_p for f_p in os.listdir(dir_path) if '.py' in f_p]
-
-                question_list = {}
-                for file in file_collection:
-                    file_path = PATH + 'Python/' + k + "/" + file
-                    question = Question(user_id=self.user.id, number=0, type=3,
-                                        options=file_path,
-                                        test_output_summary='Nessun test eseguito',
-                                        test_output_icon=url_for('static', filename="icon/question-mark-64.png"))
-                    tag = None
-                    weight = None
-                    with open(file_path, 'r') as f:
-                        for line in f.read().split('\n'):
-                            if ('#' in line) and ('--' in line):
-                                tag = line.split('"')[1]
-                                weight = line.split("'")[1]
-                                question.question_weight = int(weight)
-                            elif ('#' in line) and ("'" in line):
-                                if question.text:
-                                    question.text += line.split("'")[1]
-                                else:
-                                    question.text = line.split("'")[1]
-
-                    if tag and weight:
-                        if tag not in question_list.keys():
-                            question_list[tag] = []
-                        question_list[tag].append(question)
-
-                for tmp_key in question_list.keys():
-                    random.shuffle(question_list[tmp_key])
-
-                for difficulty_key in python_question_data[k].keys():
-                    if difficulty_key in question_list.keys():
-                        for i in range(int(python_question_data[k][difficulty_key])):
-                            if len(question_list[difficulty_key]) > 0:
-                                q = question_list[difficulty_key].pop()
-                                python_question_ret.append(q)
-
-        random.shuffle(python_question_ret)
-
-        for q_i in python_question_ret:
-            q_i.number = len(out_question)
-            out_question.append(q_i)
-
-        # Load Multiple Option Questions
-        multiple_option_data = self.question_data['MultipleOptionQuestion']
-        multiple_option_ret = []
-        for k in multiple_option_data.keys():
-            if (os.path.isdir(PATH + 'MultipleOptionQuestion/' + k) and
-                    os.path.isfile(PATH + 'MultipleOptionQuestion/' + k + '/MultipleChoiceQuestion.txt')):
-                file_path = PATH + 'MultipleOptionQuestion/' + k + '/MultipleChoiceQuestion.txt'
-
-                tmp_question = {}
-                tmp_weight = {}
-                with open(file_path, 'r') as f:
-                    tag = None
-                    for line in f.read().split('\n'):
-                        if '--' in line:
-                            tag = line.split('"')[1]
-                            weight = line.split("'")[1]
-                            tmp_question[tag] = []
-                            tmp_weight[tag] = int(weight)
-                        elif '-"' in line:
-                            if tag:
-                                tmp_question[tag][-1].option.append((False, line.split('"')[1]))
-                        elif '+"' in line:
-                            if tag:
-                                tmp_question[tag][-1].option.append((True, line.split('"')[1]))
-                        elif '"' in line:
-                            if tag:
-                                tmp_question[tag].append(OptionContainer(line.split('"')[1]))
-
-                for tmp_k in tmp_question.keys():
-                    random.shuffle(tmp_question[tmp_k])
-
-                for difficulty_key in multiple_option_data[k].keys():
-                    if difficulty_key in tmp_question.keys():
-                        for i in range(int(multiple_option_data[k][difficulty_key])):
-                            if len(tmp_question[difficulty_key]) > 0:
-                                q = tmp_question[difficulty_key].pop()
-                                all_options = q.option
-
-                                random.shuffle(all_options)
-
-                                option_text = []
-                                right_option = []
-                                index = 0
-                                for op in all_options:
-                                    option_text.append(op[1])
-                                    if op[0]:
-                                        right_option.append(str(index))
-                                    index += 1
-
-                                multiple_option_ret.append(Question(user_id=self.user.id, number=0, type=1, text=q.text,
-                                                                    options='\n'.join(option_text),
-                                                                    correct_answer='\n'.join(right_option),
-                                                                    test_output_summary='Nessuna risposta fornita',
-                                                                    test_output_icon=url_for('static',
-                                                                                             filename="icon/cross-mark-48.png")))
-        random.shuffle(multiple_option_ret)
-
-        for q_i in multiple_option_ret:
-            q_i.number = len(out_question)
-            out_question.append(q_i)
-
-        # Load Open Questions
-        open_question_data = self.question_data['OpenQuestion']
-        open_question_ret = []
-        for k in open_question_data.keys():
-            if (os.path.isdir(PATH + 'OpenQuestion/' + k) and
-                    os.path.isfile(PATH + 'OpenQuestion/' + k + '/OpenQuestion.txt')):
-                file_path = PATH + 'OpenQuestion/' + k + '/OpenQuestion.txt'
-
-                tmp_load = {}
-                tmp_weight = {}
-                with open(file_path, 'r') as f:
-                    tag = None
-                    for line in f.read().split('\n'):
-                        if '--' in line:
-                            tag = line.split('"')[1]
-                            weight = line.split("'")[1]
-                            tmp_load[tag] = []
-                            tmp_weight[tag] = int(weight)
-                        elif '"' in line:
-                            if tag:
-                                tmp_load[tag].append(line.split('"')[1])
-
-                for tmp_k in tmp_load.keys():
-                    random.shuffle(tmp_load[tmp_k])
-
-                for difficulty_key in open_question_data[k].keys():
-                    if difficulty_key in tmp_load.keys():
-                        for i in range(int(open_question_data[k][difficulty_key])):
-                            if len(tmp_load[difficulty_key]) > 0:
-                                q_text = tmp_load[difficulty_key].pop()
-                                open_question_ret.append(Question(user_id=self.user.id, type=0, text=q_text,
-                                                                  number=0,
-                                                                  question_weight=tmp_weight[difficulty_key],
-                                                                  test_output_summary='Nessuna risposta fornita',
-                                                                  test_output_icon=url_for('static',
-                                                                                           filename="icon/cross-mark-48.png")))
-        random.shuffle(open_question_ret)
-
-        for q_i in open_question_ret:
-            q_i.number = len(out_question)
-            out_question.append(q_i)
+                starting_index = len(out_question)
+                random.shuffle(current_type_question)
+                for i in range(self.question_data[type_key]["Number"]):
+                    if len(current_type_question) > 0:
+                        q = current_type_question.pop()
+                        q.number = starting_index + i
+                        out_question.append(q)
 
         return out_question

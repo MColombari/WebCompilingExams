@@ -1,8 +1,0 @@
--- "Easy" (weight: '1')
-"Domanda sullo IO"
-+"Giusta"
--"Sbagliata"
--"Sbagliata"
--"Sbagliata"
--"Sbagliata"
--"Sbagliata"

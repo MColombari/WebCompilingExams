@@ -63,7 +63,7 @@ class RunManager:
 
     def test(self):
         PATH = f'/app/exam/exam_{str(DIR_DATE)}/u{self.user.id:06}'
-        TEST_PATH = str(self.question.options)
+        TEST_CONTENT = str(self.question.options)
         LOCAL_PATH = f'exam/exam_{str(DIR_DATE)}/u{self.user.id:06}'
 
         if self.question.type == 2:
@@ -79,17 +79,14 @@ class RunManager:
                 f.write(f'package exam.exam_{str(DIR_DATE)}.u{self.user.id:06};\n')
                 f.write(self.question.answer)
 
-            if not os.path.isfile(TEST_PATH):
-                self.question.test_output = ''
-                flash('Errore esecuzione', 'danger')
-                db.session.commit()
-                return
+            words = TEST_CONTENT.split()
+            test_class_index = [out[0] for out in enumerate(words) if out[1].lower() == 'class']
+            test_class_name = words[test_class_index[0] + 1].replace("{", "")
 
-            test_name = TEST_PATH.split('/')[-1]
+            test_name = test_class_name + ".java"
             with open(PATH + '/' + test_name, 'w') as f_out:
                 f_out.write(f'package exam.exam_{str(DIR_DATE)}.u{self.user.id:06};\n')
-                with open(TEST_PATH, 'r') as f_in:
-                    f_out.write(f_in.read())
+                f_out.write(TEST_CONTENT)
 
             t = CommandRun(['javac', LOCAL_PATH + '/' + test_name, LOCAL_PATH + f'/{class_name}.java'], self)
             t.start()
@@ -160,16 +157,10 @@ class RunManager:
                 db.session.commit()
                 return
 
-            if not os.path.isfile(TEST_PATH):
-                self.question.test_output = ''
-                flash('Errore esecuzione', 'danger')
-                db.session.commit()
-                return
+            with open(PATH + '/TestFile.py', 'w') as f:
+                f.write(TEST_CONTENT)
 
-            test_name = TEST_PATH.split('/')[-1]
-            shutil.copyfile(TEST_PATH, PATH + '/' + test_name)
-
-            t = CommandRun(['python3', PATH + '/' + test_name], self)
+            t = CommandRun(['python3', PATH + '/TestFile.py'], self)
             t.start()
             t.join()
 
