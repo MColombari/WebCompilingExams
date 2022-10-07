@@ -105,28 +105,62 @@
 		<div class="debug" id="main_center_div">
 			<div class="debug" id="fast_function_div">
 				<div class="debug fast_function_divs">
-					<button id="fast_function_close_exam" type="submit" name="close_exam" value="True"
-							style="background-color: white; border: 1px solid black;"
-						onclick="return confirmation('Sicuro di voler chiudere l\'esame, e quindi salvare i dati' +
-						 ' e cancellare il database?')">
-						Reseta e salva l'esame
-					</button>
-					<button id="fast_function_close_exam" type="submit" name="stop_exam" value="True"
-						onclick="return confirmation('Sicuro di voler fermare l\'esame, e quindi forzare il loggout'
-						 + ' a tutti gli utenti?')">
-						Ferma l'esame
-					</button>
-					{% if current_user.exam_checked %}
-						<button id="fast_function_check_exam" type="submit" name="check_exam" value="True"
-							onclick="return confirmation('Uscire dalla modalità di correzione?')">
-							Monitore l'esame
+					<div id="top_function_div" class="debug">
+						<div class="fast_function_state_divs {{"state_selected" if current_user.name == 'IDLE' else ""}}">
+							<p class="text_fast_function_state_divs">Idle</p>
+						</div>
+						<div class="fast_function_state_divs {{"state_selected" if current_user.name == 'EXAM' else ""}}">
+							<p class="text_fast_function_state_divs">Exam</p>
+						</div>
+						<div class="fast_function_state_divs {{"state_selected" if current_user.name == 'CHECK' else ""}}">
+							<p class="text_fast_function_state_divs">Check</p>
+						</div>
+						<div id="save_state_div" class="fast_function_state_divs" style="border: 1px dashed black;">
+							<p class="text_fast_function_state_divs">Save</p>
+						</div>
+					</div>
+					<div id="bottom_function_div" class="debug" style="text-align: center;">
+						<button id="next_state_function_button" type="submit" name="next_state" value="True"
+								onclick="return confirmation('Passare al prossimo stato?')">
+							Next
 						</button>
-					{% else %}
-						<button id="fast_function_check_exam" type="submit" name="check_exam" value="True"
-								style="background-color: white; border: 1px solid black;"
-							onclick="return confirmation('Avvio modalità di correzione?')">
-							Correggi l'esame
-						</button>
+					</div>
+					{% if save_flag %}
+						<script>
+							$(document).ready(function(){
+                                let green_value = 255,
+									millis = 5,
+									to_value = 100,
+									id_in = setInterval(light_in, millis),
+									id_out;
+
+                                function light_in(){
+                                    if (green_value <= to_value){
+                                        clearInterval(id_in);
+                        				id_out = setInterval(light_out, millis);
+									}
+                                    let a = green_value.toString(16);
+									if ((a.length % 2) > 0) {
+										a = "0" + a;
+									}
+                                    $('#save_state_div').css("background-color", "#" + a + "FF" + a)
+                                    green_value = green_value - 1;
+								}
+
+                                function light_out(){
+                                    if (green_value >= 255){
+                                        clearInterval(id_out);
+                                        $('#save_state_div').css("background-color", "white")
+									}
+                                    let a = green_value.toString(16);
+									if ((a.length % 2) > 0) {
+										a = "0" + a;
+									}
+                                    $('#save_state_div').css("background-color", "#" + a + "FF" + a)
+                                    green_value = green_value + 1;
+								}
+                            });
+						</script>
 					{% endif %}
 				</div>
 				<div id="pie_div">
@@ -185,7 +219,7 @@
                                     let sum = 0;
 									for (let h = 0; h < questions_value.length; h++) {
                                         let p = parseFloat($(questions_value[h]).val());
-                                        let w = parseFloat($(questions_weight[h]).val());
+                                        let w = parseFloat($(questions_weight[h]).text());
 										tmp += (p * w);
                                         sum += w;
 									}
@@ -236,6 +270,19 @@
 										 alt="Image not found">
 								{% endif %}
 							{% endif %}
+						</div>
+						<div class="debug user_data">
+							{% set resolution_rate = namespace(val=0) %}
+							{% set total_number = namespace(val=0) %}
+							{% for question in user.questions %}
+								{% if question.test_output_summary == "Nessuna risposta fornita" or question.test_output_summary == "Nessun test eseguito" %}
+									{% set total_number.val = total_number.val + 1 %}
+								{% else %}
+									{% set total_number.val = total_number.val + 1 %}
+									{% set resolution_rate.val = resolution_rate.val + 1 %}
+								{% endif %}
+							{% endfor %}
+							{{ resolution_rate.val }} / {{ total_number.val }}
 						</div>
 						<div class="debug user_data collapsible">
 							<img class="user_icon" style="rotate: 270deg;"
@@ -298,12 +345,20 @@
 													<th><p class="debug" style="margin-left: 10px; font-weight: normal;">{{ question.text }}</p></th>
 													{% if current_user.exam_checked %}
 														<th>
-															<p class="" style="margin-left: 50px; padding: 0; width: 80px;">
-																Punti:
-																<input name="question_value-{{ user.id }}-{{ question.number }}" class="question_value-{{ user.id }}" size="4" type="text" value="{{ "{0}".format(question.points * 100) }}">
-																Peso:
-																<input name="question_weight-{{ user.id }}-{{ question.number }}" class="question_weight-{{ user.id }}" size="4" type="text" value="{{ "{0}".format(question.question_weight) }}">
-															</p>
+															<table class="debug" style="margin-left: 50px; padding: 0; width: 80px;">
+																<tr>
+																	<th>Punti:</th>
+																	<th><input name="question_value-{{ user.id }}-{{ question.number }}" class="question_value-{{ user.id }}" size="4" type="text" value="{{ "{0}".format(question.points * 100) }}" style="text-align: center;"></th>
+																	<th>/100</th>
+																</tr>
+																<tr>
+																	<th>Tempo risoluzione:</th>
+																	<th><p name="question_weight-{{ user.id }}-{{ question.number }}" class="question_weight-{{ user.id }}" style="margin: 0; padding: 0; text-align: center;">
+																		{{ "{0}".format(question.question_weight) }}
+																	</p></th>
+																	<th>minuti</th>
+																</tr>
+															</table>
 														</th>
 													{% endif %}
 												</tr>

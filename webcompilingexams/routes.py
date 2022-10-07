@@ -16,10 +16,19 @@ from webcompilingexams.save_user_data import SaveUserData
 from webcompilingexams import DATE
 from webcompilingexams import DIR_DATE
 
+# Initialize log object.
 log = Log('/app/log.txt')
 
+# Create id doesn't exists exam folder.
 if not os.path.isdir('/app/exam'):
     os.mkdir('/app/exam')
+
+# Create Admin user.
+if User.query.filter_by(id=ADMIN_ID).count() < 1:
+    user = User(id=ADMIN_ID, name="IDLE", surname="admin",
+                email="admin")
+    db.session.add(user)
+    db.session.commit()
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -37,6 +46,11 @@ def registration():
 
     form = RegistrationForm()
     if form.validate_on_submit():
+        admin_user = User.query.filter_by(id=ADMIN_ID).first()
+        if admin_user.name != 'EXAM':
+            flash('Accesso negato dall\'amministratore', 'warning')
+            return redirect(url_for('registration'))
+
         user = User(id=int(form.matricola.data), name=form.nome.data, surname=form.cognome.data,
                     email=form.email.data)
 
@@ -87,14 +101,10 @@ def login_administrator():
     if form.validate_on_submit():
         if (form.name.data == credential["Username"] and
                 form.password.data == credential["Password"]):
-            user = User(id=ADMIN_ID, name="admin", surname="admin",
+            admin_user = User(id=ADMIN_ID, name="admin", surname="admin",
                         email="admin")
-            count = User.query.filter_by(id=ADMIN_ID).count()
-            if count == 0:
-                db.session.add(user)
-                db.session.commit()
 
-            login_user(user, True)
+            login_user(admin_user, True)
 
             flash("Login amministratore eseguito con successo", 'success')
 
@@ -114,8 +124,11 @@ def login_administrator():
 
 
 @app.route('/admin', methods=['GET', 'POST'])
-@login_required
 def admin_page():
+    if not current_user.is_authenticated:
+        flash("Login required", 'danger')
+        return redirect(url_for('login_administrator'))
+
     if current_user.id != ADMIN_ID:
         flash("Accesso alla pagina negato", 'danger')
 
@@ -177,48 +190,76 @@ def admin_page():
             log.write(f'[Admin] granted access token to "User: {user_id}".')
             return redirect(url_for('admin_page'))
 
-        elif request.form.get('close_exam') == "True":
-            log.write(f'[Admin] close the exam and deleted the db.')
+        elif request.form.get('next_state') == 'True':
+            if current_user.name == 'IDLE':
+                current_user.name = 'EXAM'
+                db.session.commit()
+                log.write(f'[Admin] changed state: Idle -> Exam.')
+                return redirect(url_for('admin_page'))
 
-            user_results = []
+            elif current_user.name == 'EXAM':
+                log.write(f'[Admin] stop the exam.')
 
-            for user in User.query.all():
-                if user.id != ADMIN_ID:
-                    save_user_data(user)
+                for student_user in User.query.all():
+                    if student_user.id != ADMIN_ID:
+                        student_user.exam_finished = True
+                db.session.commit()
+                flash('Tutti gli utenti sono stati scollegati', 'success')
 
-                    points = 0.0
-                    weight_sum = 0
-                    for question in user.questions:
-                        points += (question.points * 100) * question.question_weight
-                        weight_sum += question.question_weight
+                current_user.name = 'CHECK'
+                current_user.exam_checked = True
+                db.session.commit()
+                log.write(f'[Admin] changed state: Exam -> Check.')
+                return redirect(url_for('admin_page'))
 
-                    if weight_sum != 0:
-                        points /= weight_sum
+            elif current_user.name == 'CHECK':
+                log.write(f'[Admin] close the exam and deleted the db.')
+                log.write(f'[Admin] changed state: Check -> Save.')
 
-                    user_results.append(f'{user.name};{user.surname};{user.email};{points:.2f}/100')
+                user_results = []
 
-            if not os.path.isdir(f'/app/exam/exam_{str(DIR_DATE)}'):
-                os.mkdir(f'/app/exam/exam_{str(DIR_DATE)}')
+                for user in User.query.all():
+                    if user.id != ADMIN_ID:
+                        save_user_data(user)
 
-            if len(user_results) > 0:
-                prefix = '\n'
-                if not os.path.isfile(f'/app/exam/exam_{str(DIR_DATE)}' + '/results.txt'):
-                    prefix = ''
-                with open(f'/app/exam/exam_{str(DIR_DATE)}' + '/results.txt', 'a') as f:
-                    f.write(prefix + '\n'.join(user_results))
+                        points = 0.0
+                        weight_sum = 0
+                        for question in user.questions:
+                            points += (question.points * 100) * question.question_weight
+                            weight_sum += question.question_weight
 
-            Question.query.delete()
-            User.query.delete()
-            db.session.commit()
+                        if weight_sum != 0:
+                            points /= weight_sum
 
-            admin = User(id=ADMIN_ID, name="admin", surname="admin", email="admin")
-            db.session.add(admin)
-            db.session.commit()
+                        user_results.append(f'{user.name};{user.surname};{user.email};{points:.2f}/100')
 
-            login_user(admin, True)
+                if not os.path.isdir(f'/app/exam/exam_{str(DIR_DATE)}'):
+                    os.mkdir(f'/app/exam/exam_{str(DIR_DATE)}')
 
-            return redirect(url_for('admin_page'))
+                if len(user_results) > 0:
+                    prefix = '\n'
+                    if not os.path.isfile(f'/app/exam/exam_{str(DIR_DATE)}' + '/results.txt'):
+                        prefix = ''
+                    with open(f'/app/exam/exam_{str(DIR_DATE)}' + '/results.txt', 'a') as f:
+                        f.write(prefix + '\n'.join(user_results))
 
+                Question.query.delete()
+                User.query.delete()
+                db.session.commit()
+
+                admin = User(id=ADMIN_ID, name="admin", surname="admin", email="admin")
+                db.session.add(admin)
+                db.session.commit()
+
+                login_user(admin, True)
+
+                current_user.name = 'IDLE'
+                current_user.exam_checked = False
+                db.session.commit()
+                log.write(f'[Admin] changed state: Save -> Idle.')
+                return redirect(url_for('admin_page', save_flag=True))
+
+        # To change
         elif request.form.get('stop_exam') == "True":
             log.write(f'[Admin] stop the exam.')
 
@@ -229,11 +270,6 @@ def admin_page():
 
             flash('Tutti gli utenti sono stati scollegati', 'success')
 
-            return redirect(url_for('admin_page'))
-
-        elif request.form.get('check_exam') == "True":
-            current_user.exam_checked = not current_user.exam_checked
-            db.session.commit()
             return redirect(url_for('admin_page'))
 
         elif request.form.get('checked'):
@@ -286,7 +322,8 @@ def admin_page():
                            user_other=len(user_other),
                            user_checked=len(user_checked),
                            user_not_checked=len(user_not_checked),
-                           CHARACTER_SEPARATOR=CHARACTER_SEPARATOR
+                           CHARACTER_SEPARATOR=CHARACTER_SEPARATOR,
+                           save_flag=request.args.get('save_flag')
                            )
 
 

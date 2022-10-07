@@ -15,9 +15,10 @@ RUN apt -y install default-jdk
 RUN mkdir /app/exam
 RUN mkdir /app/questions
 RUN mkdir /app/webcompilingexams
-COPY ./webcompilingexams /app/webcompilingexams
+# COPY ./webcompilingexams /app/webcompilingexams
 
 COPY ./requirements.txt /app
 RUN pip install -r requirements.txt
 
-CMD gunicorn -w 4 -b 0.0.0.0:5000 webcompilingexams:app
+CMD python3 run.py
+# CMD gunicorn -w 4 -b 0.0.0.0:5000 webcompilingexams:app
