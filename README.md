@@ -17,7 +17,6 @@ Download application:
  - If supported you can just run "run.sh" script.
  - Otherwise you can run this command (change application path):
          docker run -it -p 5000:5000 -v *APPLICATION_PATH*/config.yaml:/app/config.yaml \
-                             -v *APPLICATION_PATH*/log.txt:/app/log.txt \
                              -v *APPLICATION_PATH*/exam:/app/exam \
                              -v *APPLICATION_PATH*/questions:/app/questions \
 

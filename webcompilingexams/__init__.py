@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import datetime, timedelta
 
@@ -16,6 +17,11 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'registration'  # Page to redirect the user if is not registered.
 login_manager.login_message = 'Per eccedere a questa pagina è encessario registrarsi'  # Message to flash.
 login_manager.login_message_category = 'danger'  # Type of message to flash.
+
+# Logging
+gunicorn_logger = logging.getLogger('gunicorn.error')
+app.logger.handlers = gunicorn_logger.handlers
+app.logger.setLevel(gunicorn_logger.level)
 
 ICON_FOLDER = os.path.join('static', 'icon')
 app.config['UPLOAD_FOLDER'] = ICON_FOLDER

@@ -16,9 +16,6 @@ from webcompilingexams.save_user_data import SaveUserData
 from webcompilingexams import DATE
 from webcompilingexams import DIR_DATE
 
-# Initialize log object.
-log = Log('/app/log.txt')
-
 # Create id doesn't exists exam folder.
 if not os.path.isdir('/app/exam'):
     os.mkdir('/app/exam')
@@ -63,7 +60,7 @@ def registration():
             user.restart_token = False
             db.session.commit()
 
-            log.write(f'[User: {user.id}] used the access token to log again to the exam.')
+            Log.write_info(f'[User: {user.id}] used the access token to log again to the exam.')
             return redirect(url_for('start_exam'))
 
         db.session.add(user)
@@ -72,7 +69,7 @@ def registration():
 
         flash('Registrazione utente completata', 'success')
 
-        log.write(f'[User: {user.id}] registered to the exam.')
+        Log.write_info(f'[User: {user.id}] registered to the exam.')
         return redirect(url_for('start_exam'))
 
     return render_template('user_registration.html',
@@ -108,11 +105,11 @@ def login_administrator():
 
             flash("Login amministratore eseguito con successo", 'success')
 
-            log.write(f'[Admin] successfully login to the admin page.')
+            Log.write_info(f'[Admin] successfully login to the admin page.')
             return redirect(url_for('admin_page'))
         else:
             flash("Nome e/o password errati", 'warning')
-            log.write(f'[Unknown] tried unsuccessfully to login to the admin page.')
+            Log.write_warning(f'[Unknown] tried unsuccessfully to login to the admin page.')
 
     return render_template("login_administrator.html",
                            title='Admin Login',
@@ -132,7 +129,7 @@ def admin_page():
     if current_user.id != ADMIN_ID:
         flash("Accesso alla pagina negato", 'danger')
 
-        log.write(f'[User: {current_user.id}] tried to enter to the admin page.')
+        Log.write_warning(f'[User: {current_user.id}] tried to enter to the admin page.')
         return redirect(url_for('start_exam'))
 
     users = [u for u in User.query.all() if u.id != ADMIN_ID]
@@ -178,7 +175,7 @@ def admin_page():
             db.session.commit()
             flash(f'Utente {user_id:>06} eliminato', 'success')
 
-            log.write(f'[Admin] deleted "User: {user_id}" from the db.')
+            Log.write_info(f'[Admin] deleted "User: {user_id}" from the db.')
             return redirect(url_for('admin_page'))
 
         elif request.form.get('token'):
@@ -187,18 +184,18 @@ def admin_page():
             user.restart_token = True
             db.session.commit()
 
-            log.write(f'[Admin] granted access token to "User: {user_id}".')
+            Log.write_info(f'[Admin] granted access token to "User: {user_id}".')
             return redirect(url_for('admin_page'))
 
         elif request.form.get('next_state') == 'True':
             if current_user.name == 'IDLE':
                 current_user.name = 'EXAM'
                 db.session.commit()
-                log.write(f'[Admin] changed state: Idle -> Exam.')
+                Log.write_info(f'[Admin] changed state: Idle -> Exam.')
                 return redirect(url_for('admin_page'))
 
             elif current_user.name == 'EXAM':
-                log.write(f'[Admin] stop the exam.')
+                Log.write_info(f'[Admin] stop the exam.')
 
                 for student_user in User.query.all():
                     if student_user.id != ADMIN_ID:
@@ -209,12 +206,12 @@ def admin_page():
                 current_user.name = 'CHECK'
                 current_user.exam_checked = True
                 db.session.commit()
-                log.write(f'[Admin] changed state: Exam -> Check.')
+                Log.write_info(f'[Admin] changed state: Exam -> Check.')
                 return redirect(url_for('admin_page'))
 
             elif current_user.name == 'CHECK':
-                log.write(f'[Admin] close the exam and deleted the db.')
-                log.write(f'[Admin] changed state: Check -> Save.')
+                Log.write_info(f'[Admin] close the exam and deleted the db.')
+                Log.write_info(f'[Admin] changed state: Check -> Save.')
 
                 user_results = []
 
@@ -256,28 +253,14 @@ def admin_page():
                 current_user.name = 'IDLE'
                 current_user.exam_checked = False
                 db.session.commit()
-                log.write(f'[Admin] changed state: Save -> Idle.')
+                Log.write_info(f'[Admin] changed state: Save -> Idle.')
                 return redirect(url_for('admin_page', save_flag=True))
-
-        # To change
-        elif request.form.get('stop_exam') == "True":
-            log.write(f'[Admin] stop the exam.')
-
-            for user in User.query.all():
-                if user.id != ADMIN_ID:
-                    user.exam_finished = True
-            db.session.commit()
-
-            flash('Tutti gli utenti sono stati scollegati', 'success')
-
-            return redirect(url_for('admin_page'))
 
         elif request.form.get('checked'):
             user_id = request.form.get('checked')
             tmp = []
             for question in Question.query.filter_by(user_id=user_id):
                 question.points = float(request.form.get(f'question_value-{user_id}-{question.number}')) / 100
-                question.question_weight = float(request.form.get(f'question_weight-{user_id}-{question.number}'))
                 tmp.append(question.points)
 
             User.query.filter_by(id=user_id).first().exam_checked = True
@@ -371,7 +354,7 @@ def starting_exam():
     current_user.exam_started = True
     db.session.commit()
 
-    log.write(f'[User: {current_user.id}] started the exam.')
+    Log.write_info(f'[User: {current_user.id}] started the exam.')
     return redirect(url_for('exam'))
 
 
@@ -552,7 +535,7 @@ def logout():
     if current_user.id == ADMIN_ID:
         logout_user()
 
-        log.write(f'[Admin] logged out.')
+        Log.write_info(f'[Admin] logged out.')
         return redirect(url_for('login_administrator'))
 
     save_user_data(current_user)
@@ -562,7 +545,7 @@ def logout():
 
     flash('Logout eseguito con successo', 'success')
 
-    log.write(f'[User: {user_id}] terminate the exam and logged out.')
+    Log.write_info(f'[User: {user_id}] terminate the exam and logged out.')
     return render_template('logout_page.html',
                            title='Esame Terminato',
                            page_title=ExamInformation('/app/config.yaml').load_title(),
@@ -574,5 +557,5 @@ def logout():
 @app.errorhandler(HTTPException)
 def errorhandler(e):
     print(f"{e.code}, {e.name}, {e.description}")
-    log.write(f'[ERROR] "{e.code}" - "{e.name}" - "{e.description}".')
+    Log.write_error(f'[ERROR] "{e.code}" - "{e.name}" - "{e.description}".')
     return e

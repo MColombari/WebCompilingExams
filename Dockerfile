@@ -2,23 +2,19 @@ FROM ubuntu:latest
 
 EXPOSE 5000
 
+RUN apt update && apt -y install \
+    python3 \
+    python3-pip \
+    default-jre \
+    default-jdk
+
 RUN mkdir /app
 WORKDIR /app
 
-RUN apt-get update
-RUN apt-get -y install python3
-RUN apt-get -y install python3-pip
-RUN apt update
-RUN apt -y install default-jre
-RUN apt -y install default-jdk
-
-RUN mkdir /app/exam
-RUN mkdir /app/questions
-RUN mkdir /app/webcompilingexams
-# COPY ./webcompilingexams /app/webcompilingexams
+COPY ./webcompilingexams /app/webcompilingexams
 
 COPY ./requirements.txt /app
 RUN pip install -r requirements.txt
 
-CMD python3 run.py
-# CMD gunicorn -w 4 -b 0.0.0.0:5000 webcompilingexams:app
+CMD gunicorn -w 4 -b 0.0.0.0:5000 --log-level=info webcompilingexams:app
+# CMD python3 run.py
