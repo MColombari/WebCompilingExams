@@ -3,5 +3,5 @@
   "text": "Realizza una classe Esercizio a cui si passi nel costruttore due numeri interi, tale classe deve avere una funzione run che ritorni la somma dei due numeri",
   "options": "public class Es1{\npublic static void main(String[] args) {\n\t    Esercizio es = new Esercizio(1,2);\n        if (es.run() == 3){\n            System.out.println(\".\\nTest eseguiti con successo.\");\n        }\n        else {\n            System.out.println(\"F\\nTest falliti.\");\n        }\n    }\n}",
   "correct_answer": "",
-  "difficulty": "Easy"
+  "time_expected": 5
 }

@@ -8,18 +8,8 @@ AdminCredential:
   Username: 'admin'
   Password: 'admin'
 
-Difficulty: "Easy"
-
 Questions:
-  Java-Code:
-    Number: 3
-    Weight: 3
-  Java-Multiple:
-    Number: 4
-    Weight: 1
-  Java-Open:
-    Number: 5
-    Weight: 1
-  Python-Code:
-    Number: 10
-    Weight: 4
+  Java-Code: 5
+  Java-Multiple: 5
+  Java-Open: 5
+  Python-Code: 5

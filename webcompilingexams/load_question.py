@@ -62,9 +62,8 @@ class LoadQuestion:
     def __init__(self, user, exam_information):
         self.user = user
         self.question_data = exam_information.load_questions_data()
-        self.difficulty = exam_information.load_difficulty()
 
-    def parse_question(self, q_dict, weight):
+    def parse_question(self, q_dict):
         ret_options = q_dict["options"]
         ret_correct_answer = q_dict["correct_answer"]
 
@@ -99,7 +98,7 @@ class LoadQuestion:
                         options=ret_options,
                         answer="",
                         correct_answer=ret_correct_answer,
-                        question_weight=weight,
+                        question_weight=q_dict["time_expected"],
                         test_output_summary= "Nessuna risposta fornita" if q_dict["type"] < 2 else "Nessun test eseguito",
                         test_output_icon=url_for('static', filename="icon/cross-mark-48.png") if q_dict["type"] < 2 else url_for('static', filename="icon/question-mark-64.png"))
 
@@ -116,18 +115,15 @@ class LoadQuestion:
                             with open(os.path.join(path, file), "r") as f:
                                 content = f.read()
                                 content_parsed = json.loads(content)
-                                weight = self.question_data[type_key]["Weight"]
                                 if isinstance(content_parsed, list):
                                     for q_dict in content_parsed:
-                                        if q_dict["difficulty"] == self.difficulty:
-                                            current_type_question.append(self.parse_question(q_dict, weight))
+                                        current_type_question.append(self.parse_question(q_dict))
                                 elif isinstance(content_parsed, dict):
-                                    if content_parsed["difficulty"] == self.difficulty:
-                                        current_type_question.append(self.parse_question(content_parsed, weight))
+                                    current_type_question.append(self.parse_question(content_parsed))
 
                 starting_index = len(out_question)
                 random.shuffle(current_type_question)
-                for i in range(self.question_data[type_key]["Number"]):
+                for i in range(self.question_data[type_key]):
                     if len(current_type_question) > 0:
                         q = current_type_question.pop()
                         q.number = starting_index + i

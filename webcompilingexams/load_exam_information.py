@@ -19,12 +19,14 @@ class ExamInformation:
         if int(self.config['General']['Duration']) != 0:
             duration = str(self.config['General']['Duration']) + " minuti"
 
+        for key in info_dict.keys():
+            total_count += int(info_dict[key])
+
         ret_dict["Durata"] = duration
         ret_dict["Numero totale di domande"] = total_count
 
         for key in info_dict.keys():
-            ret_dict[key] = info_dict[key]["Number"]
-            total_count += int(info_dict[key]["Number"])
+            ret_dict[key] = info_dict[key]
 
         ret_dict["Penalità in caso di errore domande a risposta multipla"] = str(self.load_penalty())
 
