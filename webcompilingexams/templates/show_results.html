@@ -23,7 +23,7 @@
 						<th> </th>
 						<th style="text-align: left; font-weight: normal;">
 							{% if question.type == 0 %}
-								<p style="margin: 10px 100px;">{{ question.answer }}</p>
+								<p style="margin: 10px 100px; max-width: 400px; overflow: clip;">{{ question.answer }}</p>
 							{% elif question.type == 1 %}
 								{% for option in question.options.split(CHARACTER_SEPARATOR) %}
 									<tr>

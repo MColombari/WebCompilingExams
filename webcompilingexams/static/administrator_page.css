@@ -88,7 +88,9 @@
 }
 
 .user_function_image{
-	display: inline-block; vertical-align: middle; height: 20px;
+	display: inline-block;
+	vertical-align: middle;
+	height: 20px;
 }
 
 .more_user_information_content{
