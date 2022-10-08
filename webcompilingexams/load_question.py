@@ -1,4 +1,4 @@
-import json
+import ast
 import os
 import random
 
@@ -111,10 +111,10 @@ class LoadQuestion:
                 current_type_question = []
                 for path, currentDirectory, files in os.walk(PATH + type_key):
                     for file in files:
-                        if file.endswith('.json'):
+                        if file.endswith('.py'):
                             with open(os.path.join(path, file), "r") as f:
                                 content = f.read()
-                                content_parsed = json.loads(content)
+                                content_parsed = ast.literal_eval(str(content))
                                 if isinstance(content_parsed, list):
                                     for q_dict in content_parsed:
                                         current_type_question.append(self.parse_question(q_dict))
