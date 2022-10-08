@@ -37,7 +37,7 @@
 		<table style="margin: 0 auto;">
 			<tr>
 				<th style="font-weight: bold">Matricola:</th>
-				<th style="font-weight: normal; padding: 0 10px;">{{ current_user.id }}</th>
+				<th style="font-weight: normal; padding: 0 10px;">{{ '{:06}'.format(current_user.id) }}</th>
 				<th style="font-weight: bold">Nome:</th>
 				<th style="font-weight: normal; padding: 0 10px;">{{ current_user.name }}</th>
 			</tr>

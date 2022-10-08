@@ -1,3 +1,4 @@
+import copy
 import os
 
 from flask import render_template, redirect, url_for, flash, request
@@ -21,10 +22,19 @@ if not os.path.isdir('/app/exam'):
     os.mkdir('/app/exam')
 
 # Create Admin user.
-if User.query.filter_by(id=ADMIN_ID).count() < 1:
-    user = User(id=ADMIN_ID, name="IDLE", surname="admin",
-                email="admin")
-    db.session.add(user)
+if ExamInformation('/app/config.yaml').is_this_an_exam():
+    if User.query.filter_by(id=ADMIN_ID).count() < 1:
+        user = User(id=ADMIN_ID, name="IDLE", surname="admin",
+                    email="admin")
+        db.session.add(user)
+        db.session.commit()
+else:
+    if User.query.filter_by(id=ADMIN_ID).count() < 1:
+        user = User(id=ADMIN_ID, name="EXAM", surname="admin",
+                    email="admin")
+        db.session.add(user)
+    else:
+        User.query.filter_by(id=ADMIN_ID).first().name = "EXAM"
     db.session.commit()
 
 
@@ -39,6 +49,14 @@ def registration():
             flash('L\'esame è in corso di svolgimento', 'warning')
             return redirect(url_for('exam'))
         flash('L\'utente è già registrato', 'warning')
+        return redirect(url_for('start_exam'))
+
+    if not ExamInformation('/app/config.yaml').is_this_an_exam():
+        test_user = User(id="000001", name="Test", surname="Test", email="Test")
+        db.session.add(test_user)
+        db.session.commit()
+
+        login_user(test_user, True)
         return redirect(url_for('start_exam'))
 
     form = RegistrationForm()
@@ -455,6 +473,8 @@ def exam():
             return redirect(url_for('exam'))
 
         if request.form.get('end') == 'Termina esame':
+            if not ExamInformation('/app/config.yaml').is_this_an_exam():
+                return redirect(url_for('show_results'))
             return redirect(url_for('logout'))
 
     # Render "exam.html" page.
@@ -517,6 +537,71 @@ def recap():
                            bottom_bar_center='Recap',
                            bottom_bar_right='Revisione domande',
                            sorted_questions=sorted(current_user.questions, key=lambda q: q.number))
+
+
+@app.route('/show_results')
+@login_required
+def show_results():
+    if ExamInformation('/app/config.yaml').is_this_an_exam():
+        return redirect(url_for('exam'))
+
+    # Update answers points.
+    user_id = current_user.id
+    result = 0
+    weight_sum = 0
+    user_questions = copy.deepcopy(current_user.questions)
+    for question in user_questions:
+        if question.type == 1:
+            points = 0
+            correct_answers = question.correct_answer.split(CHARACTER_SEPARATOR)
+            selected_answer = question.answer.split(CHARACTER_SEPARATOR)
+            for s_op in selected_answer:
+                if s_op != '':
+                    if s_op in correct_answers:
+                        points += 1
+                    else:
+                        points -= ExamInformation('/app/config.yaml').load_penalty()
+            points = points / len(correct_answers)
+
+            question.points = points
+            db.session.commit()
+
+        elif question.type >= 2:
+            points = 0
+            if not question.test_output == '':
+                data = question.test_output.split('\n')[0].split('/')
+                if int(data[1]) == 0:
+                    points = 0
+                else:
+                    points = float(data[0]) / float(data[1])
+
+            question.points = points
+            db.session.commit()
+
+        result += (points * 100) * question.question_weight
+        weight_sum += question.question_weight
+
+    if weight_sum != 0:
+        result /= weight_sum
+
+    if not current_user.exam_finished:
+        current_user.exam_finished = True
+        db.session.commit()
+    logout_user()
+
+    Question.query.filter_by(user_id=user_id).delete()
+    User.query.filter_by(id=user_id).delete()
+    db.session.commit()
+
+    return render_template('show_results.html',
+                           title='Esame Terminato',
+                           page_title=ExamInformation('/app/config.yaml').load_title(),
+                           questions=user_questions,
+                           CHARACTER_SEPARATOR=CHARACTER_SEPARATOR,
+                           result=result,
+                           bottom_bar_left=DATE,
+                           bottom_bar_center='Uscita',
+                           bottom_bar_right='Attesa uscita')
 
 
 def save_user_data(user):

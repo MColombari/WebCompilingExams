@@ -1,0 +1,65 @@
+{% extends "main_template.html" %}
+{%  block head %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='logout_page.css') }}">
+{% endblock head %}
+{% block body %}
+    <div id="main_center_div" class="debug">
+		<p style="font-size: 30pt;">Esame terminato con successo!</p>
+		<p style="font-size: 20pt;">{{ "{:.2f}".format(result) }} / 100</p>
+		<p style="font-size: 11pt;">Risultati:</p>
+		<div  class="debug" style="width: 70%; margin: 0 auto;">
+			<table style="text-align: center; margin-bottom: 50px;">
+				{% for question in questions|sort(attribute='number') %}
+					<tr>
+						<th><p class="table_text">{{ question.number + 1 }})</p></th>
+						<th><p class="table_text" style="margin: 20px;">{{ question.text }}</p></th>
+						{% if question.type == 0 %}
+							<th><p class="table_text" style="width: 40px;">NaN</p></th>
+						{% else %}
+							<th><p class="table_text" style="width: 50px;">{{ "{:.0f}".format(question.points * 100) }} / 100</p></th>
+						{% endif %}
+					</tr>
+					<tr>
+						<th> </th>
+						<th style="text-align: left; font-weight: normal;">
+							{% if question.type == 0 %}
+								<p style="margin: 10px 100px;">{{ question.answer }}</p>
+							{% elif question.type == 1 %}
+								{% for option in question.options.split(CHARACTER_SEPARATOR) %}
+									<tr>
+										<th></th>
+										{% if loop.index0|string in question.answer %}
+											<th style="padding-left: 20px; font-weight: normal;">+ {{ option }}</th>
+										{% else %}
+											<th style="padding-left: 20px; font-weight: normal;">- {{ option }}</th>
+										{% endif %}
+									</tr>
+								{% endfor %}
+							{% else %}
+								{% for answer_line in question.answer.split("\n") %}
+									<div class="debug" style="margin: 1px 100px; padding: 0; min-height: 16px;">
+										{% set flag = namespace(val=True) %}
+										{% for c in answer_line %}
+											{% if c != '\t' %}
+												{% set flag.val = False %}
+											{% endif %}
+											{% if flag.val == True %}
+												&emsp;&emsp;&emsp;&emsp;
+											{% endif %}
+										{% endfor %}
+										{{ answer_line }}
+									</div>
+								{% endfor %}
+							{% endif %}
+						</th>
+						<th> </th>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+		<p style="font-size: 11pt;">Ora è possibile chiudere la pagina oppure svolgere un nuovo esame.</p>
+		<a href="{{ url_for('registration') }}">
+			<button id="home_return_button">Nuovo esame.</button>
+		</a>
+	</div>
+{% endblock body %}

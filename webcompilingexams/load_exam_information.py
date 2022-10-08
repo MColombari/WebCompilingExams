@@ -10,6 +10,9 @@ class ExamInformation:
     def load_title(self):
         return str(self.config['Title'])
 
+    def is_this_an_exam(self):
+        return bool(self.config['IsThisAnExam'])
+
     def load_generic_information(self):
         ret_dict = {}
         info_dict = self.config['Questions']

@@ -1,7 +1,9 @@
 Title: "Esame Programmazione ad Oggetti"
 
+IsThisAnExam: False
+
 General:
-  Duration: 10
+  Duration: 3
   WrongOptionQuestionPenalty: 0.5
 
 AdminCredential:
