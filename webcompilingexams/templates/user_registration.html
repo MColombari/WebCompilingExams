@@ -14,9 +14,6 @@
 {% endblock head %}
 {% block body %}
 	<div id="admin_link">
-		<a href="{{ url_for('login_administrator') }}">
-			amministratore
-		</a>
 	</div>
     <div class="center" id="main_div">
     <form method="POST" action="{{ url_for('registration') }}" id="login_form" onsubmit="return show_confirm()">
