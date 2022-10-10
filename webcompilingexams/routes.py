@@ -527,7 +527,9 @@ def recap():
             current_user.exam_finished = True
             db.session.commit()
             flash('Logout forzato poiché l\'esame è terminato.', 'danger')
-            return redirect(url_for('logout'))
+            if ExamInformation('/app/config.yaml').is_this_an_exam():
+                return redirect(url_for('logout'))
+            return redirect(url_for('show_results'))
 
     if current_user.exam_finished:
         flash('Logout forzato poiché l\'esame è terminato.', 'danger')
@@ -584,8 +586,9 @@ def show_results():
             question.points = points
             db.session.commit()
 
-        result += (points * 100) * question.question_weight
-        weight_sum += question.question_weight
+        if question.type != 0:
+            result += (points * 100) * question.question_weight
+            weight_sum += question.question_weight
 
     if weight_sum != 0:
         result /= weight_sum
