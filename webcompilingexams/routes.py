@@ -6,7 +6,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.exceptions import HTTPException
 from datetime import datetime, timedelta
 
-from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR, ADMIN_ID
+from webcompilingexams import app, db, QUESTION_TYPE, CHARACTER_SEPARATOR, ADMIN_ID, TEST_USER_ID
 from webcompilingexams.form import RegistrationForm, QuestionForm, AdminLoginForm, AdminForm
 from webcompilingexams.load_exam_information import ExamInformation
 from webcompilingexams.load_question import LoadQuestion
@@ -17,25 +17,29 @@ from webcompilingexams.save_user_data import SaveUserData
 from webcompilingexams import DATE
 from webcompilingexams import DIR_DATE
 
-# Create id doesn't exists exam folder.
-if not os.path.isdir('/app/exam'):
-    os.mkdir('/app/exam')
 
-# Create Admin user.
-if ExamInformation('/app/config.yaml').is_this_an_exam():
-    if User.query.filter_by(id=ADMIN_ID).count() < 1:
-        user = User(id=ADMIN_ID, name="IDLE", surname="admin",
-                    email="admin")
-        db.session.add(user)
-        db.session.commit()
-else:
-    if User.query.filter_by(id=ADMIN_ID).count() < 1:
-        user = User(id=ADMIN_ID, name="EXAM", surname="admin",
-                    email="admin")
-        db.session.add(user)
+@app.before_first_request
+def init_app():
+    # Create id doesn't exists exam folder.
+    if not os.path.isdir('/app/exam'):
+        os.mkdir('/app/exam')
+
+    # Create Admin user.
+    if ExamInformation('/app/config.yaml').is_this_an_exam():
+        if User.query.filter_by(id=ADMIN_ID).count() < 1:
+            user = User(id=int(ADMIN_ID), name="IDLE", surname="admin",
+                        email="admin")
+            db.session.add(user)
+            db.session.commit()
     else:
-        User.query.filter_by(id=ADMIN_ID).first().name = "EXAM"
-    db.session.commit()
+        if User.query.filter_by(id=ADMIN_ID).count() < 1:
+            user = User(id=int(ADMIN_ID), name="EXAM", surname="admin",
+                        email="admin")
+            db.session.add(user)
+            db.session.commit()
+        else:
+            User.query.filter_by(id=int(ADMIN_ID)).first().name = "EXAM"
+            db.session.commit()
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -52,7 +56,7 @@ def registration():
         return redirect(url_for('start_exam'))
 
     if not ExamInformation('/app/config.yaml').is_this_an_exam():
-        test_user = User(id="000001", name="Test", surname="Test", email="Test")
+        test_user = User(id=TEST_USER_ID, name="Test", surname="Test", email="Test")
         db.session.add(test_user)
         db.session.commit()
 
