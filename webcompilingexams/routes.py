@@ -390,7 +390,9 @@ def exam():
             current_user.exam_finished = True
             db.session.commit()
             flash('Logout forzato poiché l\'esame è terminato.', 'danger')
-            return redirect(url_for('logout'))
+            if ExamInformation('/app/config.yaml').is_this_an_exam():
+                return redirect(url_for('logout'))
+            return redirect(url_for('show_results'))
 
     if current_user.exam_finished:
         flash('Logout forzato poiché l\'esame è terminato.', 'danger')
