@@ -20,18 +20,26 @@ from webcompilingexams import DIR_DATE
 
 @app.before_first_request
 def init_app():
-    # Create id doesn't exists exam folder.
+    # Create exam folder, if it doesn't exist.
     if not os.path.isdir('/app/exam'):
         os.mkdir('/app/exam')
 
-    # Create Admin user.
-    if ExamInformation('/app/config.yaml').is_this_an_exam():
+    # Delete test user.
+    if Question.query.filter_by(user_id=TEST_USER_ID).count() > 0:
+        Question.query.filter_by(user_id=TEST_USER_ID).delete()
+        db.session.delete()
+    if User.query.filter_by(id=TEST_USER_ID).count() > 0:
+        User.query.filter_by(id=TEST_USER_ID).delete()
+        db.session.delete()
+
+    # Create Admin.
+    if ExamInformation('/app/config.yaml').is_this_an_exam():  # Exam
         if User.query.filter_by(id=ADMIN_ID).count() < 1:
             user = User(id=int(ADMIN_ID), name="IDLE", surname="admin",
                         email="admin")
             db.session.add(user)
             db.session.commit()
-    else:
+    else:  # Test
         if User.query.filter_by(id=ADMIN_ID).count() < 1:
             user = User(id=int(ADMIN_ID), name="EXAM", surname="admin",
                         email="admin")
@@ -114,6 +122,10 @@ def login_administrator():
             flash("Accesso alla pagina negato", 'danger')
             return redirect(url_for('start_exam'))
 
+    if not ExamInformation('/app/config.yaml').is_this_an_exam():
+        flash('Pagina riservata', 'danger')
+        return redirect(url_for('registration'))
+
     credential = ExamInformation('/app/config.yaml').load_admin_information()
 
     form = AdminLoginForm()
@@ -121,7 +133,7 @@ def login_administrator():
         if (form.name.data == credential["Username"] and
                 form.password.data == credential["Password"]):
             admin_user = User(id=ADMIN_ID, name="admin", surname="admin",
-                        email="admin")
+                              email="admin")
 
             login_user(admin_user, True)
 
@@ -142,8 +154,41 @@ def login_administrator():
                            form=form)
 
 
+def calc_question_points(question):
+    if question.type == 1:
+        points = 0
+        correct_answers = question.correct_answer.split(CHARACTER_SEPARATOR)
+        selected_answer = question.answer.split(CHARACTER_SEPARATOR)
+        for s_op in selected_answer:
+            if s_op != '':
+                if s_op in correct_answers:
+                    points += 1
+                else:
+                    points -= ExamInformation('/app/config.yaml').load_penalty()
+        points = points / len(correct_answers)
+
+        question.points = points
+        db.session.commit()
+
+    elif question.type >= 2:
+        points = 0
+        if not question.test_output == '':
+            data = question.test_output.split('\n')[0].split('/')
+            if int(data[1]) == 0:
+                points = 0
+            else:
+                points = float(data[0]) / float(data[1])
+
+        question.points = points
+        db.session.commit()
+
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_page():
+    if not ExamInformation('/app/config.yaml').is_this_an_exam():
+        flash('Pagina riservata', 'danger')
+        return redirect(url_for('registration'))
+
     if not current_user.is_authenticated:
         flash("Login required", 'danger')
         return redirect(url_for('login_administrator'))
@@ -161,32 +206,7 @@ def admin_page():
     if current_user.exam_checked:
         for user in [u for u in users if not u.exam_checked]:
             for question in user.questions:
-                if question.type == 1:
-                    points = 0
-                    correct_answers = question.correct_answer.split(CHARACTER_SEPARATOR)
-                    selected_answer = question.answer.split(CHARACTER_SEPARATOR)
-                    for s_op in selected_answer:
-                        if s_op != '':
-                            if s_op in correct_answers:
-                                points += 1
-                            else:
-                                points -= ExamInformation('/app/config.yaml').load_penalty()
-                    points = points / len(correct_answers)
-
-                    question.points = points
-                    db.session.commit()
-
-                elif question.type >= 2:
-                    points = 0
-                    if not question.test_output == '':
-                        data = question.test_output.split('\n')[0].split('/')
-                        if int(data[1]) == 0:
-                            points = 0
-                        else:
-                            points = float(data[0]) / float(data[1])
-
-                    question.points = points
-                    db.session.commit()
+                calc_question_points(question)
 
     form = AdminForm()
     if request.method == 'POST':
@@ -559,35 +579,10 @@ def show_results():
     weight_sum = 0
     user_questions = copy.deepcopy(current_user.questions)
     for question in user_questions:
-        if question.type == 1:
-            points = 0
-            correct_answers = question.correct_answer.split(CHARACTER_SEPARATOR)
-            selected_answer = question.answer.split(CHARACTER_SEPARATOR)
-            for s_op in selected_answer:
-                if s_op != '':
-                    if s_op in correct_answers:
-                        points += 1
-                    else:
-                        points -= ExamInformation('/app/config.yaml').load_penalty()
-            points = points / len(correct_answers)
-
-            question.points = points
-            db.session.commit()
-
-        elif question.type >= 2:
-            points = 0
-            if not question.test_output == '':
-                data = question.test_output.split('\n')[0].split('/')
-                if int(data[1]) == 0:
-                    points = 0
-                else:
-                    points = float(data[0]) / float(data[1])
-
-            question.points = points
-            db.session.commit()
+        calc_question_points(question)
 
         if question.type != 0:
-            result += (points * 100) * question.question_weight
+            result += (question.points * 100) * question.question_weight
             weight_sum += question.question_weight
 
     if weight_sum != 0:
@@ -650,6 +645,5 @@ def logout():
 
 @app.errorhandler(HTTPException)
 def errorhandler(e):
-    print(f"{e.code}, {e.name}, {e.description}")
     Log.write_error(f'[ERROR] "{e.code}" - "{e.name}" - "{e.description}".')
     return e
